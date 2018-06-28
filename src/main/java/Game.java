@@ -9,11 +9,14 @@ public class Game {
     public static void main(String[] args) {
         final GLProfile glProfile = GLProfile.get(GLProfile.GL2);
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
-        BaseFrame basicListener = new BaseFrame();
+
 
         final GLCanvas glCanvas = new GLCanvas(glCapabilities);
-        glCanvas.addGLEventListener(basicListener);
         glCanvas.setSize(500,500);
+
+        BaseFrame basicListener = new BaseFrame(glCanvas.getSize());
+        glCanvas.addGLEventListener(basicListener);
+
 
         SwingUtilities.invokeLater(()->{
             final JFrame mainFrame = new JFrame("Simple JOGL game");

@@ -2,6 +2,8 @@ import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.*;
 
+import java.awt.*;
+
 public class BaseFrame implements GLEventListener
 {
     private int screenWidth;
@@ -10,6 +12,11 @@ public class BaseFrame implements GLEventListener
     public BaseFrame(int width, int height){
         this.screenWidth = width;
         this.screenHeight = height;
+    }
+
+    public BaseFrame(Dimension dim){
+        this.screenWidth = dim.width;
+        this.screenHeight = dim.height;
     }
 
     public void init(GLAutoDrawable glAutoDrawable) {
