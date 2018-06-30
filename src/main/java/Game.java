@@ -7,7 +7,7 @@ import javax.swing.*;
 public class Game {
 
     public static void main(String[] args) {
-        final GLProfile glProfile = GLProfile.get(GLProfile.GL2);
+        final GLProfile glProfile = GLProfile.get(GLProfile.GL3);
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 
 
