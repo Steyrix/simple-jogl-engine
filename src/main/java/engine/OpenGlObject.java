@@ -1,17 +1,15 @@
 package engine;
 
-import com.jogamp.openal.sound3d.Buffer;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
-import com.sun.prism.impl.BufferUtil;
 
-import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-public class OpenGlObject implements Textured {
+public class OpenGlObject implements Textured, Controllable {
 
     private final GL3 gl;
 
@@ -54,7 +52,7 @@ public class OpenGlObject implements Textured {
         genVertexArray();
     }
 
-    public void genVertexArray(){
+    private void genVertexArray(){
         gl.glGenVertexArrays(1, vertexArray);
         gl.glBindVertexArray(vertexArray.get(0));
 
@@ -75,5 +73,10 @@ public class OpenGlObject implements Textured {
 
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticesCount);
         System.out.println(gl.glGetError() + " draw2");
+    }
+
+    @Override
+    public void react(KeyEvent keyEvent) {
+
     }
 }

@@ -1,16 +1,17 @@
-import com.hackoeur.jglm.Mat4;
-import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.*;
 import engine.OpenGlObject;
-import engine.shaderutil.ShaderCompiler;
+import engine.shaderutil.Shader;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class BaseFrame implements GLEventListener
+public class BaseFrame implements GLEventListener, KeyListener
 {
     private int screenWidth;
     private int screenHeight;
     private int program;
+    private Shader shader;
     private OpenGlObject myObj;
 
     public BaseFrame(Dimension dim){
@@ -21,11 +22,7 @@ public class BaseFrame implements GLEventListener
     public void init(GLAutoDrawable glAutoDrawable) {
         GL3 gl = glAutoDrawable.getGL().getGL3();
 
-        // Create program.
-        program = gl.glCreateProgram();
-
-        // Create vertexShader.
-        int vertexShader = gl.glCreateShader(GL2ES2.GL_VERTEX_SHADER);
+        //-----------------------SHADER TEST------------------------
         String[] vertexShaderSource = new String[1];
         vertexShaderSource[0] = "#version 330\n" +
                 "layout(location=0) in vec2 position;\n" +
@@ -36,11 +33,6 @@ public class BaseFrame implements GLEventListener
                 "gl_Position = vec4(position, 0.0, 1.0);\n" +
                 "vColor = vec4(color, 1.0);\n" +
                 "}\n";
-        gl.glShaderSource(vertexShader, 1, vertexShaderSource, null);
-        gl.glCompileShader(vertexShader);
-        System.out.println(gl.glGetError() + " init vertex shader");
-        // Create and fragment shader.
-        int fragmentShader = gl.glCreateShader(GL2ES2.GL_FRAGMENT_SHADER);
         String[] fragmentShaderSource = new String[1];
         fragmentShaderSource[0] = "#version 330\n" +
                 "in vec4 vColor;\n" +
@@ -49,13 +41,10 @@ public class BaseFrame implements GLEventListener
                 "{\n" +
                 "fColor = vColor;\n" +
                 "}\n";
-        gl.glShaderSource(fragmentShader, 1, fragmentShaderSource, null);
-        gl.glCompileShader(fragmentShader);
-        System.out.println(gl.glGetError() + " init fragment shader");
-        // Attach shaders to program.
-        gl.glAttachShader(program, vertexShader);
-        gl.glAttachShader(program, fragmentShader);
-        gl.glLinkProgram(program);
+
+        shader = new Shader(gl);
+        shader.compile(vertexShaderSource,fragmentShaderSource,null);
+        //-----------------------SHADER TEST-----------------------
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
@@ -71,12 +60,12 @@ public class BaseFrame implements GLEventListener
                                     0.5f, 0.5f,
                                     -0.5f, 0.5f,
                                     -0.5f, -0.5f,},
-                            new float[]{0.0f, 0.0f, 0.0f,
+                            new float[]{0.1f, 0.2f, 0.3f,
+                                    0.6f, 0.5f, 0.4f,
                                     0.0f, 0.0f, 0.0f,
                                     0.0f, 0.0f, 0.0f,
                                     0.0f, 0.0f, 0.0f,
-                                    0.0f, 0.0f, 0.0f,
-                                    0.0f, 0.0f, 0.0f});
+                                    0.7f, 0.8f, 0.9f});
 
         System.out.println(gl.glGetError() + " init end");
     }
@@ -90,7 +79,8 @@ public class BaseFrame implements GLEventListener
         gl.glClear(GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_COLOR_BUFFER_BIT);
         System.out.println(gl.glGetError() + " display0");
 
-        gl.glUseProgram(program);
+        shader.use();
+
         System.out.println(gl.glGetError() + " display1");
 
         myObj.draw();
@@ -98,6 +88,21 @@ public class BaseFrame implements GLEventListener
     }
 
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 }
