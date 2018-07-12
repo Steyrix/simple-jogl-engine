@@ -1,5 +1,8 @@
 package engine.shaderutil;
 
+import com.hackoeur.jglm.Mat4;
+import com.hackoeur.jglm.Vec3;
+import com.hackoeur.jglm.Vec4;
 import com.jogamp.opengl.GL3;
 
 import java.nio.ByteBuffer;
@@ -14,7 +17,7 @@ public class Shader {
     }
 
     public void use(){
-        gl.glUseProgram(id);
+        gl.glUseProgram(this.id);
     }
 
     public void compile(String[] vertexShaderSource, String[] fragmentShaderSource,
@@ -38,21 +41,69 @@ public class Shader {
             checkCompileErrors(sGeometry, "GEOMETRY");
         }
 
-        id = gl.glCreateProgram();
-        gl.glAttachShader(id, sVertex);
-        gl.glAttachShader(id, sFragment);
+        this.id = gl.glCreateProgram();
+        gl.glAttachShader(this.id, sVertex);
+        gl.glAttachShader(this.id, sFragment);
 
         if(geometryShaderSource != null)
-            gl.glAttachShader(id, sGeometry);
+            gl.glAttachShader(this.id, sGeometry);
 
-        gl.glLinkProgram(id);
-        checkCompileErrors(id, "PROGRAM");
+        gl.glLinkProgram(this.id);
+        checkCompileErrors(this.id, "PROGRAM");
 
         gl.glDeleteShader(sVertex);
         gl.glDeleteShader(sFragment);
 
         if(geometryShaderSource != null)
             gl.glDeleteShader(sGeometry);
+    }
+
+    public void setFloat(String name, float value, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniform1f(gl.glGetUniformLocation(this.id, name), value);
+    }
+
+    public void setInteger(String name, int value, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniform1i(gl.glGetUniformLocation(this.id, name), value);
+    }
+
+    public void setVector2f(String name, float x, float y, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniform2f(gl.glGetUniformLocation(this.id, name), x, y);
+    }
+
+    public void setVector3f(String name, float x, float y, float z, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniform3f(gl.glGetUniformLocation(this.id, name), x, y, z);
+    }
+
+    public void setVector3f(String name, Vec3 value, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniform3f(gl.glGetUniformLocation(this.id, name), value.getX(), value.getY(), value.getZ());
+    }
+
+    public void setVector4f(String name, float x, float y, float z, float w, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniform4f(gl.glGetUniformLocation(this.id, name), x, y, z, w);
+    }
+
+    public void setVector4f(String name, Vec4 value, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniform4f(gl.glGetUniformLocation(this.id, name), value.getX(), value.getY(), value.getZ(), value.getW());
+    }
+
+    public void setMatrix4f(String name, Mat4 value, boolean useShader){
+        if(useShader)
+            this.use();
+        gl.glUniformMatrix4fv(gl.glGetUniformLocation(this.id, name), 1, false, value.getBuffer());
     }
 
     private void checkCompileErrors(int obj, String type){

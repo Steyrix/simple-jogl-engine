@@ -1,16 +1,15 @@
+import com.hackoeur.jglm.Mat4;
+import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.*;
 import engine.OpenGlObject;
 import engine.shaderutil.Shader;
-
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-public class BaseFrame implements GLEventListener, KeyListener
+
+public class BaseFrame implements GLEventListener
 {
     private int screenWidth;
     private int screenHeight;
-    private int program;
     private Shader shader;
     private OpenGlObject myObj;
 
@@ -28,9 +27,11 @@ public class BaseFrame implements GLEventListener, KeyListener
                 "layout(location=0) in vec2 position;\n" +
                 "layout(location=1) in vec3 color;\n" +
                 "out vec4 vColor;\n" +
+                "uniform mat4 model;" +
+                "uniform mat4 projection;" +
                 "void main(void)\n" +
                 "{\n" +
-                "gl_Position = vec4(position, 0.0, 1.0);\n" +
+                "gl_Position = projection * model * vec4(position, 0.0, 1.0);\n" +
                 "vColor = vec4(color, 1.0);\n" +
                 "}\n";
         String[] fragmentShaderSource = new String[1];
@@ -44,26 +45,23 @@ public class BaseFrame implements GLEventListener, KeyListener
 
         shader = new Shader(gl);
         shader.compile(vertexShaderSource,fragmentShaderSource,null);
-        //-----------------------SHADER TEST-----------------------
+
+        //--------------------------------------------------------
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
-        gl.glEnable(GL3.GL_DEPTH_TEST);
-        gl.glClearDepthf(10.0f);
-        gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        gl.glDepthFunc(GL3.GL_LEQUAL);
-
-        myObj = new OpenGlObject(null, 2, 6, gl);
-        myObj.addBuffers(new float[]{-0.5f, -0.5f,
-                                    0.5f, -0.5f,
-                                    0.5f, 0.5f,
-                                    0.5f, 0.5f,
-                                    -0.5f, 0.5f,
-                                    -0.5f, -0.5f,},
+        myObj = new OpenGlObject( 2, 6, gl);
+        myObj.initRenderData(new float[]{0.0f, 1f,
+                                    1f, 0.0f,
+                                    0.0f, 0.0f,
+                                    0.0f, 1f,
+                                    1f, 1f,
+                                    1f, 0.0f},
                             new float[]{0.1f, 0.2f, 0.3f,
                                     0.6f, 0.5f, 0.4f,
                                     0.0f, 0.0f, 0.0f,
-                                    0.0f, 0.0f, 0.0f,
+                                    2.0f, 1.0f, 3.0f,
                                     0.0f, 0.0f, 0.0f,
                                     0.7f, 0.8f, 0.9f});
 
@@ -77,32 +75,15 @@ public class BaseFrame implements GLEventListener, KeyListener
     public void display(GLAutoDrawable glAutoDrawable) {
         GL3 gl = glAutoDrawable.getGL().getGL3();
         gl.glClear(GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_COLOR_BUFFER_BIT);
-        System.out.println(gl.glGetError() + " display0");
 
-        shader.use();
+        Mat4 projection = Matrices.ortho(0.0f, (float)screenWidth, (float)screenHeight,
+                0.0f, 0.0f, 1.0f);
+        shader.setMatrix4f("projection", projection, false);
 
-        System.out.println(gl.glGetError() + " display1");
-
-        myObj.draw();
-        System.out.println(gl.glGetError() + " display2");
+        myObj.draw(5.0f, 5.0f, 100f, 100f, 0.0f, shader);
     }
 
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
-
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
+        //myObj.draw(0.0f, 0.0f, shader);
     }
 }
