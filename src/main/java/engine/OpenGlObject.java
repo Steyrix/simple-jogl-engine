@@ -5,10 +5,7 @@ import com.hackoeur.jglm.Matrices;
 import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.util.texture.Texture;
 import engine.shaderutil.Shader;
-
-import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -25,7 +22,6 @@ public class OpenGlObject {
 
     private ArrayList<Integer> paramsCount;
 
-    //BufferParamsCount states for number of buffers the object will have (i.e. vertices, colors and etc.)
     public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl) {
         this.gl = gl;
 
@@ -43,7 +39,7 @@ public class OpenGlObject {
         genVertexArray();
     }
 
-    public void addBuffers(float[]... dataArrays){
+    private void addBuffers(float[]... dataArrays){
         gl.glGenBuffers(buffersCount,buffers);
         for(float[] fData : dataArrays) {
             FloatBuffer floatBuffer = FloatBuffer.wrap(fData);
@@ -69,7 +65,6 @@ public class OpenGlObject {
     }
 
     public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader){
-        shader.use();
 
         Mat4 model = Mat4.MAT4_IDENTITY;
         Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f,0.0f,1.0f));
@@ -86,7 +81,7 @@ public class OpenGlObject {
 
         model = model.multiply(scale);
 
-        shader.setMatrix4f("model", model, false);
+        shader.setMatrix4f("model", model, true);
         System.out.println(gl.glGetError() + " draw0");
 
         gl.glBindVertexArray(this.vertexArray.get(0));
