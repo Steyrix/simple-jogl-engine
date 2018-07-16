@@ -5,33 +5,28 @@ import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import engine.ControllableObject;
 import engine.OpenGlObject;
 import engine.shaderutil.Shader;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class GameActive implements GameState {
 
     private Shader shader;
-    private OpenGlObject myObj;
+    private ArrayList<ControllableObject> controls;
+    private ArrayList<OpenGlObject> objects;
     private int screenWidth;
     private int screenHeight;
-
-    private float dx;
-    private float dy;
-    private float posX;
-    private float posY;
 
     public GameActive(Dimension dim){
         this.screenWidth = dim.width;
         this.screenHeight = dim.height;
 
-        this.dx = 0.0f;
-        this.dy = 0.0f;
-
-        this.posX = 0.0f;
-        this.posY = 0.0f;
+        this.controls = new ArrayList<>();
+        this.objects = new ArrayList<>();
     }
 
     @Override
@@ -68,7 +63,7 @@ public class GameActive implements GameState {
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
-        myObj = new OpenGlObject( 2, 6, gl);
+        ControllableObject myObj = new ControllableObject( 2, 6, gl);
         myObj.initRenderData(new float[]{0.0f, 1f,
                         1f, 0.0f,
                         0.0f, 0.0f,
@@ -76,12 +71,15 @@ public class GameActive implements GameState {
                         1f, 1f,
                         1f, 0.0f},
                 new float[]{0.1f, 0.2f, 0.3f,
-                        0.6f, 0.5f, 0.4f,
-                        0.0f, 0.0f, 0.0f,
-                        2.0f, 1.0f, 3.0f,
-                        0.0f, 0.0f, 0.0f,
+                        0.7f, 0.8f, 0.9f,
+                        0.7f, 0.8f, 0.9f,
+                        0.1f, 0.2f, 0.3f,
+                        0.7f, 0.8f, 0.9f,
                         0.7f, 0.8f, 0.9f});
 
+        this.controls.add(myObj);
+        this.objects.add(myObj);
+        
         System.out.println(gl.glGetError() + " init end");
 
     }
@@ -103,7 +101,8 @@ public class GameActive implements GameState {
                 0.0f, 0.0f, 1.0f);
         shader.setMatrix4f("projection", projection, false);
 
-        myObj.draw(posX, posY, 100f, 100f, 0.0f, shader);
+        for(OpenGlObject o : objects)
+            o.draw(100f,100f, 0.0f, shader);
     }
 
     @Override
@@ -117,52 +116,32 @@ public class GameActive implements GameState {
                 0.0f, 0.0f, 1.0f);
         shader.setMatrix4f("projection", projection, false);
 
-        myObj.draw(posX, posY, 100f, 100f, 0.0f, shader);
+        for(OpenGlObject o : objects)
+            o.draw(100f,100f, 0.0f, shader);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        posX += dx;
-        if(dx >= 0.0f && dx - 1.0f >= 0.0f)
-            dx -= 1.0f;
-        else if(dx <= 0.0f && dx + 1.0f <= 0.0f)
-            dx += 1.0f;
-
-
-        posY += dy;
-        if(dy >= 0.0f && dy - 1.0f >= 0.0f)
-            dy -= 1.0f;
-        else if(dy <= 0.0f && dy + 1.0f <= 0.0f)
-            dy += 1.0f;
+        for(ControllableObject c : controls)
+            c.actionPerformed(e);
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        for(ControllableObject c : controls)
+            c.keyTyped(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("PRESSED");
-        switch (e.getKeyCode()){
-            case KeyEvent.VK_D:
-                this.dx += 10.0f;
-                break;
-            case KeyEvent.VK_A:
-                this.dx -= 10.0f;
-                break;
-            case KeyEvent.VK_W:
-                this.dy -= 10.0f;
-                break;
-            case KeyEvent.VK_S:
-                this.dy += 10.0f;
-                break;
-        }
+        for(ControllableObject c : controls)
+            c.keyPressed(e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        for(ControllableObject c : controls)
+            c.keyReleased(e);
     }
 
 

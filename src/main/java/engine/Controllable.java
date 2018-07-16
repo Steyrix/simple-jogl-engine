@@ -1,7 +1,11 @@
 package engine;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 public interface Controllable {
-    void react(KeyEvent keyEvent);
+    void actionPerformed(ActionEvent e);
+    void keyTyped(KeyEvent e);
+    void keyPressed(KeyEvent e);
+    void keyReleased(KeyEvent e);
 }
