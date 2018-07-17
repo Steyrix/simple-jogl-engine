@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class GameActive implements GameState {
+public class GameLabrynth implements GameState {
 
     private Shader shader;
     private ArrayList<ControllableObject> controls;
@@ -24,7 +24,7 @@ public class GameActive implements GameState {
     private float[] mapX;
     private float[] mapY;
 
-    public GameActive(Dimension dim){
+    public GameLabrynth(Dimension dim){
         this.screenWidth = dim.width;
         this.screenHeight = dim.height;
 
@@ -32,9 +32,9 @@ public class GameActive implements GameState {
         this.objects = new ArrayList<>();
 
         this.mapX = new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
+                1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
         this.mapY = new float[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+                4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 8, 9, 10, 11, 12};
     }
 
     @Override
@@ -149,7 +149,7 @@ public class GameActive implements GameState {
             c.actionPerformed(e);
 
             for(OpenGlObject o : objects)
-                if(o != c && c.intersects(o))
+                if(o != c && c.intersects(o) && !c.isTouching(o))
                     c.collide(o);
 
         }

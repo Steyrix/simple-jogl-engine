@@ -33,15 +33,6 @@ public class ControllableObject extends OpenGlObject implements Controllable {
     private void reactToCollision(BoundingBox anotherBox) {
         if (intersects(anotherBox)) {
             if (this.velocityX != 0.0f && this.velocityY != 0.0f) {
-                if (this.velocityX > 0.0f)
-                    this.posX = anotherBox.posX - this.width + this.velocityX / this.velocityY;
-                else
-                    this.posX = anotherBox.getWidthX() - this.velocityX / this.velocityY;
-
-                if (this.velocityY > 0.0f)
-                    this.posY = anotherBox.posY - this.height + this.velocityY / this.velocityX;
-                else
-                    this.posY = anotherBox.getHeightY() - this.velocityY / this.velocityX;
 
                 this.velocityCollX = -1.0f * this.velocityX * 0.2f;
                 this.velocityX = 0.0f;
