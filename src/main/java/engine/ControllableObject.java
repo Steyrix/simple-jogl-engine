@@ -9,6 +9,7 @@ import engine.Controllable;
 import engine.OpenGlObject;
 import engine.shaderutil.Shader;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -17,16 +18,33 @@ public class ControllableObject extends OpenGlObject implements Controllable{
     private float velocityX;
     private float velocityY;
 
-    public ControllableObject(int bufferParamsCount, int verticesCount, GL3 gl) {
-        super(bufferParamsCount, verticesCount, gl);
+    public ControllableObject(int bufferParamsCount, int verticesCount, GL3 gl, Dimension boxDim) {
+        super(bufferParamsCount, verticesCount, gl, boxDim);
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;
     }
 
-    public ControllableObject(int bufferParamsCount, int verticesCount, GL3 gl, float posX, float posY){
-        super(bufferParamsCount, verticesCount, gl, posX, posY);
+    public ControllableObject(int bufferParamsCount, int verticesCount, GL3 gl, float posX, float posY, Dimension boxDim){
+        super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim);
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;
+    }
+
+    private void reactToCollision(BoundingBox anotherBox){
+        if(intersects(anotherBox)) {
+            if(this.velocityX != 0.0f) {
+                this.posX = anotherBox.posX - this.width;
+                this.velocityX *= -1f;
+            }
+            else if(this.velocityY != 0.0f) {
+                this.posY = anotherBox.posY - this.height;
+                this.velocityY *= -1f;
+            }
+        }
+    }
+
+    public void collide(BoundingBox anotherBox){
+        this.reactToCollision(anotherBox);
     }
 
     @Override

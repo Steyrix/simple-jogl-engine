@@ -7,11 +7,12 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import engine.shaderutil.Shader;
 
+import java.awt.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-public class OpenGlObject {
+public class OpenGlObject extends BoundingBox {
 
     protected final GL3 gl;
 
@@ -19,15 +20,13 @@ public class OpenGlObject {
     protected int buffersCount;
     protected int verticesCount;
 
-    protected float posX;
-    protected float posY;
-
     protected IntBuffer buffers;
     protected IntBuffer vertexArray;
 
     protected ArrayList<Integer> paramsCount;
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl) {
+    public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl, Dimension boxDim) {
+        super(0.0f, 0.0f, boxDim.width, boxDim.height);
         this.gl = gl;
 
         this.buffersFilled = 0;
@@ -37,9 +36,11 @@ public class OpenGlObject {
         this.vertexArray = IntBuffer.allocate(1);
 
         this.paramsCount = new ArrayList<>();
+
     }
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl, float posX, float posY) {
+    public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl, float posX, float posY, Dimension boxDim) {
+        super(posX, posY, boxDim.width, boxDim.height);
         this.gl = gl;
 
         this.buffersFilled = 0;
@@ -98,6 +99,8 @@ public class OpenGlObject {
     }
 
     public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader){
+        this.width = xSize;
+        this.height = ySize;
 
         Mat4 model = Mat4.MAT4_IDENTITY;
         Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f,0.0f,1.0f));
@@ -123,6 +126,9 @@ public class OpenGlObject {
     }
 
     public void draw(float xSize, float ySize, float rotationAngle, Shader shader){
+        this.width = xSize;
+        this.height = ySize;
+
         Mat4 model = Mat4.MAT4_IDENTITY;
         Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f,0.0f,1.0f));
         Mat4 scale = new Mat4(xSize, 0.0f, 0.0f, 0.0f,

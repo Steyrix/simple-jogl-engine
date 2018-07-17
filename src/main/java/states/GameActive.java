@@ -20,6 +20,7 @@ public class GameActive implements GameState {
     private ArrayList<OpenGlObject> objects;
     private int screenWidth;
     private int screenHeight;
+    private Mat4 renderProjection;
 
     public GameActive(Dimension dim){
         this.screenWidth = dim.width;
@@ -63,7 +64,7 @@ public class GameActive implements GameState {
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
-        ControllableObject myObj = new ControllableObject( 2, 6, gl);
+        ControllableObject myObj = new ControllableObject( 2, 6, gl, 50, 50, new Dimension(100,100));
         myObj.initRenderData(new float[]{0.0f, 1f,
                         1f, 0.0f,
                         0.0f, 0.0f,
@@ -79,7 +80,25 @@ public class GameActive implements GameState {
 
         this.controls.add(myObj);
         this.objects.add(myObj);
-        
+
+        OpenGlObject collideTest = new OpenGlObject(2, 6, gl, 350, 350, new Dimension(100,100));
+        collideTest.initRenderData(new float[]{0.0f, 1f,
+                        1f, 0.0f,
+                        0.0f, 0.0f,
+                        0.0f, 1f,
+                        1f, 1f,
+                        1f, 0.0f},
+                new float[]{0.7f, 0.2f, 0.3f,
+                        0.1f, 0.2f, 0.9f,
+                        0.4f, 0.8f, 0.3f,
+                        0.9f, 0.6f, 0.6f,
+                        0.2f, 0.1f, 0.7f,
+                        0.7f, 0.8f, 0.9f});
+
+        this.objects.add(collideTest);
+
+        this.renderProjection = Matrices.ortho(0.0f, (float)screenWidth, (float)screenHeight,
+                0.0f, 0.0f, 1.0f);
         System.out.println(gl.glGetError() + " init end");
 
     }
@@ -97,33 +116,29 @@ public class GameActive implements GameState {
 
         System.out.println(gl.glGetError() + " display0");
 
-        Mat4 projection = Matrices.ortho(0.0f, (float)screenWidth, (float)screenHeight,
-                0.0f, 0.0f, 1.0f);
-        shader.setMatrix4f("projection", projection, false);
+        shader.setMatrix4f("projection", renderProjection, false);
 
         for(OpenGlObject o : objects)
             o.draw(100f,100f, 0.0f, shader);
+
+
     }
 
     @Override
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
-        GL3 gl = glAutoDrawable.getGL().getGL3();
-        gl.glClear(GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_COLOR_BUFFER_BIT);
 
-        System.out.println(gl.glGetError() + " reshape0");
-
-        Mat4 projection = Matrices.ortho(0.0f, (float)screenWidth, (float)screenHeight,
-                0.0f, 0.0f, 1.0f);
-        shader.setMatrix4f("projection", projection, false);
-
-        for(OpenGlObject o : objects)
-            o.draw(100f,100f, 0.0f, shader);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for(ControllableObject c : controls)
+        for(ControllableObject c : controls) {
             c.actionPerformed(e);
+            
+            for(OpenGlObject o : objects){
+                if(o != c && c.intersects(o))
+                    c.collide(o);
+            }
+        }
     }
 
     @Override
