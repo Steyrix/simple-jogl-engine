@@ -21,6 +21,8 @@ public class GameActive implements GameState {
     private int screenWidth;
     private int screenHeight;
     private Mat4 renderProjection;
+    private float[] mapX;
+    private float[] mapY;
 
     public GameActive(Dimension dim){
         this.screenWidth = dim.width;
@@ -28,6 +30,11 @@ public class GameActive implements GameState {
 
         this.controls = new ArrayList<>();
         this.objects = new ArrayList<>();
+
+        this.mapX = new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
+        this.mapY = new float[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
     }
 
     @Override
@@ -64,7 +71,7 @@ public class GameActive implements GameState {
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
-        ControllableObject myObj = new ControllableObject( 2, 6, gl, 50, 50, new Dimension(100,100));
+        ControllableObject myObj = new ControllableObject( 2, 6, gl, 50, 25, new Dimension(50,50));
         myObj.initRenderData(new float[]{0.0f, 1f,
                         1f, 0.0f,
                         0.0f, 0.0f,
@@ -81,25 +88,29 @@ public class GameActive implements GameState {
         this.controls.add(myObj);
         this.objects.add(myObj);
 
-        OpenGlObject collideTest = new OpenGlObject(2, 6, gl, 350, 350, new Dimension(100,100));
-        collideTest.initRenderData(new float[]{0.0f, 1f,
-                        1f, 0.0f,
-                        0.0f, 0.0f,
-                        0.0f, 1f,
-                        1f, 1f,
-                        1f, 0.0f},
-                new float[]{0.7f, 0.2f, 0.3f,
-                        0.1f, 0.2f, 0.9f,
-                        0.4f, 0.8f, 0.3f,
-                        0.9f, 0.6f, 0.6f,
-                        0.2f, 0.1f, 0.7f,
-                        0.7f, 0.8f, 0.9f});
-
-        this.objects.add(collideTest);
+        int count = mapX.length;
+        for (int k = 0; k < count; k++) {
+            OpenGlObject collideble = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
+                                                        mapY[k] * 25f, new Dimension(25,25));
+            collideble.initRenderData(new float[]{0.0f, 1f,
+                            1f, 0.0f,
+                            0.0f, 0.0f,
+                            0.0f, 1f,
+                            1f, 1f,
+                            1f, 0.0f},
+                    new float[]{0.2f, 0.2f, 0.2f,
+                            0.2f, 0.2f, 0.2f,
+                            0.2f, 0.2f, 0.2f,
+                            0.2f, 0.2f, 0.2f,
+                            0.2f, 0.2f, 0.2f,
+                            0.2f, 0.2f, 0.2f});
+            this.objects.add(collideble);
+        }
 
         this.renderProjection = Matrices.ortho(0.0f, (float)screenWidth, (float)screenHeight,
                 0.0f, 0.0f, 1.0f);
-        System.out.println(gl.glGetError() + " init end");
+
+        //System.out.println(gl.glGetError() + " init end");
 
     }
 
@@ -114,13 +125,15 @@ public class GameActive implements GameState {
         GL3 gl = glAutoDrawable.getGL().getGL3();
         gl.glClear(GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_COLOR_BUFFER_BIT);
 
-        System.out.println(gl.glGetError() + " display0");
+        //System.out.println(gl.glGetError() + " display0");
 
         shader.setMatrix4f("projection", renderProjection, false);
 
-        for(OpenGlObject o : objects)
-            o.draw(100f,100f, 0.0f, shader);
-
+        for(OpenGlObject o : objects){
+            if(o instanceof ControllableObject)
+                o.draw(50f,50f, 0.0f, shader);
+            else o.draw(25f, 25f, 0.0f, shader);
+        }
 
     }
 
@@ -132,12 +145,13 @@ public class GameActive implements GameState {
     @Override
     public void actionPerformed(ActionEvent e) {
         for(ControllableObject c : controls) {
+
             c.actionPerformed(e);
-            
-            for(OpenGlObject o : objects){
+
+            for(OpenGlObject o : objects)
                 if(o != c && c.intersects(o))
                     c.collide(o);
-            }
+
         }
     }
 

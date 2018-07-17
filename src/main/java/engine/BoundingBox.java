@@ -9,7 +9,7 @@ public class BoundingBox {
     protected float height;
     protected boolean undefined;
 
-    public BoundingBox(){
+    public BoundingBox() {
         this.posX = 0.0f;
         this.posY = 0.0f;
         this.width = 0.0f;
@@ -45,20 +45,20 @@ public class BoundingBox {
         this.undefined = true;
     }
 
-    protected float getWidthX(){
+    protected float getWidthX() {
         return this.posX + this.width;
     }
 
-    protected float getHeightY(){
+    protected float getHeightY() {
         return this.posY + this.height;
     }
 
-    private boolean intersectX(BoundingBox anotherBox){
+    private boolean intersectX(BoundingBox anotherBox) {
         return !undefined && ((anotherBox.getWidthX() <= this.getWidthX() && anotherBox.getWidthX() >= this.posX) ||
                 (anotherBox.posX >= this.posX && anotherBox.posX <= this.getWidthX()));
     }
 
-    private boolean intersectY(BoundingBox anotherBox){
+    private boolean intersectY(BoundingBox anotherBox) {
         return !undefined && ((anotherBox.getHeightY() <= this.getHeightY() && anotherBox.getHeightY() >= this.posY) ||
                 (anotherBox.posY >= this.posY && anotherBox.posY <= this.getHeightY()));
     }
