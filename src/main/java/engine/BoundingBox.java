@@ -53,6 +53,18 @@ public class BoundingBox {
         return this.posY + this.height;
     }
 
+    private boolean isTouchingX(BoundingBox anotherBox){
+        return anotherBox.posX == this.getWidthX() || anotherBox.getWidthX() == this.posX;
+    }
+
+    private boolean isTouchingY(BoundingBox anotherBox){
+        return anotherBox.posY == this.getHeightY() || anotherBox.getHeightY() == this.posY;
+    }
+
+    public boolean isTouching(BoundingBox anotherBox){
+        return isTouchingX(anotherBox) || isTouchingY(anotherBox);
+    }
+
     private boolean intersectX(BoundingBox anotherBox) {
         return !undefined && ((anotherBox.getWidthX() <= this.getWidthX() && anotherBox.getWidthX() >= this.posX) ||
                 (anotherBox.posX >= this.posX && anotherBox.posX <= this.getWidthX()));
