@@ -183,9 +183,9 @@ public class GameLabrynth implements GameState {
 
         int count = mapX.length;
         for (int k = 0; k < count; k++) {
-            OpenGlObject collideble = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
+            OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
                                                         mapY[k] * 25f, new Dimension(25,25));
-            collideble.initRenderData(new float[]{0.0f, 1f,
+            boundObject.initRenderData(new float[]{0.0f, 1f,
                             1f, 0.0f,
                             0.0f, 0.0f,
                             0.0f, 1f,
@@ -197,7 +197,7 @@ public class GameLabrynth implements GameState {
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f});
-            this.objects.add(collideble);
+            this.objects.add(boundObject);
         }
 
         this.renderProjection = Matrices.ortho(0.0f, (float)screenWidth, (float)screenHeight,
@@ -209,7 +209,9 @@ public class GameLabrynth implements GameState {
 
     @Override
     public void dispose(GLAutoDrawable glAutoDrawable) {
-
+        for(OpenGlObject o : this.objects){
+            o.dispose();
+        }
     }
 
     @Override

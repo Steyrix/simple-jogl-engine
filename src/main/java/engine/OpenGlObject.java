@@ -99,6 +99,11 @@ public class OpenGlObject extends BoundingBox {
         //System.out.println(gl.glGetError() + " genVertexArray");
     }
 
+    public void dispose(){
+        gl.glDeleteBuffers(buffersCount, buffers);
+        gl.glDeleteVertexArrays(1, this.vertexArray);
+    }
+
     public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader) {
         this.width = xSize;
         this.height = ySize;
