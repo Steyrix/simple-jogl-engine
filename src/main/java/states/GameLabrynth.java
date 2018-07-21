@@ -6,7 +6,6 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import engine.BoundingBox;
-import engine.Controllable;
 import engine.ControllableObject;
 import engine.OpenGlObject;
 import engine.shaderutil.Shader;
@@ -73,7 +72,6 @@ public class GameLabrynth implements GameState {
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
-        //ControllableObject myObj = new ControllableObject( 2, 6, gl, 50, 25, new Dimension(50,50));
         ControllableObject myObj = new ControllableObject(2, 6, gl, 50, 25, new Dimension(50, 50)) {
             @Override
             public void keyPressed(KeyEvent e) {
