@@ -4,6 +4,7 @@ import java.awt.*;
 
 public class BoundingBox {
     protected float posX;
+
     protected float posY;
     protected float width;
     protected float height;
@@ -45,11 +46,19 @@ public class BoundingBox {
         this.undefined = true;
     }
 
-    protected float getWidthX() {
+    public float getPosX() {
+        return posX;
+    }
+
+    public float getPosY() {
+        return posY;
+    }
+
+    public float getWidthX() {
         return this.posX + this.width;
     }
 
-    protected float getHeightY() {
+    public float getHeightY() {
         return this.posY + this.height;
     }
 
