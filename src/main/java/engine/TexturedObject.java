@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
+//TODO: implement adaptive resizing of object dimension according to texture size
 public class TexturedObject extends OpenGlObject implements Textured {
 
     protected Texture texture;
@@ -115,5 +116,4 @@ public class TexturedObject extends OpenGlObject implements Textured {
         //System.out.println(gl.glGetError() + " draw1");
     }
 
-    //TODO: init texture rendering states, to test this
 }

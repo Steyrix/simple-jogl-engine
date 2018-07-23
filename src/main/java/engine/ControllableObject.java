@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+//TODO: implement an ability for controllable object to be textured somehow
 public class ControllableObject extends OpenGlObject implements Controllable {
 
     protected float velocityX;

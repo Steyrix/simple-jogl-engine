@@ -8,13 +8,13 @@ import com.jogamp.opengl.GLAutoDrawable;
 import engine.BoundingBox;
 import engine.ControllableObject;
 import engine.OpenGlObject;
-import engine.TexturedObject;
 import engine.shader.Shader;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+//TODO: implement multishadering or adaptive shader
 public class GameLabyrinth implements GameState {
 
     private Shader shader;
