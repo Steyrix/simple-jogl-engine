@@ -77,6 +77,11 @@ public class GameLabyrinth implements GameState {
             }
 
             @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+            @Override
             public void actionPerformed(ActionEvent e) {
                 this.posX += this.velocityX + this.velocityCollX;
                 if (velocityX >= 0.0f && velocityX - 1.0f >= 0.0f)
@@ -114,6 +119,11 @@ public class GameLabyrinth implements GameState {
 
 
                 System.out.println("Pos: " + posX + "; " + posY + "\nVelocity: " + velocityX + "; " + velocityY + "\n \n");
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+
             }
 
             @Override

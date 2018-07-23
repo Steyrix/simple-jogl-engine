@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class ControllableObject extends OpenGlObject implements Controllable {
+public abstract class ControllableObject extends OpenGlObject implements Controllable {
 
     protected float velocityX;
     protected float velocityY;
@@ -30,29 +30,21 @@ public class ControllableObject extends OpenGlObject implements Controllable {
 
     }
 
-    protected void reactToCollision(BoundingBox anotherBox) {
-    }
+    protected abstract void reactToCollision(BoundingBox anotherBox);
 
     public void collide(BoundingBox anotherBox) {
         this.reactToCollision(anotherBox);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-    }
+    public abstract void actionPerformed(ActionEvent e);
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public abstract void keyTyped(KeyEvent e);
 
     @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
+    public abstract void keyPressed(KeyEvent e);
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
+    public abstract void keyReleased(KeyEvent e);
 }
