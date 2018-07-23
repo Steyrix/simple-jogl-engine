@@ -5,7 +5,8 @@ import com.hackoeur.jglm.Matrices;
 import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
-import engine.shaderutil.Shader;
+import com.jogamp.opengl.util.texture.Texture;
+import engine.shader.Shader;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
@@ -73,7 +74,7 @@ public class OpenGlObject extends BoundingBox {
         genVertexArray();
     }
 
-    private void addBuffers(float[]... dataArrays) {
+    protected void addBuffers(float[]... dataArrays) {
         gl.glGenBuffers(buffersCount, buffers);
         for (float[] fData : dataArrays) {
             FloatBuffer floatBuffer = FloatBuffer.wrap(fData);
@@ -86,7 +87,7 @@ public class OpenGlObject extends BoundingBox {
         //System.out.println(gl.glGetError() + " addBuffers");
     }
 
-    private void genVertexArray() {
+    protected void genVertexArray() {
         gl.glGenVertexArrays(1, this.vertexArray);
         gl.glBindVertexArray(this.vertexArray.get(0));
 

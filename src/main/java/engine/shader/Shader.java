@@ -1,4 +1,4 @@
-package engine.shaderutil;
+package engine.shader;
 
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Vec3;
@@ -104,6 +104,10 @@ public class Shader {
         if(useShader)
             this.use();
         gl.glUniformMatrix4fv(gl.glGetUniformLocation(this.id, name), 1, false, value.getBuffer());
+    }
+
+    public int getId(){
+        return this.id;
     }
 
     private void checkCompileErrors(int obj, String type){

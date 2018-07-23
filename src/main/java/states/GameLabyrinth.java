@@ -8,13 +8,14 @@ import com.jogamp.opengl.GLAutoDrawable;
 import engine.BoundingBox;
 import engine.ControllableObject;
 import engine.OpenGlObject;
-import engine.shaderutil.Shader;
+import engine.TexturedObject;
+import engine.shader.Shader;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class GameLabrynth implements GameState {
+public class GameLabyrinth implements GameState {
 
     private Shader shader;
     private ArrayList<ControllableObject> controls;
@@ -25,7 +26,7 @@ public class GameLabrynth implements GameState {
     private float[] mapX;
     private float[] mapY;
 
-    public GameLabrynth(Dimension dim){
+    public GameLabyrinth(Dimension dim) {
         this.screenWidth = dim.width;
         this.screenHeight = dim.height;
 
@@ -65,7 +66,7 @@ public class GameLabrynth implements GameState {
                 "}\n";
 
         shader = new Shader(gl);
-        shader.compile(vertexShaderSource,fragmentShaderSource,null);
+        shader.compile(vertexShaderSource, fragmentShaderSource, null);
 
         //--------------------------------------------------------
 
@@ -132,37 +133,37 @@ public class GameLabrynth implements GameState {
                 System.out.println("Pos: " + posX + "; " + posY + "\nVelocity: " + velocityX + "; " + velocityY + "\n \n");
             }
 
-        @Override
-        protected void reactToCollision(BoundingBox anotherBox) {
-            if (intersects(anotherBox)) {
-                if (this.velocityX != 0.0f && this.velocityY != 0.0f) {
+            @Override
+            protected void reactToCollision(BoundingBox anotherBox) {
+                if (intersects(anotherBox)) {
+                    if (this.velocityX != 0.0f && this.velocityY != 0.0f) {
 
-                    this.velocityCollX = -1.0f * this.velocityX * 0.2f;
-                    this.velocityX = 0.0f;
-                    this.velocityCollY = -1.0f * this.velocityY * 0.2f;
-                    this.velocityY = 0.0f;
+                        this.velocityCollX = -1.0f * this.velocityX * 0.2f;
+                        this.velocityX = 0.0f;
+                        this.velocityCollY = -1.0f * this.velocityY * 0.2f;
+                        this.velocityY = 0.0f;
 
-                } else if (this.velocityX != 0.0f) {
-                    if (this.velocityX > 0.0f)
-                        this.posX = anotherBox.getPosX() - this.width;
-                    else
-                        this.posX = anotherBox.getWidthX();
+                    } else if (this.velocityX != 0.0f) {
+                        if (this.velocityX > 0.0f)
+                            this.posX = anotherBox.getPosX() - this.width;
+                        else
+                            this.posX = anotherBox.getRight();
 
-                    this.velocityCollX = -1.0f * this.velocityX * 0.2f;
-                    this.velocityX = 0.0f;
+                        this.velocityCollX = -1.0f * this.velocityX * 0.2f;
+                        this.velocityX = 0.0f;
 
-                } else if (this.velocityY != 0.0f) {
-                    if (this.velocityY > 0.0f)
-                        this.posY = anotherBox.getPosY() - this.height;
-                    else
-                        this.posY = anotherBox.getHeightY();
+                    } else if (this.velocityY != 0.0f) {
+                        if (this.velocityY > 0.0f)
+                            this.posY = anotherBox.getPosY() - this.height;
+                        else
+                            this.posY = anotherBox.getBottom();
 
-                    this.velocityCollY = -1.0f * this.velocityY * 0.2f;
-                    this.velocityY = 0.0f;
+                        this.velocityCollY = -1.0f * this.velocityY * 0.2f;
+                        this.velocityY = 0.0f;
+                    }
                 }
-            }
 
-        }
+            }
         };
 
         myObj.initRenderData(new float[]{0.0f, 1f,
@@ -184,7 +185,7 @@ public class GameLabrynth implements GameState {
         int count = mapX.length;
         for (int k = 0; k < count; k++) {
             OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
-                                                        mapY[k] * 25f, new Dimension(25,25));
+                    mapY[k] * 25f, new Dimension(25, 25));
             boundObject.initRenderData(new float[]{0.0f, 1f,
                             1f, 0.0f,
                             0.0f, 0.0f,
@@ -198,9 +199,30 @@ public class GameLabrynth implements GameState {
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f});
             this.objects.add(boundObject);
-        }
 
-        this.renderProjection = Matrices.ortho(0.0f, (float)screenWidth, (float)screenHeight,
+        }
+        
+//        TexturedObject texObj = new TexturedObject(2, 6, gl,
+//                250, 250, new Dimension(100, 100),
+//                this.getClass().getClassLoader().getResource("angryBird.png").getPath());
+//
+//
+//        texObj.initRenderData(new float[]{0.0f, 1f,
+//                        1f, 0.0f,
+//                        0.0f, 0.0f,
+//                        0.0f, 1f,
+//                        1f, 1f,
+//                        1f, 0.0f},
+//                new float[]{0.2f, 0.2f, 0.2f,
+//                        0.2f, 0.2f, 0.2f,
+//                        0.2f, 0.2f, 0.2f,
+//                        0.2f, 0.2f, 0.2f,
+//                        0.2f, 0.2f, 0.2f,
+//                        0.2f, 0.2f, 0.2f});
+//        this.objects.add(texObj);
+
+
+        this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
 
         //System.out.println(gl.glGetError() + " init end");
@@ -209,7 +231,7 @@ public class GameLabrynth implements GameState {
 
     @Override
     public void dispose(GLAutoDrawable glAutoDrawable) {
-        for(OpenGlObject o : this.objects){
+        for (OpenGlObject o : this.objects) {
             o.dispose();
         }
     }
@@ -224,9 +246,9 @@ public class GameLabrynth implements GameState {
 
         shader.setMatrix4f("projection", renderProjection, false);
 
-        for(OpenGlObject o : objects){
-            if(o instanceof ControllableObject)
-                o.draw(50f,50f, 0.0f, shader);
+        for (OpenGlObject o : objects) {
+            if (o instanceof ControllableObject)
+                o.draw(50f, 50f, 0.0f, shader);
             else o.draw(25f, 25f, 0.0f, shader);
         }
 
@@ -239,12 +261,11 @@ public class GameLabrynth implements GameState {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for(ControllableObject c : controls) {
-
+        for (ControllableObject c : controls) {
             c.actionPerformed(e);
 
-            for(OpenGlObject o : objects)
-                if(o != c && c.intersects(o) && !c.isTouching(o))
+            for (OpenGlObject o : objects)
+                if (o != c && c.intersects(o) && !c.isTouching(o))
                     c.collide(o);
 
         }
@@ -252,19 +273,19 @@ public class GameLabrynth implements GameState {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        for(ControllableObject c : controls)
+        for (ControllableObject c : controls)
             c.keyTyped(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        for(ControllableObject c : controls)
+        for (ControllableObject c : controls)
             c.keyPressed(e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        for(ControllableObject c : controls)
+        for (ControllableObject c : controls)
             c.keyReleased(e);
     }
 

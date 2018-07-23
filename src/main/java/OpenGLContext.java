@@ -1,7 +1,7 @@
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
-import states.GameLabrynth;
+import states.GameLabyrinth;
 import states.GameState;
 
 import javax.swing.*;
@@ -66,7 +66,7 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
         glCanvas.setFocusable(true);
         glCanvas.requestFocus();
 
-        OpenGLContext basicListener = new OpenGLContext(new GameLabrynth(glCanvas.getSize()));
+        OpenGLContext basicListener = new OpenGLContext(new GameLabyrinth(glCanvas.getSize()));
         glCanvas.addGLEventListener(basicListener);
         glCanvas.addKeyListener(basicListener);
 
