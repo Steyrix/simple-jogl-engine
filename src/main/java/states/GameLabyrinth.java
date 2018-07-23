@@ -15,7 +15,6 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-//TODO: implement multishadering or adaptive shader
 public class GameLabyrinth implements GameState {
 
     private Shader shader;
@@ -146,34 +145,33 @@ public class GameLabyrinth implements GameState {
             }
         };
 
-        myObj.initRenderData(null,
-                new float[]{0.0f, 1f,
-                        1f, 0.0f,
-                        0.0f, 0.0f,
-                        0.0f, 1f,
+        myObj.initRenderData(this.getClass().getClassLoader().getResource("angryBird.png").getPath(),
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
                         1f, 1f,
-                        1f, 0.0f},
-                new float[]{0.1f, 0.2f, 0.3f,
-                        0.7f, 0.8f, 0.9f,
-                        0.7f, 0.8f, 0.9f,
-                        0.1f, 0.2f, 0.3f,
-                        0.7f, 0.8f, 0.9f,
-                        0.7f, 0.8f, 0.9f});
+                        1f, 0f},
+                new float[]{1f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f});
 
         this.controls.add(myObj);
-        this.coloredObjects.add(myObj);
 
         int count = mapX.length;
         for (int k = 0; k < count; k++) {
             OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
                     mapY[k] * 25f, new Dimension(25, 25));
             boundObject.initRenderData(null,
-                    new float[]{0.0f, 1f,
-                            1f, 0.0f,
-                            0.0f, 0.0f,
-                            0.0f, 1f,
+                    new float[]{0f, 1f,
+                            1f, 0f,
+                            0f, 0f,
+                            0f, 1f,
                             1f, 1f,
-                            1f, 0.0f},
+                            1f, 0f},
                     new float[]{0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f,
@@ -183,29 +181,6 @@ public class GameLabyrinth implements GameState {
             this.coloredObjects.add(boundObject);
 
         }
-
-        OpenGlObject texObj = new OpenGlObject(2, 6, gl,
-                250, 250, new Dimension(100, 100));
-
-
-        texObj.initRenderData(this.getClass().getClassLoader().getResource("angryBird.png").getPath(),
-                new float[]
-                        {0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]
-                        {1f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f});
-
-        this.texturedObjects.add(texObj);
-
 
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
@@ -227,18 +202,27 @@ public class GameLabyrinth implements GameState {
         GL3 gl = glAutoDrawable.getGL().getGL3();
         gl.glClear(GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_COLOR_BUFFER_BIT);
 
+        for (ControllableObject c : controls) {
+            Shader usedShader;
+            if (c.isTextured()) {
+                usedShader = texShader;
+                texShader.setMatrix4f("projection", renderProjection, false);
+            } else {
+                usedShader = shader;
+                shader.setMatrix4f("projection", renderProjection, false);
+            }
+            c.draw(50f, 50f, 0.0f, usedShader);
+        }
+
         shader.setMatrix4f("projection", renderProjection, false);
 
         for (OpenGlObject o : coloredObjects) {
-            if (o instanceof ControllableObject)
-                o.draw(50f, 50f, 0.0f, shader);
-            else
                 o.draw(25f, 25f, 0.0f, shader);
         }
 
         texShader.setMatrix4f("projection", renderProjection, false);
 
-        for(OpenGlObject o : texturedObjects){
+        for (OpenGlObject o : texturedObjects) {
             o.draw(50f, 50f, 0.0f, texShader);
         }
 

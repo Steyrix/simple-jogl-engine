@@ -15,7 +15,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-public class OpenGlObject extends BoundingBox implements Textured{
+public class OpenGlObject extends BoundingBox implements Textured {
 
     protected final GL3 gl;
 
@@ -68,6 +68,10 @@ public class OpenGlObject extends BoundingBox implements Textured{
         this.posY = nY;
     }
 
+    public boolean isTextured() {
+        return this.texture != null;
+    }
+
     @Override
     public void loadTexture(String filePath) {
         try {
@@ -78,7 +82,7 @@ public class OpenGlObject extends BoundingBox implements Textured{
             texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -86,7 +90,7 @@ public class OpenGlObject extends BoundingBox implements Textured{
     public void initRenderData(String textureFilePath, float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
-        if(textureFilePath != null)
+        if (textureFilePath != null)
             loadTexture(textureFilePath);
     }
 
@@ -116,9 +120,11 @@ public class OpenGlObject extends BoundingBox implements Textured{
         //System.out.println(gl.glGetError() + " genVertexArray");
     }
 
-    public void dispose(){
+    public void dispose() {
         gl.glDeleteBuffers(buffersCount, buffers);
         gl.glDeleteVertexArrays(1, this.vertexArray);
+        if (this.texture != null)
+            this.texture.destroy(gl);
     }
 
     public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader) {
