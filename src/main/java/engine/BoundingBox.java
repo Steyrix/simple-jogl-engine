@@ -1,5 +1,7 @@
 package engine;
 
+import com.hackoeur.jglm.Mat4;
+
 import java.awt.*;
 
 public class BoundingBox {
@@ -54,20 +56,20 @@ public class BoundingBox {
         return posY;
     }
 
-    public float getWidthX() {
+    public float getRight() {
         return this.posX + this.width;
     }
 
-    public float getHeightY() {
+    public float getBottom() {
         return this.posY + this.height;
     }
 
     private boolean isTouchingX(BoundingBox anotherBox){
-        return anotherBox.posX == this.getWidthX() || anotherBox.getWidthX() == this.posX;
+        return anotherBox.posX == this.getRight() || anotherBox.getRight() == this.posX;
     }
 
     private boolean isTouchingY(BoundingBox anotherBox){
-        return anotherBox.posY == this.getHeightY() || anotherBox.getHeightY() == this.posY;
+        return anotherBox.posY == this.getBottom() || anotherBox.getBottom() == this.posY;
     }
 
     public boolean isTouching(BoundingBox anotherBox){
@@ -75,13 +77,13 @@ public class BoundingBox {
     }
 
     private boolean intersectX(BoundingBox anotherBox) {
-        return !undefined && ((anotherBox.getWidthX() <= this.getWidthX() && anotherBox.getWidthX() >= this.posX) ||
-                (anotherBox.posX >= this.posX && anotherBox.posX <= this.getWidthX()));
+        return !undefined && ((anotherBox.getRight() <= this.getRight() && anotherBox.getRight() >= this.posX) ||
+                (anotherBox.posX >= this.posX && anotherBox.posX <= this.getRight()));
     }
 
     private boolean intersectY(BoundingBox anotherBox) {
-        return !undefined && ((anotherBox.getHeightY() <= this.getHeightY() && anotherBox.getHeightY() >= this.posY) ||
-                (anotherBox.posY >= this.posY && anotherBox.posY <= this.getHeightY()));
+        return !undefined && ((anotherBox.getBottom() <= this.getBottom() && anotherBox.getBottom() >= this.posY) ||
+                (anotherBox.posY >= this.posY && anotherBox.posY <= this.getBottom()));
     }
 
     public boolean intersects(BoundingBox anotherBox) {

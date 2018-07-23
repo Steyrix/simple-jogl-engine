@@ -201,7 +201,7 @@ public class GameLabyrinth implements GameState {
             this.objects.add(boundObject);
 
         }
-        
+
 //        TexturedObject texObj = new TexturedObject(2, 6, gl,
 //                250, 250, new Dimension(100, 100),
 //                this.getClass().getClassLoader().getResource("angryBird.png").getPath());
