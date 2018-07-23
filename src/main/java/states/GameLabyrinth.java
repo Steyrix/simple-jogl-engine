@@ -9,12 +9,15 @@ import engine.BoundingBox;
 import engine.ControllableObject;
 import engine.OpenGlObject;
 import engine.shader.Shader;
+import engine.texture.TextureLoader;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+//TODO: normal collider
 public class GameLabyrinth implements GameState {
 
     private Shader shader;
@@ -23,6 +26,7 @@ public class GameLabyrinth implements GameState {
     private ArrayList<ControllableObject> controls;
     private ArrayList<OpenGlObject> coloredObjects;
     private ArrayList<OpenGlObject> texturedObjects;
+    private OpenGlObject background;
     private int screenWidth;
     private int screenHeight;
     private Mat4 renderProjection;
@@ -172,15 +176,43 @@ public class GameLabyrinth implements GameState {
                             0f, 1f,
                             1f, 1f,
                             1f, 0f},
-                    new float[]{0.2f, 0.2f, 0.2f,
+                    new float[]{0.0f, 0.0f, 0.0f,
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f});
             this.coloredObjects.add(boundObject);
-
         }
+
+        background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
+            @Override
+            public void loadTexture(String filePath){
+                try {
+                    this.texture = TextureLoader.loadTexture(filePath);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        background.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]{10f, 0f,
+                        0f, 10f,
+                        10f, 10f,
+                        10f, 0f,
+                        0f, 0f,
+                        0f, 10f});
 
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
@@ -200,19 +232,10 @@ public class GameLabyrinth implements GameState {
     public void display(GLAutoDrawable glAutoDrawable) {
 
         GL3 gl = glAutoDrawable.getGL().getGL3();
-        gl.glClear(GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL3.GL_COLOR_BUFFER_BIT);
 
-        for (ControllableObject c : controls) {
-            Shader usedShader;
-            if (c.isTextured()) {
-                usedShader = texShader;
-                texShader.setMatrix4f("projection", renderProjection, false);
-            } else {
-                usedShader = shader;
-                shader.setMatrix4f("projection", renderProjection, false);
-            }
-            c.draw(50f, 50f, 0.0f, usedShader);
-        }
+        texShader.setMatrix4f("projection", renderProjection, false);
+        background.draw(0f, 0f, 1280f, 720f, 0.0f, texShader);
 
         shader.setMatrix4f("projection", renderProjection, false);
 
@@ -224,6 +247,18 @@ public class GameLabyrinth implements GameState {
 
         for (OpenGlObject o : texturedObjects) {
             o.draw(50f, 50f, 0.0f, texShader);
+        }
+
+        for (ControllableObject c : controls) {
+            Shader usedShader;
+            if (c.isTextured()) {
+                usedShader = texShader;
+                texShader.setMatrix4f("projection", renderProjection, false);
+            } else {
+                usedShader = shader;
+                shader.setMatrix4f("projection", renderProjection, false);
+            }
+            c.draw(50f, 50f, 0.0f, usedShader);
         }
 
     }

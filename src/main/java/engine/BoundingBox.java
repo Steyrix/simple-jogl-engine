@@ -76,12 +76,12 @@ public class BoundingBox {
         return isTouchingX(anotherBox) || isTouchingY(anotherBox);
     }
 
-    private boolean intersectX(BoundingBox anotherBox) {
+    public boolean intersectX(BoundingBox anotherBox) {
         return !undefined && ((anotherBox.getRight() <= this.getRight() && anotherBox.getRight() >= this.posX) ||
                 (anotherBox.posX >= this.posX && anotherBox.posX <= this.getRight()));
     }
 
-    private boolean intersectY(BoundingBox anotherBox) {
+    public boolean intersectY(BoundingBox anotherBox) {
         return !undefined && ((anotherBox.getBottom() <= this.getBottom() && anotherBox.getBottom() >= this.posY) ||
                 (anotherBox.posY >= this.posY && anotherBox.posY <= this.getBottom()));
     }

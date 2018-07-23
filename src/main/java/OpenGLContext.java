@@ -62,7 +62,7 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 
         final GLCanvas glCanvas = new GLCanvas(glCapabilities);
-        glCanvas.setSize(500,500);
+        glCanvas.setSize(1280,720);
         glCanvas.setFocusable(true);
         glCanvas.requestFocus();
 
