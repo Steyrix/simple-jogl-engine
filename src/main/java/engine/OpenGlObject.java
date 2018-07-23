@@ -7,13 +7,15 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
 import engine.shader.Shader;
+import engine.texture.TextureLoader;
 
 import java.awt.*;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-public class OpenGlObject extends BoundingBox {
+public class OpenGlObject extends BoundingBox implements Textured{
 
     protected final GL3 gl;
 
@@ -25,6 +27,8 @@ public class OpenGlObject extends BoundingBox {
     protected IntBuffer vertexArray;
 
     protected ArrayList<Integer> paramsCount;
+
+    protected Texture texture;
 
     public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl, Dimension boxDim) {
         super(0.0f, 0.0f, boxDim.width, boxDim.height);
@@ -38,6 +42,7 @@ public class OpenGlObject extends BoundingBox {
 
         this.paramsCount = new ArrayList<>();
 
+        this.texture = null;
     }
 
     public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl, float posX, float posY, Dimension boxDim) {
@@ -54,6 +59,8 @@ public class OpenGlObject extends BoundingBox {
 
         this.posX = posX;
         this.posY = posY;
+
+        this.texture = null;
     }
 
     public void setPosition(float nX, float nY) {
@@ -61,17 +68,26 @@ public class OpenGlObject extends BoundingBox {
         this.posY = nY;
     }
 
-    public float X() {
-        return this.posX;
+    @Override
+    public void loadTexture(String filePath) {
+        try {
+            this.texture = TextureLoader.loadTexture(filePath);
+            texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+            texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+            texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
+            texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public float Y() {
-        return this.posY;
-    }
-
-    public void initRenderData(float[]... dataArrays) {
+    public void initRenderData(String textureFilePath, float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
+        if(textureFilePath != null)
+            loadTexture(textureFilePath);
     }
 
     protected void addBuffers(float[]... dataArrays) {
@@ -124,8 +140,14 @@ public class OpenGlObject extends BoundingBox {
 
         model = model.multiply(scale);
 
+        if (this.texture != null) {
+            gl.glActiveTexture(GL3.GL_TEXTURE0);
+            this.texture.enable(gl);
+            this.texture.bind(gl);
+            gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSample"), 0);
+        }
+
         shader.setMatrix4f("model", model, true);
-        //System.out.println(gl.glGetError() + " draw0");
 
         gl.glBindVertexArray(this.vertexArray.get(0));
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount);
@@ -151,12 +173,17 @@ public class OpenGlObject extends BoundingBox {
 
         model = model.multiply(scale);
 
+        if (this.texture != null) {
+            gl.glActiveTexture(GL3.GL_TEXTURE0);
+            this.texture.enable(gl);
+            this.texture.bind(gl);
+            gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSample"), 0);
+        }
+
         shader.setMatrix4f("model", model, true);
-        //System.out.println(gl.glGetError() + " draw0");
 
         gl.glBindVertexArray(this.vertexArray.get(0));
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount);
-        //System.out.println(gl.glGetError() + " draw1");
     }
 
 }

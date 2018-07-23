@@ -12,14 +12,18 @@ import engine.shader.Shader;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 //TODO: implement multishadering or adaptive shader
 public class GameLabyrinth implements GameState {
 
     private Shader shader;
+    private Shader texShader;
+
     private ArrayList<ControllableObject> controls;
-    private ArrayList<OpenGlObject> objects;
+    private ArrayList<OpenGlObject> coloredObjects;
+    private ArrayList<OpenGlObject> texturedObjects;
     private int screenWidth;
     private int screenHeight;
     private Mat4 renderProjection;
@@ -31,7 +35,8 @@ public class GameLabyrinth implements GameState {
         this.screenHeight = dim.height;
 
         this.controls = new ArrayList<>();
-        this.objects = new ArrayList<>();
+        this.coloredObjects = new ArrayList<>();
+        this.texturedObjects = new ArrayList<>();
 
         this.mapX = new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
@@ -43,32 +48,7 @@ public class GameLabyrinth implements GameState {
     public void init(GLAutoDrawable glAutoDrawable) {
         GL3 gl = glAutoDrawable.getGL().getGL3();
 
-        //-----------------------SHADER TEST------------------------
-        String[] vertexShaderSource = new String[1];
-        vertexShaderSource[0] = "#version 330\n" +
-                "layout(location=0) in vec2 position;\n" +
-                "layout(location=1) in vec3 color;\n" +
-                "out vec4 vColor;\n" +
-                "uniform mat4 model;" +
-                "uniform mat4 projection;" +
-                "void main(void)\n" +
-                "{\n" +
-                "gl_Position = projection * model * vec4(position, 0.0, 1.0);\n" +
-                "vColor = vec4(color, 1.0);\n" +
-                "}\n";
-        String[] fragmentShaderSource = new String[1];
-        fragmentShaderSource[0] = "#version 330\n" +
-                "in vec4 vColor;\n" +
-                "out vec4 fColor;\n" +
-                "void main(void)\n" +
-                "{\n" +
-                "fColor = vColor;\n" +
-                "}\n";
-
-        shader = new Shader(gl);
-        shader.compile(vertexShaderSource, fragmentShaderSource, null);
-
-        //--------------------------------------------------------
+        loadShaders(glAutoDrawable);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
@@ -166,7 +146,8 @@ public class GameLabyrinth implements GameState {
             }
         };
 
-        myObj.initRenderData(new float[]{0.0f, 1f,
+        myObj.initRenderData(null,
+                new float[]{0.0f, 1f,
                         1f, 0.0f,
                         0.0f, 0.0f,
                         0.0f, 1f,
@@ -180,13 +161,14 @@ public class GameLabyrinth implements GameState {
                         0.7f, 0.8f, 0.9f});
 
         this.controls.add(myObj);
-        this.objects.add(myObj);
+        this.coloredObjects.add(myObj);
 
         int count = mapX.length;
         for (int k = 0; k < count; k++) {
             OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
                     mapY[k] * 25f, new Dimension(25, 25));
-            boundObject.initRenderData(new float[]{0.0f, 1f,
+            boundObject.initRenderData(null,
+                    new float[]{0.0f, 1f,
                             1f, 0.0f,
                             0.0f, 0.0f,
                             0.0f, 1f,
@@ -198,28 +180,31 @@ public class GameLabyrinth implements GameState {
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f,
                             0.2f, 0.2f, 0.2f});
-            this.objects.add(boundObject);
+            this.coloredObjects.add(boundObject);
 
         }
 
-//        TexturedObject texObj = new TexturedObject(2, 6, gl,
-//                250, 250, new Dimension(100, 100),
-//                this.getClass().getClassLoader().getResource("angryBird.png").getPath());
-//
-//
-//        texObj.initRenderData(new float[]{0.0f, 1f,
-//                        1f, 0.0f,
-//                        0.0f, 0.0f,
-//                        0.0f, 1f,
-//                        1f, 1f,
-//                        1f, 0.0f},
-//                new float[]{0.2f, 0.2f, 0.2f,
-//                        0.2f, 0.2f, 0.2f,
-//                        0.2f, 0.2f, 0.2f,
-//                        0.2f, 0.2f, 0.2f,
-//                        0.2f, 0.2f, 0.2f,
-//                        0.2f, 0.2f, 0.2f});
-//        this.objects.add(texObj);
+        OpenGlObject texObj = new OpenGlObject(2, 6, gl,
+                250, 250, new Dimension(100, 100));
+
+
+        texObj.initRenderData(this.getClass().getClassLoader().getResource("angryBird.png").getPath(),
+                new float[]
+                        {0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]
+                        {1f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f});
+
+        this.texturedObjects.add(texObj);
 
 
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
@@ -231,7 +216,7 @@ public class GameLabyrinth implements GameState {
 
     @Override
     public void dispose(GLAutoDrawable glAutoDrawable) {
-        for (OpenGlObject o : this.objects) {
+        for (OpenGlObject o : this.coloredObjects) {
             o.dispose();
         }
     }
@@ -242,14 +227,19 @@ public class GameLabyrinth implements GameState {
         GL3 gl = glAutoDrawable.getGL().getGL3();
         gl.glClear(GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_COLOR_BUFFER_BIT);
 
-        //System.out.println(gl.glGetError() + " display0");
-
         shader.setMatrix4f("projection", renderProjection, false);
 
-        for (OpenGlObject o : objects) {
+        for (OpenGlObject o : coloredObjects) {
             if (o instanceof ControllableObject)
                 o.draw(50f, 50f, 0.0f, shader);
-            else o.draw(25f, 25f, 0.0f, shader);
+            else
+                o.draw(25f, 25f, 0.0f, shader);
+        }
+
+        texShader.setMatrix4f("projection", renderProjection, false);
+
+        for(OpenGlObject o : texturedObjects){
+            o.draw(50f, 50f, 0.0f, texShader);
         }
 
     }
@@ -264,7 +254,7 @@ public class GameLabyrinth implements GameState {
         for (ControllableObject c : controls) {
             c.actionPerformed(e);
 
-            for (OpenGlObject o : objects)
+            for (OpenGlObject o : coloredObjects)
                 if (o != c && c.intersects(o) && !c.isTouching(o))
                     c.collide(o);
 
@@ -289,5 +279,32 @@ public class GameLabyrinth implements GameState {
             c.keyReleased(e);
     }
 
+    private void loadShaders(GLAutoDrawable glAutoDrawable) {
+        GL3 gl = glAutoDrawable.getGL().getGL3();
+        //-----------------------SHADER TEST------------------------
+        String[] textVertexSource = new String[1];
+        String[] textFragmSource = new String[1];
+        try {
+            textVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader").getPath());
+            textFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader").getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        texShader = new Shader(gl);
+        texShader.compile(textVertexSource, textFragmSource, null);
+
+        String[] vertexSource = new String[1];
+        String[] fragmSource = new String[1];
+        try {
+            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/coloredVertexShader").getPath());
+            fragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/coloredFragmentShader").getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        shader = new Shader(gl);
+        shader.compile(vertexSource, fragmSource, null);
+
+        //--------------------------------------------------------
+    }
 
 }
