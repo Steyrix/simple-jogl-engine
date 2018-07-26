@@ -22,9 +22,10 @@ public class GameLabyrinth implements GameState {
 
     private Shader shader;
     private Shader texShader;
+    private Shader boundShader;
 
     private ArrayList<ControllableObject> controls;
-    private ArrayList<OpenGlObject> coloredObjects;
+    private ArrayList<OpenGlObject> boundObjects;
     private ArrayList<OpenGlObject> texturedObjects;
     private OpenGlObject background;
     private int screenWidth;
@@ -38,7 +39,7 @@ public class GameLabyrinth implements GameState {
         this.screenHeight = dim.height;
 
         this.controls = new ArrayList<>();
-        this.coloredObjects = new ArrayList<>();
+        this.boundObjects = new ArrayList<>();
         this.texturedObjects = new ArrayList<>();
 
         this.mapX = new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -56,7 +57,7 @@ public class GameLabyrinth implements GameState {
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
-        ControllableObject myObj = new ControllableObject(2, 6, gl, 50, 25, new Dimension(50, 50)) {
+        ControllableObject bird = new ControllableObject(2, 6, gl, 50, 25, new Dimension(50, 50)) {
             @Override
             public void keyPressed(KeyEvent e) {
                 System.out.println("PRESSED");
@@ -159,7 +160,7 @@ public class GameLabyrinth implements GameState {
             }
         };
 
-        myObj.initRenderData(this.getClass().getClassLoader().getResource("angryBird.png").getPath(),
+        bird.initRenderData(this.getClass().getClassLoader().getResource("angryBird.png").getPath(),
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -173,26 +174,26 @@ public class GameLabyrinth implements GameState {
                         0f, 0f,
                         0f, 1f});
 
-        this.controls.add(myObj);
+        this.controls.add(bird);
 
         int count = mapX.length;
         for (int k = 0; k < count; k++) {
             OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
                     mapY[k] * 25f, new Dimension(25, 25));
-            boundObject.initRenderData(null,
+            boundObject.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
                     new float[]{0f, 1f,
                             1f, 0f,
                             0f, 0f,
                             0f, 1f,
                             1f, 1f,
                             1f, 0f},
-                    new float[]{0.0f, 0.0f, 0.0f,
-                            0.2f, 0.2f, 0.2f,
-                            0.2f, 0.2f, 0.2f,
-                            0.2f, 0.2f, 0.2f,
-                            0.2f, 0.2f, 0.2f,
-                            0.2f, 0.2f, 0.2f});
-            this.coloredObjects.add(boundObject);
+                    new float[]{1f, 0f,
+                            0f, 1f,
+                            1f, 1f,
+                            1f, 0f,
+                            0f, 0f,
+                            0f, 1f});
+            this.boundObjects.add(boundObject);
         }
 
         background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
@@ -233,7 +234,7 @@ public class GameLabyrinth implements GameState {
 
     @Override
     public void dispose(GLAutoDrawable glAutoDrawable) {
-        for (OpenGlObject o : this.coloredObjects) {
+        for (OpenGlObject o : this.boundObjects) {
             o.dispose();
         }
     }
@@ -247,10 +248,10 @@ public class GameLabyrinth implements GameState {
         texShader.setMatrix4f("projection", renderProjection, false);
         background.draw(0f, 0f, 1280f, 720f, 0.0f, texShader);
 
-        shader.setMatrix4f("projection", renderProjection, false);
+        boundShader.setMatrix4f("projection", renderProjection, false);
 
-        for (OpenGlObject o : coloredObjects) {
-                o.draw(25f, 25f, 0.0f, shader);
+        for (OpenGlObject o : boundObjects) {
+                o.draw(25f, 25f, 0.0f, boundShader);
         }
 
         texShader.setMatrix4f("projection", renderProjection, false);
@@ -283,7 +284,7 @@ public class GameLabyrinth implements GameState {
         for (ControllableObject c : controls) {
             c.actionPerformed(e);
 
-            for (OpenGlObject o : coloredObjects)
+            for (OpenGlObject o : boundObjects)
                 if (o != c && c.intersects(o) && !c.isTouching(o))
                     c.collide(o);
 
@@ -332,6 +333,17 @@ public class GameLabyrinth implements GameState {
         }
         shader = new Shader(gl);
         shader.compile(vertexSource, fragmSource, null);
+
+        String[] boundVertexSource = new String[1];
+        String[] boundFragmSource = new String[1];
+        try {
+            boundVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundVertexShader").getPath());
+            boundFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundFragmentShader").getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        boundShader = new Shader(gl);
+        boundShader.compile(boundVertexSource, boundFragmSource, null);
 
         //--------------------------------------------------------
     }

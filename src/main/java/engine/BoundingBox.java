@@ -77,17 +77,46 @@ public class BoundingBox {
     }
 
     public boolean intersectX(BoundingBox anotherBox) {
-        return !undefined && ((anotherBox.getRight() <= this.getRight() && anotherBox.getRight() >= this.posX) ||
-                (anotherBox.posX >= this.posX && anotherBox.posX <= this.getRight()));
+        return !undefined && !((this.posX > anotherBox.posX + anotherBox.width - 1) || (this.getRight() - 1 < anotherBox.posX));
     }
 
     public boolean intersectY(BoundingBox anotherBox) {
-        return !undefined && ((anotherBox.getBottom() <= this.getBottom() && anotherBox.getBottom() >= this.posY) ||
-                (anotherBox.posY >= this.posY && anotherBox.posY <= this.getBottom()));
+        return !undefined && !((this.posY > anotherBox.posY + anotherBox.height - 1) || (this.getBottom() - 1 < anotherBox.posY));
     }
 
     public boolean intersects(BoundingBox anotherBox) {
         return intersectX(anotherBox) && intersectY(anotherBox);
     }
 
+    public boolean leftUpperCollision(BoundingBox anotherBox) {
+        BoundingBox thisPointBox = new BoundingBox(this.posX, this.posY, 1, 1);
+        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+            return true;
+
+        return false;
+    }
+
+    public boolean rightUpperCollision(BoundingBox anotherBox) {
+        BoundingBox thisPointBox = new BoundingBox(this.getRight(), this.posY, 1, 1);
+        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+            return true;
+
+        return false;
+    }
+
+    public boolean leftBottomCollision(BoundingBox anotherBox) {
+        BoundingBox thisPointBox = new BoundingBox(this.posX, this.getBottom(), 1, 1);
+        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+            return true;
+
+        return false;
+    }
+
+    public boolean rightBottomCollision(BoundingBox anotherBox) {
+        BoundingBox thisPointBox = new BoundingBox(this.getRight(), this.getBottom(), 1, 1);
+        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+            return true;
+
+        return false;
+    }
 }
