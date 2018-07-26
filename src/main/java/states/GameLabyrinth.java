@@ -5,7 +5,7 @@ import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
-import engine.BoundingBox;
+import engine.collision.BoundingBox;
 import engine.ControllableObject;
 import engine.OpenGlObject;
 import engine.shader.Shader;

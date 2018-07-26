@@ -1,6 +1,7 @@
 package engine;
 
 import com.jogamp.opengl.GL3;
+import engine.collision.BoundingBox;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

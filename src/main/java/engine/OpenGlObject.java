@@ -6,11 +6,11 @@ import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
+import engine.collision.BoundingBox;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
 
 import java.awt.*;
-import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;

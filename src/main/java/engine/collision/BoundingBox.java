@@ -1,6 +1,4 @@
-package engine;
-
-import com.hackoeur.jglm.Mat4;
+package engine.collision;
 
 import java.awt.*;
 
@@ -90,7 +88,7 @@ public class BoundingBox {
 
     public boolean leftUpperCollision(BoundingBox anotherBox) {
         BoundingBox thisPointBox = new BoundingBox(this.posX, this.posY, 1, 1);
-        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
             return true;
 
         return false;
@@ -98,7 +96,7 @@ public class BoundingBox {
 
     public boolean rightUpperCollision(BoundingBox anotherBox) {
         BoundingBox thisPointBox = new BoundingBox(this.getRight(), this.posY, 1, 1);
-        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
             return true;
 
         return false;
@@ -106,7 +104,7 @@ public class BoundingBox {
 
     public boolean leftBottomCollision(BoundingBox anotherBox) {
         BoundingBox thisPointBox = new BoundingBox(this.posX, this.getBottom(), 1, 1);
-        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
             return true;
 
         return false;
@@ -114,9 +112,18 @@ public class BoundingBox {
 
     public boolean rightBottomCollision(BoundingBox anotherBox) {
         BoundingBox thisPointBox = new BoundingBox(this.getRight(), this.getBottom(), 1, 1);
-        if(thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox))
+        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
             return true;
 
         return false;
+    }
+
+    public CornerCollision detectCornerCollision(BoundingBox anotherBox){
+        if(leftUpperCollision(anotherBox)) return CornerCollision.LEFT_UPPER;
+        if(leftBottomCollision(anotherBox)) return CornerCollision.LEFT_BOTTOM;
+        if(rightUpperCollision(anotherBox)) return CornerCollision.RIGHT_UPPER;
+        if(rightBottomCollision(anotherBox)) return CornerCollision.RIGHT_BOTTOM;
+
+        return CornerCollision.NO_COLLISION;
     }
 }
