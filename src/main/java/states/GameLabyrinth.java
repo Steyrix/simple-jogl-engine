@@ -6,8 +6,8 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import engine.collision.BoundingBox;
-import engine.ControllableObject;
-import engine.OpenGlObject;
+import engine.core.ControllableObject;
+import engine.core.OpenGlObject;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
 
@@ -31,8 +31,6 @@ public class GameLabyrinth implements GameState {
     private int screenWidth;
     private int screenHeight;
     private Mat4 renderProjection;
-    private float[] mapX;
-    private float[] mapY;
 
     public GameLabyrinth(Dimension dim) {
         this.screenWidth = dim.width;
@@ -42,17 +40,13 @@ public class GameLabyrinth implements GameState {
         this.boundObjects = new ArrayList<>();
         this.texturedObjects = new ArrayList<>();
 
-        this.mapX = new float[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
-        this.mapY = new float[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 8, 9, 10, 11, 12};
     }
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
         GL3 gl = glAutoDrawable.getGL().getGL3();
 
-        loadShaders(glAutoDrawable);
+        loadShaders(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
@@ -176,54 +170,11 @@ public class GameLabyrinth implements GameState {
 
         this.controls.add(bird);
 
-        int count = mapX.length;
-        for (int k = 0; k < count; k++) {
-            OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapX[k] * 25f,
-                    mapY[k] * 25f, new Dimension(25, 25));
-            boundObject.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
-                    new float[]{0f, 1f,
-                            1f, 0f,
-                            0f, 0f,
-                            0f, 1f,
-                            1f, 1f,
-                            1f, 0f},
-                    new float[]{1f, 0f,
-                            0f, 1f,
-                            1f, 1f,
-                            1f, 0f,
-                            0f, 0f,
-                            0f, 1f});
-            this.boundObjects.add(boundObject);
-        }
-
-        background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
-            @Override
-            public void loadTexture(String filePath){
-                try {
-                    this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        background.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{10f, 0f,
-                        0f, 10f,
-                        10f, 10f,
-                        10f, 0f,
-                        0f, 0f,
-                        0f, 10f});
+        initLevelGeography( new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+                        10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 12, 13, 14},
+                            new float[]{4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                                    1, 2, 3, 4, 8, 9, 10, 11, 12, 12, 12, 12, 12},
+                            gl);
 
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
@@ -236,6 +187,15 @@ public class GameLabyrinth implements GameState {
     public void dispose(GLAutoDrawable glAutoDrawable) {
         for (OpenGlObject o : this.boundObjects) {
             o.dispose();
+        }
+
+        for (OpenGlObject t : this.texturedObjects) {
+            t.dispose();
+        }
+
+        for(ControllableObject c : this.controls)
+        {
+            c.dispose();
         }
     }
 
@@ -251,7 +211,7 @@ public class GameLabyrinth implements GameState {
         boundShader.setMatrix4f("projection", renderProjection, false);
 
         for (OpenGlObject o : boundObjects) {
-                o.draw(25f, 25f, 0.0f, boundShader);
+                o.draw(o.getSize().width, o.getSize().height, 0.0f, boundShader);
         }
 
         texShader.setMatrix4f("projection", renderProjection, false);
@@ -309,8 +269,7 @@ public class GameLabyrinth implements GameState {
             c.keyReleased(e);
     }
 
-    private void loadShaders(GLAutoDrawable glAutoDrawable) {
-        GL3 gl = glAutoDrawable.getGL().getGL3();
+    private void loadShaders(GL3 gl) {
         //-----------------------SHADER TEST------------------------
         String[] textVertexSource = new String[1];
         String[] textFragmSource = new String[1];
@@ -346,6 +305,175 @@ public class GameLabyrinth implements GameState {
         boundShader.compile(boundVertexSource, boundFragmSource, null);
 
         //--------------------------------------------------------
+    }
+
+    private void initLevelGeography(float[] mapHorizontal, float[] mapVertical, GL3 gl) {
+
+        int count = mapHorizontal.length;
+        for (int k = 0; k < count; k++) {
+            OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapHorizontal[k] * 25f,
+                    mapVertical[k] * 25f, new Dimension(25, 25));
+            boundObject.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+                    new float[]{0f, 1f,
+                            1f, 0f,
+                            0f, 0f,
+                            0f, 1f,
+                            1f, 1f,
+                            1f, 0f},
+                    new float[]{1f, 0f,
+                            0f, 1f,
+                            1f, 1f,
+                            1f, 0f,
+                            0f, 0f,
+                            0f, 1f});
+            this.boundObjects.add(boundObject);
+        }
+        //-----------PERIMETER TEST---------------
+        OpenGlObject topHorizontalBound = new OpenGlObject(2, 6, gl, 0, 0, new Dimension(1280, 25)){
+            @Override
+            public void loadTexture(String filePath){
+                try {
+                    this.texture = TextureLoader.loadTexture(filePath);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        topHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]{10f, 0f,
+                        0f, 10f,
+                        10f, 10f,
+                        10f, 0f,
+                        0f, 0f,
+                        0f, 10f});
+        this.boundObjects.add(topHorizontalBound);
+
+        OpenGlObject bottomHorizontalBound = new OpenGlObject(2, 6, gl, 0, 695, new Dimension(1280, 25)){
+            @Override
+            public void loadTexture(String filePath){
+                try {
+                    this.texture = TextureLoader.loadTexture(filePath);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        bottomHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]{10f, 0f,
+                        0f, 10f,
+                        10f, 10f,
+                        10f, 0f,
+                        0f, 0f,
+                        0f, 10f});
+        this.boundObjects.add(bottomHorizontalBound);
+
+        OpenGlObject leftVerticalBound = new OpenGlObject(2, 6, gl, 0, 25, new Dimension(25, 670)){
+            @Override
+            public void loadTexture(String filePath){
+                try {
+                    this.texture = TextureLoader.loadTexture(filePath);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        leftVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]{10f, 0f,
+                        0f, 10f,
+                        10f, 10f,
+                        10f, 0f,
+                        0f, 0f,
+                        0f, 10f});
+        this.boundObjects.add(leftVerticalBound);
+
+        OpenGlObject rightVerticalBound = new OpenGlObject(2, 6, gl, 1255, 25, new Dimension(25, 670)){
+            @Override
+            public void loadTexture(String filePath){
+                try {
+                    this.texture = TextureLoader.loadTexture(filePath);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        rightVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]{10f, 0f,
+                        0f, 10f,
+                        10f, 10f,
+                        10f, 0f,
+                        0f, 0f,
+                        0f, 10f});
+        this.boundObjects.add(rightVerticalBound);
+        //
+
+        background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
+            @Override
+            public void loadTexture(String filePath){
+                try {
+                    this.texture = TextureLoader.loadTexture(filePath);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        background.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]{10f, 0f,
+                        0f, 10f,
+                        10f, 10f,
+                        10f, 0f,
+                        0f, 0f,
+                        0f, 10f});
     }
 
 }

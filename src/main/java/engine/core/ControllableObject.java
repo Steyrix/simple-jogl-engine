@@ -1,4 +1,4 @@
-package engine;
+package engine.core;
 
 import com.jogamp.opengl.GL3;
 import engine.collision.BoundingBox;

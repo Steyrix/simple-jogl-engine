@@ -5,7 +5,7 @@ public enum CornerCollision {
     LEFT_BOTTOM(1),
     RIGHT_UPPER(2),
     RIGHT_BOTTOM(3),
-    NO_COLLISION(-1);
+    NO_COLLISION(-10);
 
     private final int id;
 

@@ -62,6 +62,10 @@ public class BoundingBox {
         return this.posY + this.height;
     }
 
+    public Dimension getSize() {
+        return new Dimension((int) this.width, (int) this.height);
+    }
+
     private boolean isTouchingX(BoundingBox anotherBox){
         return anotherBox.posX == this.getRight() || anotherBox.getRight() == this.posX;
     }

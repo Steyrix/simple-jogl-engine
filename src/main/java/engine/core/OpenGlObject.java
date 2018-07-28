@@ -1,4 +1,4 @@
-package engine;
+package engine.core;
 
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
@@ -9,6 +9,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import engine.collision.BoundingBox;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
+import engine.texture.Textured;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
@@ -189,5 +190,4 @@ public class OpenGlObject extends BoundingBox implements Textured {
         gl.glBindVertexArray(this.vertexArray.get(0));
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount);
     }
-
 }
