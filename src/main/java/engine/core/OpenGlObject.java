@@ -6,6 +6,7 @@ import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureData;
 import engine.collision.BoundingBox;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
@@ -64,11 +65,6 @@ public class OpenGlObject extends BoundingBox implements Textured {
         this.texture = null;
     }
 
-    public void setPosition(float nX, float nY) {
-        this.posX = nX;
-        this.posY = nY;
-    }
-
     public boolean isTextured() {
         return this.texture != null;
     }
@@ -77,6 +73,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
     public void loadTexture(String filePath) {
         try {
             this.texture = TextureLoader.loadTexture(filePath);
+
             texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
             texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
             texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);

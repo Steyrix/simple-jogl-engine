@@ -154,7 +154,7 @@ public class GameLabyrinth implements GameState {
             }
         };
 
-        bird.initRenderData(this.getClass().getClassLoader().getResource("angryBird.png").getPath(),
+        bird.initRenderData(this.getClass().getClassLoader().getResource("textures/angryBird.png").getPath(),
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -313,7 +313,7 @@ public class GameLabyrinth implements GameState {
         for (int k = 0; k < count; k++) {
             OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapHorizontal[k] * 25f,
                     mapVertical[k] * 25f, new Dimension(25, 25));
-            boundObject.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+            boundObject.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
                     new float[]{0f, 1f,
                             1f, 0f,
                             0f, 0f,
@@ -343,7 +343,7 @@ public class GameLabyrinth implements GameState {
                 }
             }
         };
-        topHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+        topHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -372,7 +372,7 @@ public class GameLabyrinth implements GameState {
                 }
             }
         };
-        bottomHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+        bottomHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -401,7 +401,7 @@ public class GameLabyrinth implements GameState {
                 }
             }
         };
-        leftVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+        leftVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -430,7 +430,7 @@ public class GameLabyrinth implements GameState {
                 }
             }
         };
-        rightVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+        rightVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -461,7 +461,7 @@ public class GameLabyrinth implements GameState {
             }
         };
 
-        background.initRenderData(this.getClass().getClassLoader().getResource("abbey_base.jpg").getPath(),
+        background.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,

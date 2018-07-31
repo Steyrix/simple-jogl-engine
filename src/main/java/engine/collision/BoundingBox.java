@@ -46,6 +46,11 @@ public class BoundingBox {
         this.undefined = true;
     }
 
+    public void setPosition(float nX, float nY) {
+        this.posX = nX;
+        this.posY = nY;
+    }
+
     public float getPosX() {
         return posX;
     }
