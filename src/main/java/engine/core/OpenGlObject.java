@@ -4,11 +4,8 @@ import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
 import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL4;
-import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureData;
 import engine.collision.BoundingBox;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
@@ -17,13 +14,10 @@ import engine.texture.Textured;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.io.File;
-import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class OpenGlObject extends BoundingBox implements Textured {
 
@@ -100,14 +94,14 @@ public class OpenGlObject extends BoundingBox implements Textured {
         try {
             ArrayList<BufferedImage> images = new ArrayList<>();
             int width, height = 0;
-            for(String path : filePaths)
+            for (String path : filePaths)
                 images.add(ImageIO.read(new File(path)));
             width = images.get(0).getWidth();
             height = images.get(0).getHeight();
 
             this.textureArray = TextureLoader.loadTextureArray(images, gl, width, height, false);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -119,7 +113,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
             System.out.println("Loading only single texture");
             loadTexture(textureFilePaths[0]);
         }
-        if ((textureFilePaths != null && textureFilePaths.length > 1) || texArray){
+        if ((textureFilePaths != null && textureFilePaths.length > 1) || texArray) {
             System.out.println("Loading texture array");
             loadTextureArray(textureFilePaths);
         }
@@ -185,7 +179,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
             gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSample"), 0);
         }
 
-        if (this.textureArray != null){
+        if (this.textureArray != null) {
             gl.glActiveTexture(GL4.GL_TEXTURE0);
 
             gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, this.textureArray.get(0));
@@ -229,7 +223,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
             gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSample"), 0);
         }
 
-        if (this.textureArray != null){
+        if (this.textureArray != null) {
             gl.glActiveTexture(GL4.GL_TEXTURE0);
 
             gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray.get(0));

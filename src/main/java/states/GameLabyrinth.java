@@ -3,11 +3,11 @@ package states;
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
+import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
-import engine.core.AnimatedObject;
+import engine.animation.AnimatedObject;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
@@ -35,7 +35,7 @@ public class GameLabyrinth implements GameState {
 
     //TEST
     private OpenGlObject texArrayObj;
-    private AnimatedObject animObj;
+    private ControllableObject animObj;
 
     private OpenGlObject background;
     private int screenWidth;
@@ -61,126 +61,8 @@ public class GameLabyrinth implements GameState {
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
-        ControllableObject bird = new ControllableObject(2, 6, gl, 50, 25, new Dimension(50, 50)) {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                System.out.println("PRESSED");
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_D:
-                        this.velocityX += 10.0f;
-                        break;
-                    case KeyEvent.VK_A:
-                        this.velocityX -= 10.0f;
-                        break;
-                    case KeyEvent.VK_W:
-                        this.velocityY -= 10.0f;
-                        break;
-                    case KeyEvent.VK_S:
-                        this.velocityY += 10.0f;
-                        break;
-                }
-            }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                this.posX += this.velocityX + this.velocityCollX;
-                if (velocityX >= 0.0f && velocityX - 1.0f >= 0.0f)
-                    velocityX -= 1.0f;
-                else if (velocityX < 0.0f && velocityX + 1.0f <= 0.0f)
-                    velocityX += 1.0f;
-                else if (velocityX >= 0.0f && velocityX - 1.0f < 0.0f ||
-                        velocityX < 0.0f && velocityX + 1.0f > 0.0f)
-                    velocityX = 0.0f;
-
-                if (velocityCollX >= 0.0f && velocityCollX - 0.1f >= 0.0f)
-                    velocityCollX -= 0.1f;
-                else if (velocityCollX <= 0.0f && velocityCollX + 0.1f <= 0.0f)
-                    velocityCollX += 0.1f;
-                else if (velocityCollX >= 0.0f && velocityCollX - 0.1f < 0.0f ||
-                        velocityCollX < 0.0f && velocityCollX + 0.1f > 0.0f)
-                    velocityCollX = 0.0f;
-
-                this.posY += this.velocityY + this.velocityCollY;
-                if (velocityY >= 0.0f && velocityY - 1.0f >= 0.0f)
-                    velocityY -= 1.0f;
-                else if (velocityY <= 0.0f && velocityY + 1.0f <= 0.0f)
-                    velocityY += 1.0f;
-                else if (velocityY >= 0.0f && velocityY - 1.0f < 0.0f ||
-                        velocityY < 0.0f && velocityY + 1.0f > 0.0f)
-                    velocityY = 0.0f;
-
-                if (velocityCollY >= 0.0f && velocityCollY - 0.1f >= 0.0f)
-                    velocityCollY -= 0.1f;
-                else if (velocityCollY <= 0.0f && velocityCollY + 0.1f <= 0.0f)
-                    velocityCollY += 0.1f;
-                else if (velocityCollY >= 0.0f && velocityCollY - 0.1f < 0.0f ||
-                        velocityCollY < 0.0f && velocityCollY + 0.1f > 0.0f)
-                    velocityCollY = 0.0f;
-
-
-                //System.out.println("Pos: " + posX + "; " + posY + "\nVelocity: " + velocityX + "; " + velocityY + "\n \n");
-            }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            protected void reactToCollision(BoundingBox anotherBox) {
-                if (intersects(anotherBox)) {
-                    if (this.velocityX != 0.0f && this.velocityY != 0.0f) {
-
-                        this.velocityCollX = -1.0f * this.velocityX * 0.2f;
-                        this.velocityX = 0.0f;
-                        this.velocityCollY = -1.0f * this.velocityY * 0.2f;
-                        this.velocityY = 0.0f;
-
-                    } else if (this.velocityX != 0.0f) {
-                        if (this.velocityX > 0.0f)
-                            this.posX = anotherBox.getPosX() - this.width;
-                        else
-                            this.posX = anotherBox.getRight();
-
-                        this.velocityCollX = -1.0f * this.velocityX * 0.2f;
-                        this.velocityX = 0.0f;
-
-                    } else if (this.velocityY != 0.0f) {
-                        if (this.velocityY > 0.0f)
-                            this.posY = anotherBox.getPosY() - this.height;
-                        else
-                            this.posY = anotherBox.getBottom();
-
-                        this.velocityCollY = -1.0f * this.velocityY * 0.2f;
-                        this.velocityY = 0.0f;
-                    }
-                }
-
-            }
-        };
-
-        bird.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/angryBird.png").getPath()}, false,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{1f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f});
-
-        this.controls.add(bird);
-
-        texArrayObj = new OpenGlObject(2,6,gl, 500,300, new Dimension(100,100));
+        texArrayObj = new OpenGlObject(2, 6, gl, 500, 300, new Dimension(100, 100));
         texArrayObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
                 new float[]{0f, 1f,
                         1f, 0f,
@@ -195,9 +77,117 @@ public class GameLabyrinth implements GameState {
                         0.0625f, 0.2f,
                         0.0625f, 0f});
 
-        animObj = new AnimatedObject(2,6,gl, 500,500,
-                new Dimension(100,100),
-                10, 1, 0.1f, 0.1f);
+
+        try {
+            animObj = new ControllableObject(2, 6, gl, 500, 500,
+                    new Dimension(100, 150),
+                    0.1f, 0.1f,
+                    new BasicAnimation("WALK", 1, 0, 8, 1)) {
+                @Override
+                protected void reactToCollision(BoundingBox anotherBox) {
+                    if (intersects(anotherBox)) {
+                        if (this.velocityX != 0.0f && this.velocityY != 0.0f) {
+
+                            this.velocityCollX = -1.0f * this.velocityX * 0.2f;
+                            this.velocityX = 0.0f;
+                            this.velocityCollY = -1.0f * this.velocityY * 0.2f;
+                            this.velocityY = 0.0f;
+
+                        } else if (this.velocityX != 0.0f) {
+                            if (this.velocityX > 0.0f)
+                                this.posX = anotherBox.getPosX() - this.width;
+                            else
+                                this.posX = anotherBox.getRight();
+
+                            this.velocityCollX = -1.0f * this.velocityX * 0.2f;
+                            this.velocityX = 0.0f;
+
+                        } else if (this.velocityY != 0.0f) {
+                            if (this.velocityY > 0.0f)
+                                this.posY = anotherBox.getPosY() - this.height;
+                            else
+                                this.posY = anotherBox.getBottom();
+
+                            this.velocityCollY = -1.0f * this.velocityY * 0.2f;
+                            this.velocityY = 0.0f;
+                        }
+                    }
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    this.posX += this.velocityX + this.velocityCollX;
+                    if (velocityX >= 0.0f && velocityX - 1.0f >= 0.0f)
+                        velocityX -= 1.0f;
+                    else if (velocityX < 0.0f && velocityX + 1.0f <= 0.0f)
+                        velocityX += 1.0f;
+                    else if (velocityX >= 0.0f && velocityX - 1.0f < 0.0f ||
+                            velocityX < 0.0f && velocityX + 1.0f > 0.0f)
+                        velocityX = 0.0f;
+
+                    if (velocityCollX >= 0.0f && velocityCollX - 0.1f >= 0.0f)
+                        velocityCollX -= 0.1f;
+                    else if (velocityCollX <= 0.0f && velocityCollX + 0.1f <= 0.0f)
+                        velocityCollX += 0.1f;
+                    else if (velocityCollX >= 0.0f && velocityCollX - 0.1f < 0.0f ||
+                            velocityCollX < 0.0f && velocityCollX + 0.1f > 0.0f)
+                        velocityCollX = 0.0f;
+
+                    this.posY += this.velocityY + this.velocityCollY;
+                    if (velocityY >= 0.0f && velocityY - 1.0f >= 0.0f)
+                        velocityY -= 1.0f;
+                    else if (velocityY <= 0.0f && velocityY + 1.0f <= 0.0f)
+                        velocityY += 1.0f;
+                    else if (velocityY >= 0.0f && velocityY - 1.0f < 0.0f ||
+                            velocityY < 0.0f && velocityY + 1.0f > 0.0f)
+                        velocityY = 0.0f;
+
+                    if (velocityCollY >= 0.0f && velocityCollY - 0.1f >= 0.0f)
+                        velocityCollY -= 0.1f;
+                    else if (velocityCollY <= 0.0f && velocityCollY + 0.1f <= 0.0f)
+                        velocityCollY += 0.1f;
+                    else if (velocityCollY >= 0.0f && velocityCollY - 0.1f < 0.0f ||
+                            velocityCollY < 0.0f && velocityCollY + 0.1f > 0.0f)
+                        velocityCollY = 0.0f;
+
+                    if (velocityX == 0 && velocityY == 0 && velocityCollX == 0 && velocityCollY == 0)
+                        this.currentAnim.setCurrentFrameX(1);
+
+                    else
+                        playAnimation();
+                }
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    switch (e.getKeyCode()) {
+                        case KeyEvent.VK_D:
+                            this.velocityX += 10.0f;
+                            break;
+                        case KeyEvent.VK_A:
+                            this.velocityX -= 10.0f;
+                            break;
+                        case KeyEvent.VK_W:
+                            this.velocityY -= 10.0f;
+                            break;
+                        case KeyEvent.VK_S:
+                            this.velocityY += 10.0f;
+                            break;
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+
+                }
+            };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/base_dark.png").getPath()}, true,
                 new float[]{0f, 1f,
                         1f, 0f,
@@ -211,13 +201,13 @@ public class GameLabyrinth implements GameState {
                         0f, 0.1f,
                         0.1f, 0.1f,
                         0.1f, 0f});
+        this.controls.add(animObj);
 
-
-        initLevelGeography( new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+        initLevelGeography(new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
                         10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 12, 13, 14},
-                            new float[]{4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                                    1, 2, 3, 4, 8, 9, 10, 11, 12, 12, 12, 12, 12},
-                            gl);
+                new float[]{4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                        1, 2, 3, 4, 8, 9, 10, 11, 12, 12, 12, 12, 12},
+                gl);
 
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
@@ -236,8 +226,7 @@ public class GameLabyrinth implements GameState {
             t.dispose();
         }
 
-        for(ControllableObject c : this.controls)
-        {
+        for (ControllableObject c : this.controls) {
             c.dispose();
         }
 
@@ -256,25 +245,13 @@ public class GameLabyrinth implements GameState {
         boundShader.setMatrix4f("projection", renderProjection, false);
 
         for (OpenGlObject o : boundObjects) {
-                o.draw(o.getSize().width, o.getSize().height, 0.0f, boundShader);
+            o.draw(o.getSize().width, o.getSize().height, 0.0f, boundShader);
         }
 
         texShader.setMatrix4f("projection", renderProjection, false);
 
         for (OpenGlObject o : texturedObjects) {
             o.draw(50f, 50f, 0.0f, texShader);
-        }
-
-        for (ControllableObject c : controls) {
-            Shader usedShader;
-            if (c.isTextured()) {
-                usedShader = texShader;
-                texShader.setMatrix4f("projection", renderProjection, false);
-            } else {
-                usedShader = shader;
-                shader.setMatrix4f("projection", renderProjection, false);
-            }
-            c.draw(50f, 50f, 0.0f, usedShader);
         }
 
         texArrayShader.setMatrix4f("projection", renderProjection, false);
@@ -300,8 +277,6 @@ public class GameLabyrinth implements GameState {
 
         }
 
-        if(animObj != null)
-            animObj.changeFrame();
     }
 
     @Override
@@ -404,9 +379,9 @@ public class GameLabyrinth implements GameState {
             this.boundObjects.add(boundObject);
         }
         //-----------PERIMETER TEST---------------
-        OpenGlObject topHorizontalBound = new OpenGlObject(2, 6, gl, 0, 0, new Dimension(1280, 25)){
+        OpenGlObject topHorizontalBound = new OpenGlObject(2, 6, gl, 0, 0, new Dimension(1280, 25)) {
             @Override
-            public void loadTexture(String filePath){
+            public void loadTexture(String filePath) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
                     texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
@@ -433,9 +408,9 @@ public class GameLabyrinth implements GameState {
                         0f, 10f});
         this.boundObjects.add(topHorizontalBound);
 
-        OpenGlObject bottomHorizontalBound = new OpenGlObject(2, 6, gl, 0, 695, new Dimension(1280, 25)){
+        OpenGlObject bottomHorizontalBound = new OpenGlObject(2, 6, gl, 0, 695, new Dimension(1280, 25)) {
             @Override
-            public void loadTexture(String filePath){
+            public void loadTexture(String filePath) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
                     texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
@@ -462,9 +437,9 @@ public class GameLabyrinth implements GameState {
                         0f, 10f});
         this.boundObjects.add(bottomHorizontalBound);
 
-        OpenGlObject leftVerticalBound = new OpenGlObject(2, 6, gl, 0, 25, new Dimension(25, 670)){
+        OpenGlObject leftVerticalBound = new OpenGlObject(2, 6, gl, 0, 25, new Dimension(25, 670)) {
             @Override
-            public void loadTexture(String filePath){
+            public void loadTexture(String filePath) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
                     texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
@@ -491,9 +466,9 @@ public class GameLabyrinth implements GameState {
                         0f, 10f});
         this.boundObjects.add(leftVerticalBound);
 
-        OpenGlObject rightVerticalBound = new OpenGlObject(2, 6, gl, 1255, 25, new Dimension(25, 670)){
+        OpenGlObject rightVerticalBound = new OpenGlObject(2, 6, gl, 1255, 25, new Dimension(25, 670)) {
             @Override
-            public void loadTexture(String filePath){
+            public void loadTexture(String filePath) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
                     texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
@@ -523,7 +498,7 @@ public class GameLabyrinth implements GameState {
 
         background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
             @Override
-            public void loadTexture(String filePath){
+            public void loadTexture(String filePath) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
                     texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
@@ -553,7 +528,7 @@ public class GameLabyrinth implements GameState {
 
 
     //TODO: implement reading level geography from files
-    public void loadLevel(String levelConfigFilePath){
+    public void loadLevel(String levelConfigFilePath) {
         Scanner configReader = new Scanner(System.in);
 
     }
