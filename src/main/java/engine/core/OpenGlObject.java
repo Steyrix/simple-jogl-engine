@@ -17,11 +17,13 @@ import engine.texture.Textured;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.io.File;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class OpenGlObject extends BoundingBox implements Textured {
 
@@ -103,9 +105,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
             width = images.get(0).getWidth();
             height = images.get(0).getHeight();
 
-            ArrayList<TextureData> td = TextureLoader.imagesToTextures(images, GLProfile.get(GLProfile.GL3));
-
-            this.textureArray = TextureLoader.loadTextureArray(td, gl, width, height, false);
+            this.textureArray = TextureLoader.loadTextureArray(images, gl, width, height, false);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -188,10 +188,9 @@ public class OpenGlObject extends BoundingBox implements Textured {
         }
 
         if (this.textureArray != null){
-            gl.glActiveTexture(GL4.GL_TEXTURE0 + 7);
-            gl.glBindTexture(GL4.GL_TEXTURE_2D, this.textureArray.get(0));
+            gl.glActiveTexture(GL4.GL_TEXTURE0);
+            gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, this.textureArray.get(0));
             gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureArray"), 0);
-            System.out.println("draw tex array: " + gl.glGetError());
         }
 
         shader.setMatrix4f("model", model, true);
@@ -229,17 +228,10 @@ public class OpenGlObject extends BoundingBox implements Textured {
 
         if (this.textureArray != null){
             gl.glActiveTexture(GL4.GL_TEXTURE0);
-            System.out.println("draw tex array 0: " + gl.glGetError());
 
-            gl.glEnable(GL.GL_TEXTURE_2D);
-            System.out.println("draw tex array 1: " + gl.glGetError());
-
-            gl.glBindTexture(GL4.GL_TEXTURE_2D, this.textureArray.get(0));
-            System.out.println("draw tex array 2: " + gl.glGetError());
-
+            gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray.get(0));
 
             gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureArray"), 0);
-            System.out.println("draw tex array 3: " + gl.glGetError());
         }
 
         shader.setMatrix4f("model", model, true);

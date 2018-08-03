@@ -185,12 +185,12 @@ public class GameLabyrinth implements GameState {
                         0f, 1f,
                         1f, 1f,
                         1f, 0f},
-                new float[]{1f, 0f,
-                        0f, 1f,
-                        1f, 1f,
+                new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
-                        0f, 1f});
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f});
 
 
         initLevelGeography( new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
@@ -258,7 +258,7 @@ public class GameLabyrinth implements GameState {
         }
 
         texArrayShader.setMatrix4f("projection", renderProjection, false);
-        texArrayObj.draw(150f, 150f, 0.0f, texArrayShader);
+        texArrayObj.draw(300f, 300f, 0.0f, texArrayShader);
 
     }
 
