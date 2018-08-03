@@ -4,6 +4,7 @@ import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import engine.collision.BoundingBox;
 import engine.core.ControllableObject;
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 //TODO: normal collider
@@ -23,10 +25,15 @@ public class GameLabyrinth implements GameState {
     private Shader shader;
     private Shader texShader;
     private Shader boundShader;
+    private Shader texArrayShader;
 
     private ArrayList<ControllableObject> controls;
     private ArrayList<OpenGlObject> boundObjects;
     private ArrayList<OpenGlObject> texturedObjects;
+
+    //TEST
+    private OpenGlObject texArrayObj;
+
     private OpenGlObject background;
     private int screenWidth;
     private int screenHeight;
@@ -44,7 +51,7 @@ public class GameLabyrinth implements GameState {
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
-        GL3 gl = glAutoDrawable.getGL().getGL3();
+        GL4 gl = glAutoDrawable.getGL().getGL4();
 
         loadShaders(gl);
 
@@ -113,7 +120,7 @@ public class GameLabyrinth implements GameState {
                     velocityCollY = 0.0f;
 
 
-                System.out.println("Pos: " + posX + "; " + posY + "\nVelocity: " + velocityX + "; " + velocityY + "\n \n");
+                //System.out.println("Pos: " + posX + "; " + posY + "\nVelocity: " + velocityX + "; " + velocityY + "\n \n");
             }
 
             @Override
@@ -154,7 +161,7 @@ public class GameLabyrinth implements GameState {
             }
         };
 
-        bird.initRenderData(this.getClass().getClassLoader().getResource("textures/angryBird.png").getPath(),
+        bird.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/angryBird.png").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -169,6 +176,22 @@ public class GameLabyrinth implements GameState {
                         0f, 1f});
 
         this.controls.add(bird);
+
+        texArrayObj = new OpenGlObject(2,6,gl, 500,300, new Dimension(100,100));
+        texArrayObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
+                new float[]{0f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f},
+                new float[]{1f, 0f,
+                        0f, 1f,
+                        1f, 1f,
+                        1f, 0f,
+                        0f, 0f,
+                        0f, 1f});
+
 
         initLevelGeography( new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
                         10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 12, 13, 14},
@@ -197,13 +220,15 @@ public class GameLabyrinth implements GameState {
         {
             c.dispose();
         }
+
+        texArrayObj.dispose();
     }
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
 
-        GL3 gl = glAutoDrawable.getGL().getGL3();
-        gl.glClear(GL3.GL_COLOR_BUFFER_BIT);
+        GL4 gl = glAutoDrawable.getGL().getGL4();
+        gl.glClear(GL4.GL_COLOR_BUFFER_BIT);
 
         texShader.setMatrix4f("projection", renderProjection, false);
         background.draw(0f, 0f, 1280f, 720f, 0.0f, texShader);
@@ -231,6 +256,9 @@ public class GameLabyrinth implements GameState {
             }
             c.draw(50f, 50f, 0.0f, usedShader);
         }
+
+        texArrayShader.setMatrix4f("projection", renderProjection, false);
+        texArrayObj.draw(150f, 150f, 0.0f, texArrayShader);
 
     }
 
@@ -269,7 +297,7 @@ public class GameLabyrinth implements GameState {
             c.keyReleased(e);
     }
 
-    private void loadShaders(GL3 gl) {
+    private void loadShaders(GL4 gl) {
         //-----------------------SHADER TEST------------------------
         String[] textVertexSource = new String[1];
         String[] textFragmSource = new String[1];
@@ -304,16 +332,27 @@ public class GameLabyrinth implements GameState {
         boundShader = new Shader(gl);
         boundShader.compile(boundVertexSource, boundFragmSource, null);
 
+        String[] arrayVertexSource = new String[1];
+        String[] arrayFragmSource = new String[1];
+        try {
+            arrayVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayVertexShader").getPath());
+            arrayFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayFragmentShader").getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        texArrayShader = new Shader(gl);
+        texArrayShader.compile(arrayVertexSource, arrayFragmSource, null);
+
         //--------------------------------------------------------
     }
 
-    private void initLevelGeography(float[] mapHorizontal, float[] mapVertical, GL3 gl) {
+    private void initLevelGeography(float[] mapHorizontal, float[] mapVertical, GL4 gl) {
 
         int count = mapHorizontal.length;
         for (int k = 0; k < count; k++) {
             OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapHorizontal[k] * 25f,
                     mapVertical[k] * 25f, new Dimension(25, 25));
-            boundObject.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
+            boundObject.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
                     new float[]{0f, 1f,
                             1f, 0f,
                             0f, 0f,
@@ -334,16 +373,16 @@ public class GameLabyrinth implements GameState {
             public void loadTexture(String filePath){
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
-        topHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
+        topHorizontalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -363,16 +402,16 @@ public class GameLabyrinth implements GameState {
             public void loadTexture(String filePath){
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
-        bottomHorizontalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
+        bottomHorizontalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -392,16 +431,16 @@ public class GameLabyrinth implements GameState {
             public void loadTexture(String filePath){
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
-        leftVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
+        leftVerticalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -421,16 +460,16 @@ public class GameLabyrinth implements GameState {
             public void loadTexture(String filePath){
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
-        rightVerticalBound.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
+        rightVerticalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -451,17 +490,17 @@ public class GameLabyrinth implements GameState {
             public void loadTexture(String filePath){
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
+                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
 
-        background.initRenderData(this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath(),
+        background.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -474,6 +513,13 @@ public class GameLabyrinth implements GameState {
                         10f, 0f,
                         0f, 0f,
                         0f, 10f});
+    }
+
+
+    //TODO: implement reading level geography from files
+    public void loadLevel(String levelConfigFilePath){
+        Scanner configReader = new Scanner(System.in);
+
     }
 
 }

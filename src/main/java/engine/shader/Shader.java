@@ -4,6 +4,7 @@ import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Vec3;
 import com.hackoeur.jglm.Vec4;
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL4;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,9 +15,9 @@ import java.nio.file.Paths;
 
 public class Shader {
     private int id;
-    private final GL3 gl;
+    private final GL4 gl;
 
-    public Shader(GL3 gl){
+    public Shader(GL4 gl){
         this.gl = gl;
     }
 
@@ -28,18 +29,18 @@ public class Shader {
                         String[] geometryShaderSource) {
         int sVertex = 0, sFragment = 0, sGeometry = 0;
 
-        sVertex = gl.glCreateShader(GL3.GL_VERTEX_SHADER);
+        sVertex = gl.glCreateShader(GL4.GL_VERTEX_SHADER);
         gl.glShaderSource(sVertex, 1, vertexShaderSource, null);
         gl.glCompileShader(sVertex);
         checkCompileErrors(sVertex, "VERTEX");
 
-        sFragment = gl.glCreateShader(GL3.GL_FRAGMENT_SHADER);
+        sFragment = gl.glCreateShader(GL4.GL_FRAGMENT_SHADER);
         gl.glShaderSource(sFragment, 1, fragmentShaderSource, null);
         gl.glCompileShader(sFragment);
         checkCompileErrors(sFragment, "FRAGMENT");
 
         if(geometryShaderSource != null){
-            sGeometry = gl.glCreateShader(GL3.GL_GEOMETRY_SHADER);
+            sGeometry = gl.glCreateShader(GL4.GL_GEOMETRY_SHADER);
             gl.glShaderSource(sGeometry,1, geometryShaderSource, null);
             gl.glCompileShader(sGeometry);
             checkCompileErrors(sGeometry, "GEOMETRY");
@@ -119,7 +120,7 @@ public class Shader {
         ByteBuffer infoLog = ByteBuffer.allocate(1024);
 
         if(type != "PROGRAM"){
-            gl.glGetShaderiv(obj, GL3.GL_COMPILE_STATUS, success);
+            gl.glGetShaderiv(obj, GL4.GL_COMPILE_STATUS, success);
             if(success.get(0) <= 0){
                 gl.glGetShaderInfoLog(obj, 1024, null, infoLog);
                 System.out.println("| ERROR::SHADER: Compile-time error: Type: " + type + "\n"
@@ -127,7 +128,7 @@ public class Shader {
             }
         }
         else {
-            gl.glGetProgramiv(obj, GL3.GL_LINK_STATUS, success);
+            gl.glGetProgramiv(obj, GL4.GL_LINK_STATUS, success);
             if(success.get(0) <= 0){
                 gl.glGetProgramInfoLog(obj, 1024, null, infoLog);
                 System.out.println("| ERROR::SHADER: Link-time error: Type: " + type + "\n"

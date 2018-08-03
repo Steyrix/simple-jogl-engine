@@ -1,6 +1,7 @@
 package engine.core;
 
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL4;
 import engine.collision.BoundingBox;
 
 import java.awt.*;
@@ -14,7 +15,7 @@ public abstract class ControllableObject extends OpenGlObject implements Control
     protected float velocityCollX;
     protected float velocityCollY;
 
-    public ControllableObject(int bufferParamsCount, int verticesCount, GL3 gl, Dimension boxDim) {
+    public ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim) {
         super(bufferParamsCount, verticesCount, gl, boxDim);
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;
@@ -22,7 +23,7 @@ public abstract class ControllableObject extends OpenGlObject implements Control
         this.velocityCollY = 0.0f;
     }
 
-    protected ControllableObject(int bufferParamsCount, int verticesCount, GL3 gl, float posX, float posY, Dimension boxDim) {
+    protected ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim) {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim);
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;

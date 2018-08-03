@@ -5,6 +5,8 @@ import com.hackoeur.jglm.Matrices;
 import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
 import engine.collision.BoundingBox;
@@ -12,14 +14,18 @@ import engine.shader.Shader;
 import engine.texture.TextureLoader;
 import engine.texture.Textured;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 public class OpenGlObject extends BoundingBox implements Textured {
 
-    protected final GL3 gl;
+    protected final GL4 gl;
 
     protected int buffersFilled;
     protected int buffersCount;
@@ -31,8 +37,9 @@ public class OpenGlObject extends BoundingBox implements Textured {
     protected ArrayList<Integer> paramsCount;
 
     protected Texture texture;
+    protected IntBuffer textureArray;
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl, Dimension boxDim) {
+    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim) {
         super(0.0f, 0.0f, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -45,9 +52,10 @@ public class OpenGlObject extends BoundingBox implements Textured {
         this.paramsCount = new ArrayList<>();
 
         this.texture = null;
+        this.textureArray = null;
     }
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL3 gl, float posX, float posY, Dimension boxDim) {
+    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim) {
         super(posX, posY, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -63,6 +71,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
         this.posY = posY;
 
         this.texture = null;
+        this.textureArray = null;
     }
 
     public boolean isTextured() {
@@ -74,28 +83,55 @@ public class OpenGlObject extends BoundingBox implements Textured {
         try {
             this.texture = TextureLoader.loadTexture(filePath);
 
-            texture.setTexParameteri(gl, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-            texture.setTexParameteri(gl, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-            texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
+            texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+            texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+            texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE);
+            texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void initRenderData(String textureFilePath, float[]... dataArrays) {
+    @Override
+    public void loadTextureArray(String... filePaths) {
+        try {
+            ArrayList<BufferedImage> images = new ArrayList<>();
+            int width, height = 0;
+            for(String path : filePaths)
+                images.add(ImageIO.read(new File(path)));
+            width = images.get(0).getWidth();
+            height = images.get(0).getHeight();
+
+            ArrayList<TextureData> td = TextureLoader.imagesToTextures(images, GLProfile.get(GLProfile.GL3));
+
+            this.textureArray = TextureLoader.loadTextureArray(td, gl, width, height, false);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void initRenderData(String[] textureFilePaths, boolean texArray, float[]... dataArrays) {
+        System.out.println("initRenderData");
         addBuffers(dataArrays);
         genVertexArray();
-        if (textureFilePath != null)
-            loadTexture(textureFilePath);
+        if (textureFilePaths != null && textureFilePaths.length == 1) {
+            System.out.println("Loading only single texture");
+            loadTexture(textureFilePaths[0]);
+        }
+        if ((textureFilePaths != null && textureFilePaths.length > 1) || texArray){
+            System.out.println("Loading texture array");
+            loadTextureArray(textureFilePaths);
+        }
     }
 
     protected void addBuffers(float[]... dataArrays) {
         gl.glGenBuffers(buffersCount, buffers);
         for (float[] fData : dataArrays) {
             FloatBuffer floatBuffer = FloatBuffer.wrap(fData);
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, this.buffers.get(buffersFilled++));
-            gl.glBufferData(GL3.GL_ARRAY_BUFFER, 4 * fData.length, floatBuffer, GL3.GL_STATIC_DRAW);
+            gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, this.buffers.get(buffersFilled++));
+            gl.glBufferData(GL4.GL_ARRAY_BUFFER, 4 * fData.length, floatBuffer, GL4.GL_STATIC_DRAW);
 
             paramsCount.add(fData.length / this.verticesCount);
         }
@@ -109,8 +145,8 @@ public class OpenGlObject extends BoundingBox implements Textured {
 
         for (int i = 0; i < this.buffersFilled; i++) {
             gl.glEnableVertexAttribArray(i);
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, buffers.get(i));
-            gl.glVertexAttribPointer(i, this.paramsCount.get(i), GL.GL_FLOAT, false, 0, 0);
+            gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, buffers.get(i));
+            gl.glVertexAttribPointer(i, this.paramsCount.get(i), GL4.GL_FLOAT, false, 0, 0);
         }
 
         //System.out.println(gl.glGetError() + " genVertexArray");
@@ -123,6 +159,8 @@ public class OpenGlObject extends BoundingBox implements Textured {
             this.texture.destroy(gl);
     }
 
+
+    //TODO: fix 1280 and 1282 glErrors when trying to draw Array Texture Object
     public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader) {
         this.width = xSize;
         this.height = ySize;
@@ -143,10 +181,17 @@ public class OpenGlObject extends BoundingBox implements Textured {
         model = model.multiply(scale);
 
         if (this.texture != null) {
-            gl.glActiveTexture(GL3.GL_TEXTURE0);
+            gl.glActiveTexture(GL4.GL_TEXTURE0);
             this.texture.enable(gl);
             this.texture.bind(gl);
             gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSample"), 0);
+        }
+
+        if (this.textureArray != null){
+            gl.glActiveTexture(GL4.GL_TEXTURE0 + 7);
+            gl.glBindTexture(GL4.GL_TEXTURE_2D, this.textureArray.get(0));
+            gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureArray"), 0);
+            System.out.println("draw tex array: " + gl.glGetError());
         }
 
         shader.setMatrix4f("model", model, true);
@@ -176,15 +221,30 @@ public class OpenGlObject extends BoundingBox implements Textured {
         model = model.multiply(scale);
 
         if (this.texture != null) {
-            gl.glActiveTexture(GL3.GL_TEXTURE0);
+            gl.glActiveTexture(GL4.GL_TEXTURE0);
             this.texture.enable(gl);
             this.texture.bind(gl);
             gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSample"), 0);
         }
 
+        if (this.textureArray != null){
+            gl.glActiveTexture(GL4.GL_TEXTURE0);
+            System.out.println("draw tex array 0: " + gl.glGetError());
+
+            gl.glEnable(GL.GL_TEXTURE_2D);
+            System.out.println("draw tex array 1: " + gl.glGetError());
+
+            gl.glBindTexture(GL4.GL_TEXTURE_2D, this.textureArray.get(0));
+            System.out.println("draw tex array 2: " + gl.glGetError());
+
+
+            gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureArray"), 0);
+            System.out.println("draw tex array 3: " + gl.glGetError());
+        }
+
         shader.setMatrix4f("model", model, true);
 
         gl.glBindVertexArray(this.vertexArray.get(0));
-        gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount);
+        gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount);
     }
 }

@@ -58,7 +58,7 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
     }
 
     public static void main(String[] args) {
-        final GLProfile glProfile = GLProfile.get(GLProfile.GL3);
+        final GLProfile glProfile = GLProfile.get(GLProfile.GL4);
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 
         final GLCanvas glCanvas = new GLCanvas(glCapabilities);

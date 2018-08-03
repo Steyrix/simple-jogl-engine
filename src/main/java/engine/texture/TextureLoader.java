@@ -1,15 +1,13 @@
 package engine.texture;
 
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLException;
-import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.IntBuffer;
@@ -34,31 +32,38 @@ public class TextureLoader {
 
     //TODO: implement check that textures are same size for avoiding exceptions
     //TODO: implement generating mipmaps and different miplevels support
-    //TODO: blyaaaaat'
-    public static IntBuffer loadTextureArray(ArrayList<TextureData> textures, GL3 gl, int texLayerWidth, int texLayerHeight, int subCount, boolean repeatable) {
+    public static IntBuffer loadTextureArray(ArrayList<TextureData> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable) {
+        int id = 7; //Setting up index manually just for testing
+
         IntBuffer texture = IntBuffer.allocate(1);
         gl.glGenTextures(1, texture);
-        gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, texture.get(0));
+        gl.glActiveTexture(GL4.GL_TEXTURE0 + 7);
+        gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, texture.get(0));
+        System.out.println("loadTextureArray func 0:" + gl.glGetError());
 
-        gl.glTexStorage3D(GL3.GL_TEXTURE_2D_ARRAY, 1, GL3.GL_RGB8, texLayerWidth, texLayerHeight, textures.size());
+
+        gl.glTexStorage3D(GL4.GL_TEXTURE_2D_ARRAY, 1, GL4.GL_RGBA8, texLayerWidth, texLayerHeight, textures.size());
+        System.out.println("loadTextureArray func 1:" + gl.glGetError());
 
         int arraySpot = 0;
         for (TextureData td : textures) {
-            gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, 0, 0, arraySpot++, td.getWidth(), td.getHeight(),
-                    1, GL.GL_RGB8, GL.GL_UNSIGNED_BYTE, td.getBuffer());
+            //System.out.println("tdwidth:" + td.getWidth() + ", tdheight:" + td.getHeight());
+            gl.glTexSubImage3D(GL4.GL_TEXTURE_2D_ARRAY, 0, 0, 0, arraySpot++, td.getWidth(), td.getHeight(),
+                    1, GL4.GL_RGBA, GL4.GL_UNSIGNED_BYTE, td.getBuffer());
         }
+        System.out.println("loadTextureArray func 2:" + gl.glGetError());
 
-        gl.glGenerateMipmap(GL3.GL_TEXTURE_2D_ARRAY);
+        gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
 
         if (repeatable) {
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_S, GL3.GL_REPEAT);
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_T, GL3.GL_REPEAT);
+            gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
+            gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
         } else {
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE);
         }
 
-        gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, 0);
+        gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, 0);
 
         return texture;
     }
