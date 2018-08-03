@@ -77,7 +77,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
     }
 
     public boolean isTextured() {
-        return this.texture != null;
+        return this.texture != null || this.textureArray != null;
     }
 
     @Override
@@ -113,10 +113,9 @@ public class OpenGlObject extends BoundingBox implements Textured {
     }
 
     public void initRenderData(String[] textureFilePaths, boolean texArray, float[]... dataArrays) {
-        System.out.println("initRenderData");
         addBuffers(dataArrays);
         genVertexArray();
-        if (textureFilePaths != null && textureFilePaths.length == 1) {
+        if (textureFilePaths != null && textureFilePaths.length == 1 && !texArray) {
             System.out.println("Loading only single texture");
             loadTexture(textureFilePaths[0]);
         }
@@ -135,8 +134,6 @@ public class OpenGlObject extends BoundingBox implements Textured {
 
             paramsCount.add(fData.length / this.verticesCount);
         }
-
-        //System.out.println(gl.glGetError() + " addBuffers");
     }
 
     protected void genVertexArray() {
@@ -148,8 +145,6 @@ public class OpenGlObject extends BoundingBox implements Textured {
             gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, buffers.get(i));
             gl.glVertexAttribPointer(i, this.paramsCount.get(i), GL4.GL_FLOAT, false, 0, 0);
         }
-
-        //System.out.println(gl.glGetError() + " genVertexArray");
     }
 
     public void dispose() {
@@ -162,6 +157,9 @@ public class OpenGlObject extends BoundingBox implements Textured {
 
     //TODO: fix 1280 and 1282 glErrors when trying to draw Array Texture Object
     public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader) {
+
+        shader.use();
+
         this.width = xSize;
         this.height = ySize;
 
@@ -189,7 +187,9 @@ public class OpenGlObject extends BoundingBox implements Textured {
 
         if (this.textureArray != null){
             gl.glActiveTexture(GL4.GL_TEXTURE0);
+
             gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, this.textureArray.get(0));
+
             gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureArray"), 0);
         }
 
@@ -201,6 +201,9 @@ public class OpenGlObject extends BoundingBox implements Textured {
     }
 
     public void draw(float xSize, float ySize, float rotationAngle, Shader shader) {
+
+        shader.use();
+
         this.width = xSize;
         this.height = ySize;
 

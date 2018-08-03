@@ -17,7 +17,7 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
 
     public OpenGLContext(GameState state) {
         this.state = state;
-        this.timer = new Timer(50, this);
+        this.timer = new Timer(75, this);
         this.timer.start();
     }
 

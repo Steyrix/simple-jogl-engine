@@ -7,6 +7,7 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import engine.collision.BoundingBox;
+import engine.core.AnimatedObject;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
@@ -26,6 +27,7 @@ public class GameLabyrinth implements GameState {
     private Shader texShader;
     private Shader boundShader;
     private Shader texArrayShader;
+    private Shader animShader;
 
     private ArrayList<ControllableObject> controls;
     private ArrayList<OpenGlObject> boundObjects;
@@ -33,6 +35,7 @@ public class GameLabyrinth implements GameState {
 
     //TEST
     private OpenGlObject texArrayObj;
+    private AnimatedObject animObj;
 
     private OpenGlObject background;
     private int screenWidth;
@@ -185,12 +188,29 @@ public class GameLabyrinth implements GameState {
                         0f, 1f,
                         1f, 1f,
                         1f, 0f},
+                new float[]{0f, 0.2f,
+                        0.0625f, 0f,
+                        0f, 0f,
+                        0f, 0.2f,
+                        0.0625f, 0.2f,
+                        0.0625f, 0f});
+
+        animObj = new AnimatedObject(2,6,gl, 500,500,
+                new Dimension(100,100),
+                16, 3, 0.0625f, 0.2f);
+        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
                         0f, 1f,
                         1f, 1f,
-                        1f, 0f});
+                        1f, 0f},
+                new float[]{0f, 0.2f,
+                        0.0625f, 0f,
+                        0f, 0f,
+                        0f, 0.2f,
+                        0.0625f, 0.2f,
+                        0.0625f, 0f});
 
 
         initLevelGeography( new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
@@ -221,7 +241,7 @@ public class GameLabyrinth implements GameState {
             c.dispose();
         }
 
-        texArrayObj.dispose();
+
     }
 
     @Override
@@ -258,8 +278,10 @@ public class GameLabyrinth implements GameState {
         }
 
         texArrayShader.setMatrix4f("projection", renderProjection, false);
-        texArrayObj.draw(300f, 300f, 0.0f, texArrayShader);
+        texArrayObj.draw(50f, 100f, 0.0f, texArrayShader);
 
+        animShader.setMatrix4f("projection", renderProjection, false);
+        animObj.draw(100f, 150f, 0.0f, animShader);
     }
 
     @Override
@@ -277,6 +299,9 @@ public class GameLabyrinth implements GameState {
                     c.collide(o);
 
         }
+
+        if(animObj != null)
+            animObj.changeFrame();
     }
 
     @Override
@@ -342,6 +367,17 @@ public class GameLabyrinth implements GameState {
         }
         texArrayShader = new Shader(gl);
         texArrayShader.compile(arrayVertexSource, arrayFragmSource, null);
+
+        String[] animVertexSource = new String[1];
+        String[] animFragmSource = new String[1];
+        try {
+            animVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animVertexShader").getPath());
+            animFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animFragmentShader").getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        animShader = new Shader(gl);
+        animShader.compile(animVertexSource, animFragmSource, null);
 
         //--------------------------------------------------------
     }
