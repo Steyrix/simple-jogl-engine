@@ -10,6 +10,8 @@ import engine.shader.Shader;
 
 import java.awt.*;
 
+
+//TODO: make animation more fancy
 public class AnimatedObject extends OpenGlObject implements Animated {
 
     private int framesCountX;
@@ -125,9 +127,9 @@ public class AnimatedObject extends OpenGlObject implements Animated {
 
         if (this.texture != null || this.textureArray != null) {
 
-            shader.setFloat("xChanging", currentFrameX * 0.0625f, false);
+            shader.setFloat("xChanging", currentFrameX * frameSizeX, false);
             shader.setInteger("frameNumberX", currentFrameX + 1, false);
-            shader.setFloat("yChanging", currentFrameY * 0.2f, false);
+            shader.setFloat("yChanging", currentFrameY * frameSizeY, false);
             shader.setInteger("frameY", currentFrameY + 1, false);
 
 
@@ -158,10 +160,10 @@ public class AnimatedObject extends OpenGlObject implements Animated {
     @Override
     public void changeFrame() {
 
-        if(currentFrameX + 1 == framesCountX) {
+        if(currentFrameX + 1 >= framesCountX) {
             currentFrameX = 0;
 
-            if(currentFrameY + 1 == framesCountY)
+            if(currentFrameY + 1 >= framesCountY)
                 currentFrameY = 0;
             else
                 currentFrameY++;

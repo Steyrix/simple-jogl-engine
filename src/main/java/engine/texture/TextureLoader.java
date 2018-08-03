@@ -28,6 +28,7 @@ public class TextureLoader {
 
     //TODO: implement check that textures are same size for avoiding exceptions
     //TODO: implement generating mipmaps and different miplevels support
+    //TODO: fix wrong colors
     public static IntBuffer loadTextureArray(ArrayList<BufferedImage> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable) {
 
         IntBuffer texture = IntBuffer.allocate(1);

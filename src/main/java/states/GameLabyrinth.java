@@ -197,20 +197,20 @@ public class GameLabyrinth implements GameState {
 
         animObj = new AnimatedObject(2,6,gl, 500,500,
                 new Dimension(100,100),
-                16, 3, 0.0625f, 0.2f);
-        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
+                10, 1, 0.1f, 0.1f);
+        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/base_dark.png").getPath()}, true,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
                         0f, 1f,
                         1f, 1f,
                         1f, 0f},
-                new float[]{0f, 0.2f,
-                        0.0625f, 0f,
+                new float[]{0f, 0.1f,
+                        0.1f, 0f,
                         0f, 0f,
-                        0f, 0.2f,
-                        0.0625f, 0.2f,
-                        0.0625f, 0f});
+                        0f, 0.1f,
+                        0.1f, 0.1f,
+                        0.1f, 0f});
 
 
         initLevelGeography( new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
