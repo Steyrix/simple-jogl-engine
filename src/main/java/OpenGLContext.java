@@ -1,7 +1,7 @@
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
-import states.GameLabyrinth;
+import demos.labrynth.GameLabyrinth;
 import states.GameState;
 
 import javax.swing.*;
@@ -10,15 +10,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class OpenGLContext implements GLEventListener, KeyListener, ActionListener
-{
+
+//TODO: implement delta time update interface for game states and entities
+public class OpenGLContext implements GLEventListener, KeyListener {
     private GameState state;
-    private Timer timer;
+    private long lastTime;
+    private float deltaTime;
 
     public OpenGLContext(GameState state) {
+        this.lastTime = System.nanoTime();
         this.state = state;
-        this.timer = new Timer(75, this);
-        this.timer.start();
     }
 
     public void init(GLAutoDrawable glAutoDrawable) {
@@ -30,6 +31,7 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
     }
 
     public void display(GLAutoDrawable glAutoDrawable) {
+        this.state.update(this.calcDeltaTime());
         this.state.display(glAutoDrawable);
     }
 
@@ -37,9 +39,13 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
         this.state.reshape(glAutoDrawable, i, i1, i2, i3);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        this.state.actionPerformed(e);
+    public float calcDeltaTime() {
+
+        long time = System.nanoTime();
+        deltaTime = ((time - lastTime) / 1000000);
+        lastTime = time;
+
+        return deltaTime;
     }
 
     @Override
@@ -62,7 +68,7 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 
         final GLCanvas glCanvas = new GLCanvas(glCapabilities);
-        glCanvas.setSize(1280,720);
+        glCanvas.setSize(1280, 720);
         glCanvas.setFocusable(true);
         glCanvas.requestFocus();
 
@@ -70,10 +76,7 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
         glCanvas.addGLEventListener(basicListener);
         glCanvas.addKeyListener(basicListener);
 
-        final Animator animator = new Animator(glCanvas);
-        animator.start();
-
-        SwingUtilities.invokeLater(()->{
+        SwingUtilities.invokeLater(() -> {
             final JFrame mainFrame = new JFrame("Simple JOGL game");
             mainFrame.getContentPane().add(glCanvas);
             mainFrame.setSize(mainFrame.getContentPane().getPreferredSize());
@@ -81,6 +84,13 @@ public class OpenGLContext implements GLEventListener, KeyListener, ActionListen
 
             mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         });
+
+
+        while (true) {
+            glCanvas.display();
+        }
+
+
     }
 
 }

@@ -1,4 +1,4 @@
-package states;
+package demos.labrynth;
 
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
@@ -6,12 +6,11 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import engine.animation.BasicAnimation;
-import engine.collision.BoundingBox;
-import engine.animation.AnimatedObject;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
+import states.GameState;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -79,115 +78,17 @@ public class GameLabyrinth implements GameState {
 
 
         try {
-            animObj = new ControllableObject(2, 6, gl, 500, 500,
-                    new Dimension(100, 150),
+            animObj = new LabyrinthCharacter(2, 6, gl, 25, 25,
+                    new Dimension(50, 75),
                     0.1f, 0.1f,
-                    new BasicAnimation("WALK", 1, 0, 8, 1)) {
-                @Override
-                protected void reactToCollision(BoundingBox anotherBox) {
-                    if (intersects(anotherBox)) {
-                        if (this.velocityX != 0.0f && this.velocityY != 0.0f) {
-
-                            this.velocityCollX = -1.0f * this.velocityX * 0.2f;
-                            this.velocityX = 0.0f;
-                            this.velocityCollY = -1.0f * this.velocityY * 0.2f;
-                            this.velocityY = 0.0f;
-
-                        } else if (this.velocityX != 0.0f) {
-                            if (this.velocityX > 0.0f)
-                                this.posX = anotherBox.getPosX() - this.width;
-                            else
-                                this.posX = anotherBox.getRight();
-
-                            this.velocityCollX = -1.0f * this.velocityX * 0.2f;
-                            this.velocityX = 0.0f;
-
-                        } else if (this.velocityY != 0.0f) {
-                            if (this.velocityY > 0.0f)
-                                this.posY = anotherBox.getPosY() - this.height;
-                            else
-                                this.posY = anotherBox.getBottom();
-
-                            this.velocityCollY = -1.0f * this.velocityY * 0.2f;
-                            this.velocityY = 0.0f;
-                        }
-                    }
-                }
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    this.posX += this.velocityX + this.velocityCollX;
-                    if (velocityX >= 0.0f && velocityX - 1.0f >= 0.0f)
-                        velocityX -= 1.0f;
-                    else if (velocityX < 0.0f && velocityX + 1.0f <= 0.0f)
-                        velocityX += 1.0f;
-                    else if (velocityX >= 0.0f && velocityX - 1.0f < 0.0f ||
-                            velocityX < 0.0f && velocityX + 1.0f > 0.0f)
-                        velocityX = 0.0f;
-
-                    if (velocityCollX >= 0.0f && velocityCollX - 0.1f >= 0.0f)
-                        velocityCollX -= 0.1f;
-                    else if (velocityCollX <= 0.0f && velocityCollX + 0.1f <= 0.0f)
-                        velocityCollX += 0.1f;
-                    else if (velocityCollX >= 0.0f && velocityCollX - 0.1f < 0.0f ||
-                            velocityCollX < 0.0f && velocityCollX + 0.1f > 0.0f)
-                        velocityCollX = 0.0f;
-
-                    this.posY += this.velocityY + this.velocityCollY;
-                    if (velocityY >= 0.0f && velocityY - 1.0f >= 0.0f)
-                        velocityY -= 1.0f;
-                    else if (velocityY <= 0.0f && velocityY + 1.0f <= 0.0f)
-                        velocityY += 1.0f;
-                    else if (velocityY >= 0.0f && velocityY - 1.0f < 0.0f ||
-                            velocityY < 0.0f && velocityY + 1.0f > 0.0f)
-                        velocityY = 0.0f;
-
-                    if (velocityCollY >= 0.0f && velocityCollY - 0.1f >= 0.0f)
-                        velocityCollY -= 0.1f;
-                    else if (velocityCollY <= 0.0f && velocityCollY + 0.1f <= 0.0f)
-                        velocityCollY += 0.1f;
-                    else if (velocityCollY >= 0.0f && velocityCollY - 0.1f < 0.0f ||
-                            velocityCollY < 0.0f && velocityCollY + 0.1f > 0.0f)
-                        velocityCollY = 0.0f;
-
-                    if (velocityX == 0 && velocityY == 0 && velocityCollX == 0 && velocityCollY == 0)
-                        this.currentAnim.setCurrentFrameX(1);
-
-                    else
-                        playAnimation();
-                }
-
-                @Override
-                public void keyTyped(KeyEvent e) {
-
-                }
-
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    switch (e.getKeyCode()) {
-                        case KeyEvent.VK_D:
-                            this.velocityX += 10.0f;
-                            break;
-                        case KeyEvent.VK_A:
-                            this.velocityX -= 10.0f;
-                            break;
-                        case KeyEvent.VK_W:
-                            this.velocityY -= 10.0f;
-                            break;
-                        case KeyEvent.VK_S:
-                            this.velocityY += 10.0f;
-                            break;
-                    }
-                }
-
-                @Override
-                public void keyReleased(KeyEvent e) {
-
-                }
+                    new BasicAnimation("WALK", 1, 0, 7, 1),
+                    new BasicAnimation("JUMP", 2, 0, 3, 1),
+                    new BasicAnimation("IDLE", 3, 0, 1, 1)) {
             };
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/base_dark.png").getPath()}, true,
                 new float[]{0f, 1f,
                         1f, 0f,
@@ -229,8 +130,6 @@ public class GameLabyrinth implements GameState {
         for (ControllableObject c : this.controls) {
             c.dispose();
         }
-
-
     }
 
     @Override
@@ -258,7 +157,7 @@ public class GameLabyrinth implements GameState {
         texArrayObj.draw(50f, 100f, 0.0f, texArrayShader);
 
         animShader.setMatrix4f("projection", renderProjection, false);
-        animObj.draw(100f, 150f, 0.0f, animShader);
+        animObj.draw(animObj.getSize().width, animObj.getSize().height, 0.0f, animShader);
     }
 
     @Override
@@ -267,16 +166,14 @@ public class GameLabyrinth implements GameState {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void update(float deltaTime) {
         for (ControllableObject c : controls) {
-            c.actionPerformed(e);
+            c.update(deltaTime);
 
             for (OpenGlObject o : boundObjects)
-                if (o != c && c.intersects(o) && !c.isTouching(o))
+                if (o != c && c.intersects(o))
                     c.collide(o);
-
         }
-
     }
 
     @Override
@@ -494,7 +391,7 @@ public class GameLabyrinth implements GameState {
                         0f, 0f,
                         0f, 10f});
         this.boundObjects.add(rightVerticalBound);
-        //
+
 
         background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
             @Override

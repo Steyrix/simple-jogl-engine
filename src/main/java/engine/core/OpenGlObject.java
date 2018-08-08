@@ -146,6 +146,7 @@ public class OpenGlObject extends BoundingBox implements Textured {
         gl.glDeleteVertexArrays(1, this.vertexArray);
         if (this.texture != null)
             this.texture.destroy(gl);
+
     }
 
 
@@ -204,9 +205,9 @@ public class OpenGlObject extends BoundingBox implements Textured {
         Mat4 model = Mat4.MAT4_IDENTITY;
         Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
         Mat4 scale = new Mat4(xSize, 0.0f, 0.0f, 0.0f,
-                0.0f, ySize, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f);
+                        0.0f, ySize, 0.0f, 0.0f,
+                        0.0f, 0.0f, 1.0f, 0.0f,
+                        0.0f, 0.0f, 0.0f, 1.0f);
 
 
         model = model.translate(new Vec3(this.posX, this.posY, 0.0f));

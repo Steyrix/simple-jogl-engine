@@ -10,8 +10,9 @@ public interface GameState {
     void dispose(GLAutoDrawable glAutoDrawable);
     void display(GLAutoDrawable glAutoDrawable);
     void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3);
+    void update(float deltaTime);
 
-    void actionPerformed(ActionEvent e);
+    //void actionPerformed(ActionEvent e, int deltaTime);
     void keyTyped(KeyEvent e);
     void keyPressed(KeyEvent e);
     void keyReleased(KeyEvent e);

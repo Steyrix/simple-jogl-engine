@@ -11,6 +11,10 @@ public class BasicAnimation {
     protected int usedLayerId;
     protected int currentFrameX;
     protected int currentFrameY;
+    protected int firstPosX;
+    protected int lastPosX;
+    protected int firstPosY;
+    protected int lastPosY;
     protected int framesCountX;
     protected int framesCountY;
     protected String animName;
@@ -23,24 +27,32 @@ public class BasicAnimation {
         this.framesCountX = framesCountX;
         this.framesCountY = framesCountY;
 
-        this.currentFrameX = 1;
-        this.currentFrameY = 1;
+        this.currentFrameX = 0;
+        this.currentFrameY = 0;
+
+        this.firstPosX = 0;
+        this.firstPosY = 0;
+        this.lastPosX = framesCountX;
+        this.lastPosY = framesCountY;
 
         addNewAnim(this);
     }
 
     public void changeFrame() {
 
-        if (currentFrameX + 1 >= framesCountX) {
-            currentFrameX = 0;
+        if (framesCountX != 1) {
+            if (currentFrameX + 1 >= lastPosX) {
+                currentFrameX = firstPosX;
 
-            if (currentFrameY + 1 >= framesCountY)
-                currentFrameY = 0;
-            else
-                currentFrameY++;
-        } else
-            currentFrameX++;
-
+                if (framesCountY != 1) {
+                    if (currentFrameY + 1 >= lastPosY)
+                        currentFrameY = firstPosY;
+                    else
+                        currentFrameY++;
+                }
+            } else
+                currentFrameX++;
+        }
     }
 
     public String getName() {
@@ -74,6 +86,22 @@ public class BasicAnimation {
 
     public int getFramesCountY() {
         return framesCountY;
+    }
+
+    public void setFirstPosX(int firstPosX) {
+        this.firstPosX = firstPosX;
+    }
+
+    public void setLastPosX(int lastPosX) {
+        this.lastPosX = lastPosX;
+    }
+
+    public void setFirstPosY(int firstPosY) {
+        this.firstPosY = firstPosY;
+    }
+
+    public void setLastPosY(int lastPosY) {
+        this.lastPosY = lastPosY;
     }
 
     public void setCurrentFrameX(int currentFrameX) {

@@ -16,6 +16,7 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
     protected float velocityY;
     protected float velocityCollX;
     protected float velocityCollY;
+    protected boolean jumpState;
 
     public ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim,
                               float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
@@ -25,6 +26,7 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
         this.velocityY = 0.0f;
         this.velocityCollX = 0.0f;
         this.velocityCollY = 0.0f;
+        this.jumpState = false;
     }
 
     protected ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim,
@@ -34,7 +36,7 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
         this.velocityY = 0.0f;
         this.velocityCollX = 0.0f;
         this.velocityCollY = 0.0f;
-
+        this.jumpState = false;
     }
 
     protected abstract void reactToCollision(BoundingBox anotherBox);
@@ -44,7 +46,7 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
     }
 
     @Override
-    public abstract void actionPerformed(ActionEvent e);
+    public abstract void update(float deltaTime);
 
     @Override
     public abstract void keyTyped(KeyEvent e);
