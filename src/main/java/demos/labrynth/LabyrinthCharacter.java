@@ -76,7 +76,6 @@ public class LabyrinthCharacter extends ControllableObject {
         else if (!keys[KeyEvent.VK_W] && !jumpState)
             this.velocityY = 0.0f;
 
-
         float gravity = 5f;
 
         if (jumpState) {
@@ -98,7 +97,7 @@ public class LabyrinthCharacter extends ControllableObject {
             setJumpAnimation();
         }
 
-        System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
+       // System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
         playAnimation(deltaTime);
     }
 
@@ -109,32 +108,22 @@ public class LabyrinthCharacter extends ControllableObject {
     @Override
     public void keyPressed(KeyEvent e) {
 
-        keys[e.getKeyCode()] = true;
+        if(!keys[e.getKeyCode()])
+            keys[e.getKeyCode()] = true;
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_D:
-                setWalkAnim();
-                break;
-            case KeyEvent.VK_A:
-                setWalkAnim();
-                break;
-            case KeyEvent.VK_W:
-                setJumpAnimation();
-                break;
-            case KeyEvent.VK_S:
-                setJumpAnimation();
-                break;
-            default:
-                break;
-        }
+        if(e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_A)
+            setWalkAnim();
+        else if(e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S)
+            setJumpAnimation();
 
-        System.out.println(velocityX);
+        //System.out.println(velocityX);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
 
-        keys[e.getKeyCode()] = false;
+        if(keys[e.getKeyCode()])
+            keys[e.getKeyCode()] = false;
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_D:
@@ -148,6 +137,8 @@ public class LabyrinthCharacter extends ControllableObject {
             default:
                 break;
         }
+
+        System.out.println(e.getKeyCode() + "R");
     }
 
     private void jump() {

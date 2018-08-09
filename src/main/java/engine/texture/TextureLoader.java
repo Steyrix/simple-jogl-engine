@@ -27,7 +27,6 @@ public class TextureLoader {
     }
 
     //TODO: implement check that textures are same size for avoiding exceptions
-    //TODO: implement generating mipmaps and different miplevels support
     //TODO: fix wrong colors
     public static IntBuffer loadTextureArray(ArrayList<BufferedImage> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable) {
 
@@ -49,7 +48,7 @@ public class TextureLoader {
         System.out.println("loadTextureArray func 2:" + gl.glGetError());
 
         gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-        gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+        gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_NEAREST_MIPMAP_LINEAR);
 
         if (repeatable) {
             gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
@@ -69,8 +68,23 @@ public class TextureLoader {
         return ByteBuffer.wrap(pixels);
     }
 
-    private static IntBuffer getImageDataInt(BufferedImage texImg) {
-        int[] pixels = ((DataBufferInt) texImg.getRaster().getDataBuffer()).getData();
-        return IntBuffer.wrap(pixels);
+    private static ByteBuffer flippedPixels(BufferedImage texImg){
+        //ARGB
+        //RGBA
+        byte[] pixels = ((DataBufferByte) texImg.getRaster().getDataBuffer()).getData();
+        byte[] flippedPixels = new byte[pixels.length];
+        for(int i = 0; i < pixels.length; i+=4){
+            System.out.println("ARGB " + pixels[i] + "," + pixels[i+1] + "," + pixels[i+2] + "," + pixels[i+3]);
+            flippedPixels[i] = pixels[i+1]; // R
+            flippedPixels[i+1] = pixels[i+2]; // G
+            flippedPixels[i+2] = pixels[i+3]; // B
+            flippedPixels[i+3] = pixels[i]; //A
+
+            System.out.println("RGBA " + flippedPixels[i] + "," + flippedPixels[i+1] + "," + flippedPixels[i+2] + "," + flippedPixels[i+3]);
+
+        }
+
+        return ByteBuffer.wrap(flippedPixels);
     }
+
 }

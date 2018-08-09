@@ -5,6 +5,7 @@ import com.hackoeur.jglm.Matrices;
 import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import com.jogamp.opengl.util.texture.Texture;
 import engine.collision.BoundingBox;
 import engine.shader.Shader;
@@ -23,14 +24,13 @@ public class OpenGlObject extends BoundingBox implements Textured {
 
     protected final GL4 gl;
 
-    protected int buffersFilled;
-    protected int buffersCount;
+    private IntBuffer buffers;
+    private ArrayList<Integer> paramsCount;
+    private int buffersFilled;
+    private int buffersCount;
+
     protected int verticesCount;
-
-    protected IntBuffer buffers;
     protected IntBuffer vertexArray;
-
-    protected ArrayList<Integer> paramsCount;
 
     protected Texture texture;
     protected IntBuffer textureArray;
@@ -98,7 +98,6 @@ public class OpenGlObject extends BoundingBox implements Textured {
                 images.add(ImageIO.read(new File(path)));
             width = images.get(0).getWidth();
             height = images.get(0).getHeight();
-
             this.textureArray = TextureLoader.loadTextureArray(images, gl, width, height, false);
 
         } catch (Exception e) {

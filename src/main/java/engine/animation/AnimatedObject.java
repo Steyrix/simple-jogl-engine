@@ -141,7 +141,7 @@ public class AnimatedObject extends OpenGlObject {
                 gl.glActiveTexture(GL4.GL_TEXTURE0);
                 this.texture.enable(gl);
                 this.texture.bind(gl);
-                gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSampler"), 0);
+                gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureAtlas"), 0);
             } else {
                 gl.glActiveTexture(GL4.GL_TEXTURE0);
 

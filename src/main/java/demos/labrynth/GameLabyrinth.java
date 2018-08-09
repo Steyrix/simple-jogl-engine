@@ -18,15 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
-//TODO: normal collider
+//TODO: load every texture with its own unique id
 public class GameLabyrinth implements GameState {
-
-    private Shader shader;
-    private Shader texShader;
-    private Shader boundShader;
-    private Shader texArrayShader;
-    private Shader animShader;
 
     private ArrayList<ControllableObject> controls;
     private ArrayList<OpenGlObject> boundObjects;
@@ -35,6 +28,11 @@ public class GameLabyrinth implements GameState {
     //TEST
     private OpenGlObject texArrayObj;
     private ControllableObject animObj;
+    private Shader shader;
+    private Shader texShader;
+    private Shader boundShader;
+    private Shader texArrayShader;
+    private Shader animShader;
 
     private OpenGlObject background;
     private int screenWidth;
@@ -55,10 +53,10 @@ public class GameLabyrinth implements GameState {
     public void init(GLAutoDrawable glAutoDrawable) {
         GL4 gl = glAutoDrawable.getGL().getGL4();
 
-        loadShaders(gl);
+        loadShader(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 
         texArrayObj = new OpenGlObject(2, 6, gl, 500, 300, new Dimension(100, 100));
@@ -194,7 +192,7 @@ public class GameLabyrinth implements GameState {
             c.keyReleased(e);
     }
 
-    private void loadShaders(GL4 gl) {
+    private void loadShader(GL4 gl) {
         //-----------------------SHADER TEST------------------------
         String[] textVertexSource = new String[1];
         String[] textFragmSource = new String[1];
@@ -250,7 +248,6 @@ public class GameLabyrinth implements GameState {
         }
         animShader = new Shader(gl);
         animShader.compile(animVertexSource, animFragmSource, null);
-
         //--------------------------------------------------------
     }
 
