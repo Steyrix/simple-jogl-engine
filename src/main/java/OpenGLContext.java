@@ -10,8 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-
-//TODO: implement delta time update interface for game states and entities
 public class OpenGLContext implements GLEventListener, KeyListener {
     private GameState state;
     private long lastTime;
