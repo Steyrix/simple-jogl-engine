@@ -113,7 +113,7 @@ public class BoundingBox {
 
     public boolean leftBottomCollision(BoundingBox anotherBox) {
         BoundingBox thisPointBox = new BoundingBox(this.posX, this.getBottom(), 1, 1);
-        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
+        if(!undefined && ((thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)) || isTouching(anotherBox)))
             return true;
 
         return false;
@@ -121,7 +121,7 @@ public class BoundingBox {
 
     public boolean rightBottomCollision(BoundingBox anotherBox) {
         BoundingBox thisPointBox = new BoundingBox(this.getRight(), this.getBottom(), 1, 1);
-        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
+        if(!undefined && ((thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)) || isTouching(anotherBox)))
             return true;
 
         return false;

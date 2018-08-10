@@ -3,30 +3,35 @@ package demos.labrynth;
 import com.jogamp.opengl.GL4;
 import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
+import engine.collision.CornerCollision;
 import engine.core.ControllableObject;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 //TODO: manage collisions
 public class LabyrinthCharacter extends ControllableObject {
 
-    private boolean belowContact;
-    private boolean aboveContact;
     private boolean[] keys;
-
+    private boolean belowContact;
+    private boolean canFall = false;
     public LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, frameSizeX, frameSizeY, animationSet);
-        this.belowContact = false;
-        this.aboveContact = false;
         this.keys = new boolean[1000000];
+        this.belowContact = false;
+
     }
 
     protected LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, frameSizeX, frameSizeY, animationSet);
-        this.belowContact = false;
-        this.aboveContact = false;
         this.keys = new boolean[1000000];
+        this.belowContact = false;
+    }
+
+    public void setBelowContact(BoundingBox anotherBox){
+         this.belowContact = detectCornerCollision(anotherBox) == CornerCollision.LEFT_BOTTOM
+                 || detectCornerCollision(anotherBox) == CornerCollision.RIGHT_BOTTOM;
     }
 
     @Override
@@ -80,7 +85,8 @@ public class LabyrinthCharacter extends ControllableObject {
 
         if (jumpState) {
             this.velocityY += (gravity * deltaTime) / 10;
-            if(this.velocityY >= 0.0f) {
+
+            if(this.velocityY >= 0.0f && jumpState) {
                 this.velocityY = 0.0f;
                 this.jumpState = false;
             }
@@ -97,7 +103,7 @@ public class LabyrinthCharacter extends ControllableObject {
             setJumpAnimation();
         }
 
-       // System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
+        System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY + "   " + canFall);
         playAnimation(deltaTime);
     }
 

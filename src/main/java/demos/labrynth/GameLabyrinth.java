@@ -27,7 +27,7 @@ public class GameLabyrinth implements GameState {
 
     //TEST
     private OpenGlObject texArrayObj;
-    private ControllableObject animObj;
+    private LabyrinthCharacter animObj;
     private Shader shader;
     private Shader texShader;
     private Shader boundShader;
@@ -169,7 +169,7 @@ public class GameLabyrinth implements GameState {
             c.update(deltaTime);
 
             for (OpenGlObject o : boundObjects)
-                if (o != c && c.intersects(o))
+                if (o != c)
                     c.collide(o);
         }
     }
@@ -273,122 +273,10 @@ public class GameLabyrinth implements GameState {
             this.boundObjects.add(boundObject);
         }
         //-----------PERIMETER TEST---------------
-        OpenGlObject topHorizontalBound = new OpenGlObject(2, 6, gl, 0, 0, new Dimension(1280, 25)) {
-            @Override
-            public void loadTexture(String filePath) {
-                try {
-                    this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        topHorizontalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{10f, 0f,
-                        0f, 10f,
-                        10f, 10f,
-                        10f, 0f,
-                        0f, 0f,
-                        0f, 10f});
-        this.boundObjects.add(topHorizontalBound);
-
-        OpenGlObject bottomHorizontalBound = new OpenGlObject(2, 6, gl, 0, 695, new Dimension(1280, 25)) {
-            @Override
-            public void loadTexture(String filePath) {
-                try {
-                    this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        bottomHorizontalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{10f, 0f,
-                        0f, 10f,
-                        10f, 10f,
-                        10f, 0f,
-                        0f, 0f,
-                        0f, 10f});
-        this.boundObjects.add(bottomHorizontalBound);
-
-        OpenGlObject leftVerticalBound = new OpenGlObject(2, 6, gl, 0, 25, new Dimension(25, 670)) {
-            @Override
-            public void loadTexture(String filePath) {
-                try {
-                    this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        leftVerticalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{10f, 0f,
-                        0f, 10f,
-                        10f, 10f,
-                        10f, 0f,
-                        0f, 0f,
-                        0f, 10f});
-        this.boundObjects.add(leftVerticalBound);
-
-        OpenGlObject rightVerticalBound = new OpenGlObject(2, 6, gl, 1255, 25, new Dimension(25, 670)) {
-            @Override
-            public void loadTexture(String filePath) {
-                try {
-                    this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        rightVerticalBound.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{10f, 0f,
-                        0f, 10f,
-                        10f, 10f,
-                        10f, 0f,
-                        0f, 0f,
-                        0f, 10f});
-        this.boundObjects.add(rightVerticalBound);
-
+        LabyrinthLevelCreator lc = new LabyrinthLevelCreator();
+        ArrayList<OpenGlObject> perimeter = lc.createLevelFromFile(gl, this.getClass().getClassLoader().
+                getResource("config/labyrinthlevels/defaultlevel.ini").getPath());
+        this.boundObjects.addAll(perimeter);
 
         background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
             @Override
