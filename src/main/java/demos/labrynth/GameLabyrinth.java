@@ -283,12 +283,4 @@ public class GameLabyrinth implements GameState {
                         0f, 0f,
                         0f, 10f});
     }
-
-
-    //TODO: implement reading level geography from files
-    public void loadLevel(String levelConfigFilePath) {
-        Scanner configReader = new Scanner(System.in);
-
-    }
-
 }

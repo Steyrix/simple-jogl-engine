@@ -29,8 +29,8 @@ public class LabyrinthLevelCreator {
 
         for (String l : lines) {
             l = l.replaceAll("[\\[,\\];]", " ");
-            //System.out.println("Line:" + l);
-            Scanner scanner = new Scanner(l);
+
+            var scanner = new Scanner(l);
             int startX = scanner.nextInt();
             int startY = scanner.nextInt();
             String orientation = scanner.next("[HV]");
@@ -51,7 +51,7 @@ public class LabyrinthLevelCreator {
     }
 
     private OpenGlObject createNewObject(int startX, int startY, int horSize, int vertSize, GL4 gl){
-        OpenGlObject out = new OpenGlObject(2, 6, gl,
+        var out = new OpenGlObject(2, 6, gl,
                 startX, startY, new Dimension(horSize, vertSize)) {
             @Override
             public void loadTexture(String filePath) {

@@ -22,14 +22,14 @@ import java.util.ArrayList;
 //TODO: implement texture arrays robust support
 public class TextureLoader {
     public static Texture loadTexture (String filePath) throws GLException, IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        var outputStream = new ByteArrayOutputStream();
         ImageIO.write(ImageIO.read(new File(filePath)), "png", outputStream);
         InputStream fileInputStream = new ByteArrayInputStream(outputStream.toByteArray());
         return TextureIO.newTexture(fileInputStream, true, TextureIO.PNG);
     }
 
     public TextureData loadTextureData (String filePath, GL4 gl) throws GLException, IOException {
-        File imageFile = new File(filePath);
+        var imageFile = new File(filePath);
         return TextureIO.newTextureData(gl.getGLProfile(), imageFile, GL4.GL_RGBA8, GL4.GL_RGBA, false, TextureIO.PNG);
         //return TextureIO.newTextureData(gl.getGLProfile(), imageFile, false, null);
     }
@@ -38,7 +38,7 @@ public class TextureLoader {
     //TODO: fix wrong colors
     public static IntBuffer loadTextureArrayTD(ArrayList<TextureData> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable) {
 
-        IntBuffer texture = IntBuffer.allocate(1);
+        var texture = IntBuffer.allocate(1);
         gl.glGenTextures(1, texture);
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, texture.get(0));
@@ -73,7 +73,7 @@ public class TextureLoader {
 
     public static IntBuffer loadTextureArray(ArrayList<BufferedImage> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable) {
 
-        IntBuffer texture = IntBuffer.allocate(1);
+        var texture = IntBuffer.allocate(1);
         gl.glGenTextures(1, texture);
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, texture.get(0));
