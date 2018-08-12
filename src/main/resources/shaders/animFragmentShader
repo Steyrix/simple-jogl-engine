@@ -9,5 +9,4 @@ void main(void)
     if(fColor.a <= 0){
         discard;
     }
-
 }

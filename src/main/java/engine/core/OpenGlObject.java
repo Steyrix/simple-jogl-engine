@@ -5,8 +5,8 @@ import com.hackoeur.jglm.Matrices;
 import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
-import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureData;
 import engine.collision.BoundingBox;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -92,13 +93,24 @@ public class OpenGlObject extends BoundingBox implements Textured {
     @Override
     public void loadTextureArray(String... filePaths) {
         try {
-            ArrayList<BufferedImage> images = new ArrayList<>();
+            ArrayList<TextureData> images = new ArrayList<>();
+            ArrayList<BufferedImage> buffImages = new ArrayList<>();
+
+            TextureLoader tl = new TextureLoader();
             int width, height = 0;
-            for (String path : filePaths)
-                images.add(ImageIO.read(new File(path)));
+            for (String path : filePaths) {
+                images.add(tl.loadTextureData(path,gl));
+                buffImages.add(ImageIO.read(new File(path)));
+            }
+
             width = images.get(0).getWidth();
             height = images.get(0).getHeight();
-            this.textureArray = TextureLoader.loadTextureArray(images, gl, width, height, false);
+
+            for(TextureData td : images){
+                System.out.println(td.getBuffer().toString());
+            }
+
+            this.textureArray = TextureLoader.loadTextureArray(buffImages, gl, width, height, false);
 
         } catch (Exception e) {
             e.printStackTrace();

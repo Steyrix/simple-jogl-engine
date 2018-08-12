@@ -14,24 +14,15 @@ import java.util.ArrayList;
 public class LabyrinthCharacter extends ControllableObject {
 
     private boolean[] keys;
-    private boolean belowContact;
-    private boolean canFall = false;
+
     public LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, frameSizeX, frameSizeY, animationSet);
         this.keys = new boolean[1000000];
-        this.belowContact = false;
-
     }
 
     protected LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, frameSizeX, frameSizeY, animationSet);
         this.keys = new boolean[1000000];
-        this.belowContact = false;
-    }
-
-    public void setBelowContact(BoundingBox anotherBox){
-         this.belowContact = detectCornerCollision(anotherBox) == CornerCollision.LEFT_BOTTOM
-                 || detectCornerCollision(anotherBox) == CornerCollision.RIGHT_BOTTOM;
     }
 
     @Override
@@ -103,7 +94,7 @@ public class LabyrinthCharacter extends ControllableObject {
             setJumpAnimation();
         }
 
-        System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY + "   " + canFall);
+        System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
         playAnimation(deltaTime);
     }
 
@@ -165,5 +156,5 @@ public class LabyrinthCharacter extends ControllableObject {
         this.currentAnim.setCurrentFrameY(0);
         this.currentAnim.setCurrentFrameX(1);
     }
-
+    
 }

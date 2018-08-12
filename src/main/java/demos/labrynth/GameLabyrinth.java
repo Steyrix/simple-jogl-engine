@@ -102,11 +102,7 @@ public class GameLabyrinth implements GameState {
                         0.1f, 0f});
         this.controls.add(animObj);
 
-        initLevelGeography(new float[]{1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-                        10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 12, 13, 14},
-                new float[]{4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                        1, 2, 3, 4, 8, 9, 10, 11, 12, 12, 12, 12, 12},
-                gl);
+        initLevelGeography(gl);
 
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
@@ -251,28 +247,8 @@ public class GameLabyrinth implements GameState {
         //--------------------------------------------------------
     }
 
-    private void initLevelGeography(float[] mapHorizontal, float[] mapVertical, GL4 gl) {
+    private void initLevelGeography(GL4 gl) {
 
-        int count = mapHorizontal.length;
-        for (int k = 0; k < count; k++) {
-            OpenGlObject boundObject = new OpenGlObject(2, 6, gl, mapHorizontal[k] * 25f,
-                    mapVertical[k] * 25f, new Dimension(25, 25));
-            boundObject.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
-                    new float[]{0f, 1f,
-                            1f, 0f,
-                            0f, 0f,
-                            0f, 1f,
-                            1f, 1f,
-                            1f, 0f},
-                    new float[]{1f, 0f,
-                            0f, 1f,
-                            1f, 1f,
-                            1f, 0f,
-                            0f, 0f,
-                            0f, 1f});
-            this.boundObjects.add(boundObject);
-        }
-        //-----------PERIMETER TEST---------------
         LabyrinthLevelCreator lc = new LabyrinthLevelCreator();
         ArrayList<OpenGlObject> perimeter = lc.createLevelFromFile(gl, this.getClass().getClassLoader().
                 getResource("config/labyrinthlevels/defaultlevel.ini").getPath());
