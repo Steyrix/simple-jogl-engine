@@ -95,7 +95,7 @@ public class LabyrinthCharacter extends ControllableObject {
         }
 
         System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
-        playAnimation(deltaTime);
+        playAnimation();
     }
 
     @Override

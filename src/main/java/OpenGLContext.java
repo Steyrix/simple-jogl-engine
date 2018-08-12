@@ -37,7 +37,7 @@ public class OpenGLContext implements GLEventListener, KeyListener {
         this.state.reshape(glAutoDrawable, i, i1, i2, i3);
     }
 
-    public float calcDeltaTime() {
+    private float calcDeltaTime() {
 
         long time = System.nanoTime();
         deltaTime = ((time - lastTime) / 1000000);
@@ -81,14 +81,11 @@ public class OpenGLContext implements GLEventListener, KeyListener {
             mainFrame.setVisible(true);
 
             mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+
         });
 
-
-        while (true) {
-            glCanvas.display();
-        }
-
-
+        while (true) glCanvas.display();
     }
 
 }

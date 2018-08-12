@@ -9,8 +9,8 @@
         <module name="simple-jogl-game" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="simple-jogl-game" target="1.8" />
+    <bytecodeTargetLevel target="10">
+      <module name="simple-jogl-game" target="10" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -11,8 +11,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
-//TODO: make animation more fancy
 public class AnimatedObject extends OpenGlObject {
 
     protected ArrayList<BasicAnimation> animations;
@@ -58,51 +56,9 @@ public class AnimatedObject extends OpenGlObject {
 
         shader.use();
 
-        this.width = xSize;
-        this.height = ySize;
+        defineAnimationVariables(shader);
 
-        Mat4 model = Mat4.MAT4_IDENTITY;
-        Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
-        Mat4 scale = new Mat4(xSize, 0.0f, 0.0f, 0.0f,
-                0.0f, ySize, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f);
-
-
-        model = model.translate(new Vec3(x, y, 0.0f));
-        model = model.translate(new Vec3(0.5f * xSize, 0.5f * ySize, 0.0f));
-        model = model.multiply(rotation);
-        model = model.translate(new Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f));
-
-        model = model.multiply(scale);
-
-        if (this.texture != null || this.textureArray != null) {
-
-            shader.setFloat("xChanging", currentAnim.currentFrameX * frameSizeX, false);
-            shader.setInteger("frameNumberX", currentAnim.currentFrameX + 1, false);
-            shader.setFloat("yChanging", currentAnim.currentFrameY * frameSizeY, false);
-            shader.setInteger("frameY", currentAnim.currentFrameY + 1, false);
-
-
-            if (this.texture != null) {
-                gl.glActiveTexture(GL4.GL_TEXTURE0);
-                this.texture.enable(gl);
-                this.texture.bind(gl);
-                gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureSampler"), 0);
-            } else {
-                gl.glActiveTexture(GL4.GL_TEXTURE0);
-
-                gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, this.textureArray.get(0));
-
-                gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureArray"), 0);
-            }
-
-        }
-
-        shader.setMatrix4f("model", model, true);
-
-        gl.glBindVertexArray(this.vertexArray.get(0));
-        gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount);
+        super.draw(x, y, xSize, ySize, rotationAngle, shader);
 
     }
 
@@ -111,55 +67,21 @@ public class AnimatedObject extends OpenGlObject {
 
         shader.use();
 
-        this.width = xSize;
-        this.height = ySize;
+        defineAnimationVariables(shader);
 
-        Mat4 model = Mat4.MAT4_IDENTITY;
-        Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
-        Mat4 scale = new Mat4(xSize, 0.0f, 0.0f, 0.0f,
-                0.0f, ySize, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f);
+        super.draw(xSize, ySize, rotationAngle, shader);
+    }
 
-
-        model = model.translate(new Vec3(this.posX, this.posY, 0.0f));
-        model = model.translate(new Vec3(0.5f * xSize, 0.5f * ySize, 0.0f));
-        model = model.multiply(rotation);
-        model = model.translate(new Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f));
-
-        model = model.multiply(scale);
-
+    private void defineAnimationVariables(Shader shader) {
         if (this.texture != null || this.textureArray != null) {
-
             shader.setFloat("xChanging", currentAnim.currentFrameX * frameSizeX, false);
             shader.setInteger("frameNumberX", currentAnim.currentFrameX + 1, false);
             shader.setFloat("yChanging", currentAnim.currentFrameY * frameSizeY, false);
             shader.setInteger("frameY", currentAnim.currentFrameY + 1, false);
-
-
-            if (this.texture != null) {
-                gl.glActiveTexture(GL4.GL_TEXTURE0);
-                this.texture.enable(gl);
-                this.texture.bind(gl);
-                gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureAtlas"), 0);
-            } else {
-                gl.glActiveTexture(GL4.GL_TEXTURE0);
-
-                gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, this.textureArray.get(0));
-
-                gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), "textureArray"), 0);
-            }
-
         }
-
-        shader.setMatrix4f("model", model, true);
-
-        gl.glBindVertexArray(this.vertexArray.get(0));
-        gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount);
-
     }
 
-    protected void playAnimation(float deltaTime) {
+    protected void playAnimation() {
         this.currentAnim.changeFrame();
     }
 
@@ -168,6 +90,4 @@ public class AnimatedObject extends OpenGlObject {
             this.currentAnim = a;
     }
 
-    protected void changeAnimation() {
-    }
 }
