@@ -15,12 +15,12 @@ public class LabyrinthCharacter extends ControllableObject {
 
     private boolean[] keys;
 
-    public LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+    LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, frameSizeX, frameSizeY, animationSet);
         this.keys = new boolean[1000000];
     }
 
-    protected LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+    LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, frameSizeX, frameSizeY, animationSet);
         this.keys = new boolean[1000000];
     }

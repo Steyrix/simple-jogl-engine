@@ -13,8 +13,8 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LabyrinthLevelCreator {
-    public ArrayList<OpenGlObject> createLevelFromFile(GL4 gl, String filePath) {
+class LabyrinthLevelCreator {
+    ArrayList<OpenGlObject> createLevelFromFile(GL4 gl, String filePath) {
 
         int defaultSize = 25, vertSize = 0, horSize = 0;
         List<String> lines = new ArrayList<>();

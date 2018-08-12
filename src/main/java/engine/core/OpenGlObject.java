@@ -92,7 +92,7 @@ public class OpenGlObject extends BoundingBox {
             ArrayList<TextureData> images = new ArrayList<>();
             ArrayList<BufferedImage> buffImages = new ArrayList<>();
 
-            TextureLoader tl = new TextureLoader();
+            var tl = new TextureLoader();
             int width, height = 0;
             for (String path : filePaths) {
                 images.add(tl.loadTextureData(path,gl));
