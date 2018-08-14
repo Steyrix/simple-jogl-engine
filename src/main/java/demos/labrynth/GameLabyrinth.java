@@ -2,6 +2,7 @@ package demos.labrynth;
 
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -27,6 +28,7 @@ public class GameLabyrinth implements GameState {
 
     //TEST
     private OpenGlObject texArrayObj;
+    private OpenGlObject testObject;
     private LabyrinthCharacter animObj;
     private Shader shader;
     private Shader texShader;
@@ -56,10 +58,12 @@ public class GameLabyrinth implements GameState {
         loadShader(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 
-        texArrayObj = new OpenGlObject(2, 6, gl, 500, 300, new Dimension(100, 100));
+
+
+        texArrayObj = new OpenGlObject(2, 6, gl, 500, 300, new Dimension(1024, 512), 2);
         texArrayObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
                 new float[]{0f, 1f,
                         1f, 0f,
@@ -67,19 +71,21 @@ public class GameLabyrinth implements GameState {
                         0f, 1f,
                         1f, 1f,
                         1f, 0f},
-                new float[]{0f, 0.2f,
-                        0.0625f, 0f,
+                new float[]{0f, 0f,
+                        1f, 1f,
+                        0f, 1f,
                         0f, 0f,
-                        0f, 0.2f,
-                        0.0625f, 0.2f,
-                        0.0625f, 0f});
+                        1f, 0f,
+                        1f, 1f});
+
+
 
 
         try {
             animObj = new LabyrinthCharacter(2, 6, gl, 25, 25,
-                    new Dimension(50, 75),
-                    0.1f, 0.1f,
-                    new BasicAnimation("WALK", 1, 0, 7, 1),
+                    new Dimension(50, 70), 5,
+                    0.1f, 0.333f,
+                    new BasicAnimation("WALK", 1, 0, 6, 1),
                     new BasicAnimation("JUMP", 2, 0, 3, 1),
                     new BasicAnimation("IDLE", 3, 0, 1, 1)) {
             };
@@ -87,23 +93,25 @@ public class GameLabyrinth implements GameState {
             e.printStackTrace();
         }
 
-        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/base_dark.png").getPath()}, true,
+        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/base_dark.png").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
                         0f, 1f,
                         1f, 1f,
                         1f, 0f},
-                new float[]{0f, 0.1f,
-                        0.1f, 0f,
+                new float[]{0f, 0f,
+                        0.1f, 0.333f,
+                        0f, 0.333f,
                         0f, 0f,
-                        0f, 0.1f,
-                        0.1f, 0.1f,
-                        0.1f, 0f});
+                        0.1f, 0f,
+                        0.1f, 0.333f});
         this.controls.add(animObj);
 
-        initLevelGeography(gl);
 
+
+
+        initLevelGeography(gl);
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
 
@@ -147,11 +155,15 @@ public class GameLabyrinth implements GameState {
             o.draw(50f, 50f, 0.0f, texShader);
         }
 
-        texArrayShader.setMatrix4f("projection", renderProjection, false);
-        texArrayObj.draw(50f, 100f, 0.0f, texArrayShader);
-
         animShader.setMatrix4f("projection", renderProjection, false);
         animObj.draw(animObj.getSize().width, animObj.getSize().height, 0.0f, animShader);
+
+        //gl.glEnable(GL4.GL_BLEND);
+        //gl.glBlendFunc(GL4.GL_ONE, GL4.GL_ONE_MINUS_SRC_ALPHA);
+        texArrayShader.setMatrix4f("projection", renderProjection, false);
+        texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
+
+        //gl.glDisable(GL4.GL_BLEND);
     }
 
     @Override
@@ -254,7 +266,7 @@ public class GameLabyrinth implements GameState {
                 getResource("config/labyrinthlevels/defaultlevel.ini").getPath());
         this.boundObjects.addAll(perimeter);
 
-        background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720)) {
+        background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720), 0) {
             @Override
             public void loadTexture(String filePath) {
                 try {

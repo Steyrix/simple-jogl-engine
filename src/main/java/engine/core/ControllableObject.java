@@ -18,9 +18,9 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
     protected float velocityCollY;
     protected boolean jumpState;
 
-    public ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim,
+    public ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id,
                               float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
-        super(bufferParamsCount, verticesCount, gl, boxDim, frameSizeX, frameSizeY, animationSet);
+        super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
 
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;
@@ -30,8 +30,9 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
     }
 
     protected ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim,
+                                 int id,
                                  float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
-        super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, frameSizeX, frameSizeY, animationSet);
+        super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, animationSet);
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;
         this.velocityCollX = 0.0f;

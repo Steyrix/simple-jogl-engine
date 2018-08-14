@@ -19,10 +19,10 @@ public class AnimatedObject extends OpenGlObject {
     private float frameSizeX;
     private float frameSizeY;
 
-    public AnimatedObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim,
+    public AnimatedObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id,
                           float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
 
-        super(bufferParamsCount, verticesCount, gl, boxDim);
+        super(bufferParamsCount, verticesCount, gl, boxDim, id);
 
         if (animationSet == null)
             throw new Exception("Must be atleast 1 animation!");
@@ -36,9 +36,9 @@ public class AnimatedObject extends OpenGlObject {
     }
 
     public AnimatedObject(int bufferParamsCount, int verticesCount, GL4 gl,
-                          float posX, float posY, Dimension boxDim,
+                          float posX, float posY, Dimension boxDim, int id,
                           float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
-        super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim);
+        super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id);
 
         if (animationSet == null)
             throw new Exception("Must be atleast 1 animation!");

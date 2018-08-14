@@ -52,7 +52,7 @@ class LabyrinthLevelCreator {
 
     private OpenGlObject createNewObject(int startX, int startY, int horSize, int vertSize, GL4 gl){
         var out = new OpenGlObject(2, 6, gl,
-                startX, startY, new Dimension(horSize, vertSize)) {
+                startX, startY, new Dimension(horSize, vertSize), 0) {
             @Override
             public void loadTexture(String filePath) {
                 try {

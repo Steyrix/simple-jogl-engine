@@ -31,10 +31,11 @@ public class OpenGlObject extends BoundingBox {
     protected int verticesCount;
     protected IntBuffer vertexArray;
 
+    private int textureId;
     protected Texture texture;
     protected IntBuffer textureArray;
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim) {
+    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int textureId) {
         super(0.0f, 0.0f, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -48,9 +49,10 @@ public class OpenGlObject extends BoundingBox {
 
         this.texture = null;
         this.textureArray = null;
+        this.textureId = textureId;
     }
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim) {
+    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, int textureId) {
         super(posX, posY, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -67,6 +69,7 @@ public class OpenGlObject extends BoundingBox {
 
         this.texture = null;
         this.textureArray = null;
+        this.textureId = textureId;
     }
 
     public boolean isTextured() {
@@ -106,7 +109,7 @@ public class OpenGlObject extends BoundingBox {
                 System.out.println(td.getBuffer().toString());
             }
 
-            this.textureArray = TextureLoader.loadTextureArray(buffImages, gl, width, height, false);
+            this.textureArray = TextureLoader.loadTextureArrayTD(images, gl, width, height, false, textureId);
 
         } catch (Exception e) {
             e.printStackTrace();

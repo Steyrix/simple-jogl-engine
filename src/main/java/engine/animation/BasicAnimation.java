@@ -27,11 +27,11 @@ public class BasicAnimation {
         this.framesCountX = framesCountX;
         this.framesCountY = framesCountY;
 
-        this.currentFrameX = 0;
-        this.currentFrameY = 0;
+        this.currentFrameX = 1;
+        this.currentFrameY = 1;
 
-        this.firstPosX = 0;
-        this.firstPosY = 0;
+        this.firstPosX = 1;
+        this.firstPosY = 1;
         this.lastPosX = framesCountX;
         this.lastPosY = framesCountY;
 
@@ -39,13 +39,13 @@ public class BasicAnimation {
     }
 
     public void changeFrame() {
-
+        System.out.println("X: " + currentFrameX + " Y: " + currentFrameY);
         if (framesCountX != 1) {
-            if (currentFrameX + 1 >= lastPosX) {
+            if (currentFrameX + 1 > lastPosX) {
                 currentFrameX = firstPosX;
 
                 if (framesCountY != 1) {
-                    if (currentFrameY + 1 >= lastPosY)
+                    if (currentFrameY + 1 > lastPosY)
                         currentFrameY = firstPosY;
                     else
                         currentFrameY++;
@@ -53,6 +53,7 @@ public class BasicAnimation {
             } else
                 currentFrameX++;
         }
+        System.out.println("X: " + currentFrameX + " Y:" + currentFrameY);
     }
 
     public String getName() {

@@ -15,13 +15,13 @@ public class LabyrinthCharacter extends ControllableObject {
 
     private boolean[] keys;
 
-    LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
-        super(bufferParamsCount, verticesCount, gl, boxDim, frameSizeX, frameSizeY, animationSet);
+    LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+        super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
         this.keys = new boolean[1000000];
     }
 
-    LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
-        super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, frameSizeX, frameSizeY, animationSet);
+    LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+        super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, animationSet);
         this.keys = new boolean[1000000];
     }
 
@@ -58,9 +58,9 @@ public class LabyrinthCharacter extends ControllableObject {
 
         //Moving horizontally?
         if (keys[KeyEvent.VK_D])
-            this.velocityX = 5.0f;
+            this.velocityX = 7.0f;
         else if (keys[KeyEvent.VK_A])
-            this.velocityX = -5.0f;
+            this.velocityX = -7.0f;
         else
             this.velocityX = 0f;
 
@@ -86,16 +86,17 @@ public class LabyrinthCharacter extends ControllableObject {
 
         this.posX += (this.velocityX * deltaTime) / 20;
 
-        if (velocityX == 0 && velocityY == 0) {
+        if (velocityX == 0 && velocityY == 0 ) {
             setAnimation(this.animations.get(2));
             this.currentAnim.setCurrentFrameX(0);
-            this.currentAnim.setCurrentFrameY(0);
+            this.currentAnim.setCurrentFrameY(2);
         } else if (velocityY != 0) {
             setJumpAnimation();
         }
 
-        System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
         playAnimation();
+        //System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
+
     }
 
     @Override
@@ -148,13 +149,15 @@ public class LabyrinthCharacter extends ControllableObject {
         this.currentAnim.setCurrentFrameY(1);
         this.currentAnim.setCurrentFrameX(7);
         this.currentAnim.setFirstPosX(7);
-        this.currentAnim.setLastPosX(9);
+        this.currentAnim.setLastPosX(10);
     }
 
     private void setWalkAnim() {
         this.currentAnim = this.animations.get(0);
-        this.currentAnim.setCurrentFrameY(0);
+        this.currentAnim.setCurrentFrameY(2);
         this.currentAnim.setCurrentFrameX(1);
+        this.currentAnim.setFirstPosX(1);
+        this.currentAnim.setLastPosX(6);
     }
     
 }

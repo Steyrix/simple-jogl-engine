@@ -30,17 +30,16 @@ public class TextureLoader {
 
     public TextureData loadTextureData (String filePath, GL4 gl) throws GLException, IOException {
         var imageFile = new File(filePath);
-        return TextureIO.newTextureData(gl.getGLProfile(), imageFile, GL4.GL_RGBA8, GL4.GL_RGBA, false, TextureIO.PNG);
-        //return TextureIO.newTextureData(gl.getGLProfile(), imageFile, false, null);
+        return TextureIO.newTextureData(gl.getGLProfile(), imageFile,true, TextureIO.PNG);
     }
 
     //TODO: implement check that textures are same size for avoiding exceptions
     //TODO: fix wrong colors
-    public static IntBuffer loadTextureArrayTD(ArrayList<TextureData> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable) {
+    public static IntBuffer loadTextureArrayTD(ArrayList<TextureData> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable, int id) {
 
         var texture = IntBuffer.allocate(1);
         gl.glGenTextures(1, texture);
-        gl.glActiveTexture(GL4.GL_TEXTURE0);
+        gl.glActiveTexture(GL4.GL_TEXTURE0 + id);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, texture.get(0));
 
         System.out.println("loadTextureArray func 0:" + gl.glGetError());
@@ -50,6 +49,7 @@ public class TextureLoader {
 
         int arraySpot = 0;
         for (TextureData texData: textures) {
+            System.out.println(texData.toString());
             gl.glTexSubImage3D(GL4.GL_TEXTURE_2D_ARRAY, 0, 0, 0, arraySpot++, texLayerWidth, texLayerHeight,
                     1, GL4.GL_RGBA, GL4.GL_BYTE, texData.getBuffer());
         }
