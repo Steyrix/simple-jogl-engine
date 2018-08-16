@@ -3,7 +3,7 @@ package demos.labrynth;
 import com.jogamp.opengl.GL4;
 import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
-import engine.collision.CornerCollision;
+import engine.collision.PointF;
 import engine.core.ControllableObject;
 
 import java.awt.*;
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class LabyrinthCharacter extends ControllableObject {
 
     private boolean[] keys;
+    private ArrayList<PointF> collisionPoints;
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
@@ -38,7 +39,7 @@ public class LabyrinthCharacter extends ControllableObject {
                 if (this.velocityX > 0.0f)
                     this.posX = anotherBox.getPosX() - this.width;
                 else
-                    this.posX = anotherBox.getRight();
+                    this.posX = anotherBox.getRightX();
 
                 this.velocityX = 0.0f;
 
@@ -46,7 +47,7 @@ public class LabyrinthCharacter extends ControllableObject {
                 if (this.velocityY > 0.0f)
                     this.posY = anotherBox.getPosY() - this.height;
                 else
-                    this.posY = anotherBox.getBottom();
+                    this.posY = anotherBox.getBottomY();
 
                 this.velocityY = 0.0f;
             }

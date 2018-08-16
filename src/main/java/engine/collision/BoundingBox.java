@@ -8,7 +8,7 @@ public class BoundingBox {
     protected float posY;
     protected float width;
     protected float height;
-    protected boolean undefined;
+    private boolean undefined;
 
     public BoundingBox() {
         this.posX = 0.0f;
@@ -59,11 +59,11 @@ public class BoundingBox {
         return posY;
     }
 
-    public float getRight() {
+    public float getRightX() {
         return this.posX + this.width;
     }
 
-    public float getBottom() {
+    public float getBottomY() {
         return this.posY + this.height;
     }
 
@@ -71,67 +71,77 @@ public class BoundingBox {
         return new Dimension((int) this.width, (int) this.height);
     }
 
-    private boolean isTouchingX(BoundingBox anotherBox){
-        return anotherBox.posX == this.getRight() || anotherBox.getRight() == this.posX;
+    public boolean isTouchingX(BoundingBox anotherBox) {
+        return anotherBox.posX == this.getRightX() || anotherBox.getRightX() == this.posX;
     }
 
-    private boolean isTouchingY(BoundingBox anotherBox){
-        return anotherBox.posY == this.getBottom() || anotherBox.getBottom() == this.posY;
+    public boolean isTouchingY(BoundingBox anotherBox) {
+        return anotherBox.posY == this.getBottomY() || anotherBox.getBottomY() == this.posY;
     }
 
-    public boolean isTouching(BoundingBox anotherBox){
+    public boolean isTouching(BoundingBox anotherBox) {
         return isTouchingX(anotherBox) || isTouchingY(anotherBox);
     }
 
-    public boolean intersectX(BoundingBox anotherBox) {
-        return !undefined && !((this.posX > anotherBox.posX + anotherBox.width - 1) || (this.getRight() - 1 < anotherBox.posX));
+    public boolean intersectsX(BoundingBox anotherBox) {
+        return !undefined && !(this.posX > anotherBox.getRightX() - 1 || this.getRightX() - 1 < anotherBox.posX);
     }
 
-    public boolean intersectY(BoundingBox anotherBox) {
-        return !undefined && !((this.posY > anotherBox.posY + anotherBox.height - 1) || (this.getBottom() - 1 < anotherBox.posY));
+    public boolean intersectsY(BoundingBox anotherBox) {
+        return !undefined && !(this.posY > anotherBox.getBottomY() - 1 || this.getBottomY() - 1 < anotherBox.posY);
     }
 
     public boolean intersects(BoundingBox anotherBox) {
-        return intersectX(anotherBox) && intersectY(anotherBox);
+        return intersectsX(anotherBox) && intersectsY(anotherBox);
+    }
+
+    public boolean containsPoint(PointF point) {
+        return !undefined && (point.x <= this.getRightX() && point.x >= this.posX &&
+                point.y <= this.getBottomY() && point.y >= this.posY);
+    }
+
+    public boolean containsPoint(float x, float y) {
+        return !undefined && (x <= this.getRightX() && x >= this.posX &&
+                y <= this.getBottomY() && y >= this.posY);
     }
 
     public boolean leftUpperCollision(BoundingBox anotherBox) {
         BoundingBox thisPointBox = new BoundingBox(this.posX, this.posY, 1, 1);
-        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
+        if (!undefined && (thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)))
             return true;
 
         return false;
     }
 
     public boolean rightUpperCollision(BoundingBox anotherBox) {
-        BoundingBox thisPointBox = new BoundingBox(this.getRight(), this.posY, 1, 1);
-        if(!undefined && (thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)))
+        BoundingBox thisPointBox = new BoundingBox(this.getRightX(), this.posY, 1, 1);
+        if (!undefined && (thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)))
             return true;
 
         return false;
     }
 
     public boolean leftBottomCollision(BoundingBox anotherBox) {
-        BoundingBox thisPointBox = new BoundingBox(this.posX, this.getBottom(), 1, 1);
-        if(!undefined && ((thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)) || isTouching(anotherBox)))
+        BoundingBox thisPointBox = new BoundingBox(this.posX, this.getBottomY(), 1, 1);
+        if (!undefined && ((thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)) || isTouching(anotherBox)))
             return true;
 
         return false;
     }
 
     public boolean rightBottomCollision(BoundingBox anotherBox) {
-        BoundingBox thisPointBox = new BoundingBox(this.getRight(), this.getBottom(), 1, 1);
-        if(!undefined && ((thisPointBox.intersectX(anotherBox) || thisPointBox.intersectY(anotherBox)) || isTouching(anotherBox)))
+        BoundingBox thisPointBox = new BoundingBox(this.getRightX(), this.getBottomY(), 1, 1);
+        if (!undefined && ((thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)) || isTouching(anotherBox)))
             return true;
 
         return false;
     }
 
-    public CornerCollision detectCornerCollision(BoundingBox anotherBox){
-        if(leftUpperCollision(anotherBox)) return CornerCollision.LEFT_UPPER;
-        if(leftBottomCollision(anotherBox)) return CornerCollision.LEFT_BOTTOM;
-        if(rightUpperCollision(anotherBox)) return CornerCollision.RIGHT_UPPER;
-        if(rightBottomCollision(anotherBox)) return CornerCollision.RIGHT_BOTTOM;
+    public CornerCollision detectCornerCollision(BoundingBox anotherBox) {
+        if (leftUpperCollision(anotherBox)) return CornerCollision.LEFT_UPPER;
+        if (leftBottomCollision(anotherBox)) return CornerCollision.LEFT_BOTTOM;
+        if (rightUpperCollision(anotherBox)) return CornerCollision.RIGHT_UPPER;
+        if (rightBottomCollision(anotherBox)) return CornerCollision.RIGHT_BOTTOM;
 
         return CornerCollision.NO_COLLISION;
     }

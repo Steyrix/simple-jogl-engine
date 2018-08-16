@@ -24,13 +24,11 @@ public class GameLabyrinth implements GameState {
 
     private ArrayList<ControllableObject> controls;
     private ArrayList<OpenGlObject> boundObjects;
-    private ArrayList<OpenGlObject> texturedObjects;
 
     //TEST
     private OpenGlObject texArrayObj;
     private OpenGlObject testObject;
     private LabyrinthCharacter animObj;
-    private Shader shader;
     private Shader texShader;
     private Shader boundShader;
     private Shader texArrayShader;
@@ -47,8 +45,6 @@ public class GameLabyrinth implements GameState {
 
         this.controls = new ArrayList<>();
         this.boundObjects = new ArrayList<>();
-        this.texturedObjects = new ArrayList<>();
-
     }
 
     @Override
@@ -59,28 +55,20 @@ public class GameLabyrinth implements GameState {
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-
-
-
-        texArrayObj = new OpenGlObject(2, 6, gl, 500, 300, new Dimension(1024, 512), 2);
-        texArrayObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{0f, 0f,
-                        1f, 1f,
-                        0f, 1f,
-                        0f, 0f,
-                        1f, 0f,
-                        1f, 1f});
-
-
-
-
+//        texArrayObj = new OpenGlObject(2, 6, gl, 500, 300, new Dimension(1024, 512), 2);
+//        texArrayObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
+//                new float[]{0f, 1f,
+//                        1f, 0f,
+//                        0f, 0f,
+//                        0f, 1f,
+//                        1f, 1f,
+//                        1f, 0f},
+//                new float[]{0f, 0f,
+//                        1f, 1f,
+//                        0f, 1f,
+//                        0f, 0f,
+//                        1f, 0f,
+//                        1f, 1f});
         try {
             animObj = new LabyrinthCharacter(2, 6, gl, 25, 25,
                     new Dimension(50, 70), 5,
@@ -108,9 +96,6 @@ public class GameLabyrinth implements GameState {
                         0.1f, 0.333f});
         this.controls.add(animObj);
 
-
-
-
         initLevelGeography(gl);
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
@@ -123,10 +108,6 @@ public class GameLabyrinth implements GameState {
     public void dispose(GLAutoDrawable glAutoDrawable) {
         for (OpenGlObject o : this.boundObjects) {
             o.dispose();
-        }
-
-        for (OpenGlObject t : this.texturedObjects) {
-            t.dispose();
         }
 
         for (ControllableObject c : this.controls) {
@@ -149,21 +130,11 @@ public class GameLabyrinth implements GameState {
             o.draw(o.getSize().width, o.getSize().height, 0.0f, boundShader);
         }
 
-        texShader.setMatrix4f("projection", renderProjection, false);
-
-        for (OpenGlObject o : texturedObjects) {
-            o.draw(50f, 50f, 0.0f, texShader);
-        }
-
         animShader.setMatrix4f("projection", renderProjection, false);
         animObj.draw(animObj.getSize().width, animObj.getSize().height, 0.0f, animShader);
 
-        //gl.glEnable(GL4.GL_BLEND);
-        //gl.glBlendFunc(GL4.GL_ONE, GL4.GL_ONE_MINUS_SRC_ALPHA);
-        texArrayShader.setMatrix4f("projection", renderProjection, false);
-        texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
-
-        //gl.glDisable(GL4.GL_BLEND);
+        //texArrayShader.setMatrix4f("projection", renderProjection, false);
+        //texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
     }
 
     @Override
@@ -212,17 +183,6 @@ public class GameLabyrinth implements GameState {
         }
         texShader = new Shader(gl);
         texShader.compile(textVertexSource, textFragmSource, null);
-
-        String[] vertexSource = new String[1];
-        String[] fragmSource = new String[1];
-        try {
-            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/coloredVertexShader").getPath());
-            fragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/coloredFragmentShader").getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        shader = new Shader(gl);
-        shader.compile(vertexSource, fragmSource, null);
 
         String[] boundVertexSource = new String[1];
         String[] boundFragmSource = new String[1];
