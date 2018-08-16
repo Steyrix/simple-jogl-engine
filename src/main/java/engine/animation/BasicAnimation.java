@@ -39,7 +39,7 @@ public class BasicAnimation {
     }
 
     public void changeFrame() {
-        System.out.println("X: " + currentFrameX + " Y: " + currentFrameY);
+       // System.out.println("X: " + currentFrameX + " Y: " + currentFrameY);
         if (framesCountX != 1) {
             if (currentFrameX + 1 > lastPosX) {
                 currentFrameX = firstPosX;
@@ -53,7 +53,7 @@ public class BasicAnimation {
             } else
                 currentFrameX++;
         }
-        System.out.println("X: " + currentFrameX + " Y:" + currentFrameY);
+      //  System.out.println("X: " + currentFrameX + " Y:" + currentFrameY);
     }
 
     public String getName() {

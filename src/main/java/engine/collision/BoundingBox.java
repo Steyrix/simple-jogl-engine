@@ -1,6 +1,7 @@
 package engine.collision;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class BoundingBox {
     protected float posX;
@@ -96,13 +97,22 @@ public class BoundingBox {
     }
 
     public boolean containsPoint(PointF point) {
-        return !undefined && (point.x <= this.getRightX() && point.x >= this.posX &&
-                point.y <= this.getBottomY() && point.y >= this.posY);
+        return !undefined && (point.x < this.getRightX() && point.x > this.posX &&
+                point.y < this.getBottomY() && point.y > this.posY);
     }
 
     public boolean containsPoint(float x, float y) {
-        return !undefined && (x <= this.getRightX() && x >= this.posX &&
-                y <= this.getBottomY() && y >= this.posY);
+        return !undefined && (x < this.getRightX() && x > this.posX &&
+                y < this.getBottomY() && y > this.posY);
+    }
+
+    public boolean containsPoint(ArrayList<PointF> pointFS){
+        for(PointF p : pointFS) {
+            if(containsPoint(p))
+                return true;
+        }
+
+        return false;
     }
 
     public boolean leftUpperCollision(BoundingBox anotherBox) {
@@ -144,5 +154,10 @@ public class BoundingBox {
         if (rightBottomCollision(anotherBox)) return CornerCollision.RIGHT_BOTTOM;
 
         return CornerCollision.NO_COLLISION;
+    }
+
+    public String toString()
+    {
+        return "posX:" + posX + "; posY:" + posY + "; rightX:" + getRightX() + "; bottomY:" + getBottomY();
     }
 }
