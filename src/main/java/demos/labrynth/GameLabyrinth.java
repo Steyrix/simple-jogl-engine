@@ -7,6 +7,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import engine.animation.BasicAnimation;
+import engine.collision.SpeculativeCollider;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
@@ -147,9 +148,13 @@ public class GameLabyrinth implements GameState {
         for (ControllableObject c : controls) {
             c.update(deltaTime);
 
-            for (OpenGlObject o : boundObjects)
+            for (OpenGlObject o : boundObjects) {
                 if (o != c)
-                    c.collide(o);
+                    c.reactToCollision(o);
+                if (c instanceof SpeculativeCollider &&
+                        ((SpeculativeCollider) c).getNextBox().intersects(o))
+                    ((SpeculativeCollider) c).preventCollision();
+            }
         }
     }
 

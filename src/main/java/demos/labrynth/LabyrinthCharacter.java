@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL4;
 import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
 import engine.collision.PointF;
+import engine.collision.SpeculativeCollider;
 import engine.core.ControllableObject;
 
 import java.awt.*;
@@ -11,10 +12,11 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 //TODO: manage collisions
-public class LabyrinthCharacter extends ControllableObject {
+public class LabyrinthCharacter extends ControllableObject implements SpeculativeCollider {
 
     private boolean[] keys;
-    public ArrayList<PointF> collisionPoints;
+    private ArrayList<PointF> collisionPoints;
+    private BoundingBox nextBox;
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
@@ -25,8 +27,11 @@ public class LabyrinthCharacter extends ControllableObject {
         this.collisionPoints.add(new PointF(posX, getBottomY()));
         this.collisionPoints.add(new PointF(getRightX(), getBottomY()));
         this.collisionPoints.add(new PointF(getRightX(), posY));
-        this.collisionPoints.add(new PointF(posX + width/2, posY));
-        this.collisionPoints.add(new PointF(posX + width/2, getBottomY()));
+        this.collisionPoints.add(new PointF(posX + width / 2, posY));
+        this.collisionPoints.add(new PointF(posX + width / 2, getBottomY()));
+        this.collisionPoints.add(new PointF(posX, posY + height / 2));
+        this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
+        this.nextBox = new BoundingBox(posX, posY, width, height);
     }
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
@@ -38,37 +43,17 @@ public class LabyrinthCharacter extends ControllableObject {
         this.collisionPoints.add(new PointF(posX, getBottomY()));
         this.collisionPoints.add(new PointF(getRightX(), getBottomY()));
         this.collisionPoints.add(new PointF(getRightX(), posY));
-        this.collisionPoints.add(new PointF(posX + width/2, posY));
-        this.collisionPoints.add(new PointF(posX + width/2, getBottomY()));
+        this.collisionPoints.add(new PointF(posX + width / 2, posY));
+        this.collisionPoints.add(new PointF(posX + width / 2, getBottomY()));
+        this.collisionPoints.add(new PointF(posX, posY + height / 2));
+        this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
+        this.nextBox = new BoundingBox(posX, posY, width, height);
     }
 
     @Override
-    protected void reactToCollision(BoundingBox anotherBox) {
-
-        if (anotherBox.containsPoint(this.collisionPoints)) {
-
-            if (this.velocityX != 0f && this.velocityY != 0f) {
-
-                this.velocityX = 0f;
-                this.velocityY = 0f;
-
-            } else if (this.velocityX != 0f) {
-                if (this.velocityX > 0f)
-                    this.posX = anotherBox.getPosX() - this.width;
-                else
-                    this.posX = anotherBox.getRightX();
-
-                this.velocityX = 0f;
-
-            } else if (this.velocityY != 0f) {
-                if (this.velocityY > 0f)
-                    this.posY = anotherBox.getPosY() - this.height;
-                else
-                    this.posY = anotherBox.getBottomY();
-
-                this.velocityY = 0f;
-            }
-        }
+    public void reactToCollision(BoundingBox anotherBox) {
+        if (anotherBox.containsPoint(this.collisionPoints))
+            processCollision(anotherBox);
     }
 
     @Override
@@ -112,20 +97,63 @@ public class LabyrinthCharacter extends ControllableObject {
             setJumpAnimation();
         }
 
-        updatePoints();
+        updateCollisionPoints();
+        updateNextBox(deltaTime);
+
 
         playAnimation();
         //System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
 
     }
 
-    private void updatePoints(){
-        this.collisionPoints.set(0, new PointF(posX, posY));
-        this.collisionPoints.set(1, new PointF(posX, getBottomY()));
-        this.collisionPoints.set(2, new PointF(getRightX(), getBottomY()));
-        this.collisionPoints.set(3, new PointF(getRightX(), posY));
-        this.collisionPoints.set(4, new PointF(posX + width/2, posY));
-        this.collisionPoints.set(5, new PointF(posX + width/2, getBottomY()));
+    private void updateCollisionPoints() {
+        collisionPoints.set(0, new PointF(posX, posY));
+        collisionPoints.set(1, new PointF(posX, getBottomY()));
+        collisionPoints.set(2, new PointF(getRightX(), getBottomY()));
+        collisionPoints.set(3, new PointF(getRightX(), posY));
+        collisionPoints.set(4, new PointF(posX + width / 2, posY));
+        collisionPoints.set(5, new PointF(posX + width / 2, getBottomY()));
+        collisionPoints.set(6, new PointF(posX, posY + height / 2));
+        collisionPoints.set(7, new PointF(getRightX(), posY + height / 2));
+    }
+
+    private void processCollision(BoundingBox anotherBox) {
+        if (this.velocityX != 0f && this.velocityY != 0f) {
+
+            this.velocityX = 0f;
+            this.velocityY = 0f;
+
+        } else if (this.velocityX != 0f) {
+            if (this.velocityX > 0f)
+                this.posX = anotherBox.getPosX() - this.width;
+            else
+                this.posX = anotherBox.getRightX();
+
+            this.velocityX = 0f;
+
+        } else if (this.velocityY != 0f) {
+            if (this.velocityY > 0f)
+                this.posY = anotherBox.getPosY() - this.height;
+            else
+                this.posY = anotherBox.getBottomY();
+
+            this.velocityY = 0f;
+        }
+    }
+
+    @Override
+    public void preventCollision(){
+        this.velocityY = 0.0f;
+        this.velocityX = 0.0f;
+    }
+
+    private void updateNextBox(float deltaTime) {
+        nextBox.setPosition(posX + velocityX * deltaTime, posY + velocityY * deltaTime);
+    }
+
+    @Override
+    public BoundingBox getNextBox() {
+        return this.nextBox;
     }
 
     @Override
@@ -135,8 +163,8 @@ public class LabyrinthCharacter extends ControllableObject {
     @Override
     public void keyPressed(KeyEvent e) {
 
-        if (!keys[e.getKeyCode()])
-            keys[e.getKeyCode()] = true;
+        if (!this.keys[e.getKeyCode()])
+            this.keys[e.getKeyCode()] = true;
 
         if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_A)
             setWalkAnim();
@@ -149,8 +177,8 @@ public class LabyrinthCharacter extends ControllableObject {
     @Override
     public void keyReleased(KeyEvent e) {
 
-        if (keys[e.getKeyCode()])
-            keys[e.getKeyCode()] = false;
+        if (this.keys[e.getKeyCode()])
+            this.keys[e.getKeyCode()] = false;
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_D:
@@ -169,24 +197,24 @@ public class LabyrinthCharacter extends ControllableObject {
     }
 
     private void jump() {
-        this.velocityY -= 25f;
-        this.jumpState = true;
+        velocityY -= 25f;
+        jumpState = true;
     }
 
     private void setJumpAnimation() {
-        this.currentAnim = this.animations.get(1);
-        this.currentAnim.setCurrentFrameY(1);
-        this.currentAnim.setCurrentFrameX(7);
-        this.currentAnim.setFirstPosX(7);
-        this.currentAnim.setLastPosX(10);
+        currentAnim = animations.get(1);
+        currentAnim.setCurrentFrameY(1);
+        currentAnim.setCurrentFrameX(7);
+        currentAnim.setFirstPosX(7);
+        currentAnim.setLastPosX(10);
     }
 
     private void setWalkAnim() {
-        this.currentAnim = this.animations.get(0);
-        this.currentAnim.setCurrentFrameY(2);
-        this.currentAnim.setCurrentFrameX(1);
-        this.currentAnim.setFirstPosX(1);
-        this.currentAnim.setLastPosX(6);
+        currentAnim = animations.get(0);
+        currentAnim.setCurrentFrameY(2);
+        currentAnim.setCurrentFrameX(1);
+        currentAnim.setFirstPosX(1);
+        currentAnim.setLastPosX(6);
     }
 
 }

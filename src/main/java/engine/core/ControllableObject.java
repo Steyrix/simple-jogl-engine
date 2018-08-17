@@ -5,12 +5,13 @@ import com.jogamp.opengl.GL4;
 import engine.animation.AnimatedObject;
 import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
+import engine.collision.SimpleCollider;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public abstract class ControllableObject extends AnimatedObject implements Controllable {
+public abstract class ControllableObject extends AnimatedObject implements Controllable, SimpleCollider {
 
     protected float velocityX;
     protected float velocityY;
@@ -40,11 +41,8 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
         this.jumpState = false;
     }
 
-    protected abstract void reactToCollision(BoundingBox anotherBox);
-
-    public void collide(BoundingBox anotherBox) {
-        this.reactToCollision(anotherBox);
-    }
+    @Override
+    public abstract void reactToCollision(BoundingBox anotherBox);
 
     @Override
     public abstract void update(float deltaTime);
