@@ -73,9 +73,9 @@ public class GameLabyrinth implements GameState {
             animObj = new LabyrinthCharacter(2, 6, gl, 25, 25,
                     new Dimension(50, 70), 5,
                     0.1f, 0.333f,
-                    new BasicAnimation("WALK", 1, 0, 6, 1),
-                    new BasicAnimation("JUMP", 2, 0, 3, 1),
-                    new BasicAnimation("IDLE", 3, 0, 1, 1)) {
+                    new BasicAnimation("WALK", 1, 0, 6, 1, 100f),
+                    new BasicAnimation("JUMP", 2, 0, 4, 1, 100f),
+                    new BasicAnimation("IDLE", 3, 0, 1, 1, 100f)) {
             };
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,7 +151,8 @@ public class GameLabyrinth implements GameState {
                 if (o != c)
                     c.reactToCollision(o);
                 if (c instanceof SpeculativeCollider &&
-                        ((SpeculativeCollider) c).getNextBox().intersects(o)) {
+                        ((SpeculativeCollider) c).getNextBox().intersects(o) &&
+                        !((SpeculativeCollider)c).getNextBox().isTouching(o)) {
                     System.out.println("Next box is going to intersect!");
                     ((SpeculativeCollider) c).preventCollision();
                 }

@@ -17,6 +17,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     private boolean[] keys;
     private ArrayList<PointF> collisionPoints;
     private BoundingBox nextBox;
+    private boolean isWalking;
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
@@ -32,6 +33,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.collisionPoints.add(new PointF(posX, posY + height / 2));
         this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
         this.nextBox = new BoundingBox(posX, posY, width, height);
+
+        this.isWalking = false;
     }
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
@@ -48,6 +51,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.collisionPoints.add(new PointF(posX, posY + height / 2));
         this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
         this.nextBox = new BoundingBox(posX, posY, width, height);
+
+        this.isWalking = false;
     }
 
     @Override
@@ -56,20 +61,24 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
             processCollision(anotherBox);
     }
 
+
+    //TODO: refactor govnocode
     @Override
     public void update(float deltaTime) {
 
         //Moving horizontally?
         if (keys[KeyEvent.VK_D])
-            this.velocityX = 7.0f;
+            this.velocityX = 3.5f;
         else if (keys[KeyEvent.VK_A])
-            this.velocityX = -7.0f;
+            this.velocityX = -3.5f;
         else
             this.velocityX = 0f;
 
         //Moving vertically?
-        if (keys[KeyEvent.VK_S])
+        if (keys[KeyEvent.VK_S]) {
+            this.jumpState = true;
             this.velocityY = 5.0f;
+        }
         else if (keys[KeyEvent.VK_W] && !jumpState)
             jump();
         else if (!keys[KeyEvent.VK_W] && !jumpState)
@@ -93,6 +102,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
             setAnimation(this.animations.get(2));
             this.currentAnim.setCurrentFrameX(0);
             this.currentAnim.setCurrentFrameY(2);
+            this.isWalking = false;
         } else if (velocityY != 0) {
             setJumpAnimation();
         }
@@ -101,7 +111,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         updateNextBox(deltaTime);
 
 
-        playAnimation();
+        playAnimation(deltaTime);
         //System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
 
     }
@@ -142,9 +152,14 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     }
 
     @Override
-    public void preventCollision(){
+    public void preventCollision() {
         this.velocityY = 0.0f;
         this.velocityX = 0.0f;
+        keys[KeyEvent.VK_W] = false;
+        keys[KeyEvent.VK_S] = false;
+        keys[KeyEvent.VK_A] = false;
+        keys[KeyEvent.VK_D] = false;
+        isWalking = false;
     }
 
     private void updateNextBox(float deltaTime) {
@@ -167,9 +182,11 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
             this.keys[e.getKeyCode()] = true;
 
         if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_A)
-            setWalkAnim();
+            if(!isWalking)
+                setWalkAnim();
         else if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S)
-            setJumpAnimation();
+            if(!jumpState)
+                setJumpAnimation();
 
         //System.out.println(velocityX);
     }
@@ -207,6 +224,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         currentAnim.setCurrentFrameX(7);
         currentAnim.setFirstPosX(7);
         currentAnim.setLastPosX(10);
+        jumpState = true;
     }
 
     private void setWalkAnim() {
@@ -215,6 +233,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         currentAnim.setCurrentFrameX(1);
         currentAnim.setFirstPosX(1);
         currentAnim.setLastPosX(6);
+        isWalking = true;
     }
 
 }
