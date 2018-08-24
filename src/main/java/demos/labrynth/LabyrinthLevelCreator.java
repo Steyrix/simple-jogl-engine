@@ -57,10 +57,7 @@ class LabyrinthLevelCreator {
             public void loadTexture(String filePath) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
+                    GameLabyrinth.initRepeatableTexParameters(this.texture, this.gl);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -69,7 +66,7 @@ class LabyrinthLevelCreator {
 
         out.initRenderData(new String[]{this.getClass().
                                         getClassLoader().
-                                        getResource("textures/abbey_base.jpg").
+                                        getResource("textures/labyrinth/abbey_base.jpg").
                                         getPath()},
                     false,
                     new float[]{0f, 1f,

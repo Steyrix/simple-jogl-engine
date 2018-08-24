@@ -2,10 +2,10 @@ package demos.labrynth;
 
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
-import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.util.texture.Texture;
 import engine.animation.BasicAnimation;
 import engine.collision.SpeculativeCollider;
 import engine.core.ControllableObject;
@@ -18,7 +18,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 //TODO: load every texture with its own unique id
 public class GameLabyrinth implements GameState {
@@ -27,8 +26,8 @@ public class GameLabyrinth implements GameState {
     private ArrayList<OpenGlObject> boundObjects;
 
     //TEST
-    private OpenGlObject texArrayObj;
-    private OpenGlObject testObject;
+    //private OpenGlObject texArrayObj;
+    //private OpenGlObject testObject;
     private LabyrinthCharacter animObj;
     private Shader texShader;
     private Shader boundShader;
@@ -82,7 +81,7 @@ public class GameLabyrinth implements GameState {
             e.printStackTrace();
         }
 
-        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/base_dark.png").getPath()}, false,
+        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/labyrinth/base_dark.png").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -152,8 +151,10 @@ public class GameLabyrinth implements GameState {
                 if (o != c)
                     c.reactToCollision(o);
                 if (c instanceof SpeculativeCollider &&
-                        ((SpeculativeCollider) c).getNextBox().intersects(o))
+                        ((SpeculativeCollider) c).getNextBox().intersects(o)) {
+                    System.out.println("Next box is going to intersect!");
                     ((SpeculativeCollider) c).preventCollision();
+                }
             }
         }
     }
@@ -236,17 +237,14 @@ public class GameLabyrinth implements GameState {
             public void loadTexture(String filePath) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
-                    texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
+                    initRepeatableTexParameters(texture, gl);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
 
-        background.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/abbey_base.jpg").getPath()}, false,
+        background.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/labyrinth/abbey_base.jpg").getPath()}, false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -259,5 +257,12 @@ public class GameLabyrinth implements GameState {
                         10f, 0f,
                         0f, 0f,
                         0f, 10f});
+    }
+
+    static void initRepeatableTexParameters(Texture texture, GL4 gl){
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT);
     }
 }
