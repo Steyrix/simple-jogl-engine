@@ -81,8 +81,8 @@ public class AnimatedObject extends OpenGlObject {
         }
     }
 
-    protected void playAnimation() {
-        this.currentAnim.changeFrame();
+    protected void playAnimation(float deltaTime) {
+        this.currentAnim.changeFrame(deltaTime);
     }
 
     protected void setAnimation(BasicAnimation a) {

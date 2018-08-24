@@ -17,9 +17,11 @@ public class BasicAnimation {
     protected int lastPosY;
     protected int framesCountX;
     protected int framesCountY;
+    protected float accumulatedTime;
+    private float timeLimit;
     protected String animName;
 
-    public BasicAnimation(String animName, int animationId, int usedLayerId, int framesCountX, int framesCountY) {
+    public BasicAnimation(String animName, int animationId, int usedLayerId, int framesCountX, int framesCountY, float timeLimit) {
         this.animName = animName;
         this.animationId = animationId;
         this.usedLayerId = usedLayerId;
@@ -35,25 +37,33 @@ public class BasicAnimation {
         this.lastPosX = framesCountX;
         this.lastPosY = framesCountY;
 
+        this.timeLimit = timeLimit;
+        this.accumulatedTime = 0f;
+
         addNewAnim(this);
     }
 
-    public void changeFrame() {
-       // System.out.println("X: " + currentFrameX + " Y: " + currentFrameY);
-        if (framesCountX != 1) {
-            if (currentFrameX + 1 > lastPosX) {
-                currentFrameX = firstPosX;
+    public void changeFrame(float deltaTime) {
+        accumulatedTime += deltaTime;
+        if (accumulatedTime >= timeLimit) {
+            accumulatedTime = 0f;
 
-                if (framesCountY != 1) {
-                    if (currentFrameY + 1 > lastPosY)
-                        currentFrameY = firstPosY;
-                    else
-                        currentFrameY++;
-                }
-            } else
-                currentFrameX++;
+             //System.out.println("X1: " + currentFrameX + " Y1: " + currentFrameY);
+            if (framesCountX != 1) {
+                if (currentFrameX + 1 > lastPosX) {
+                    currentFrameX = firstPosX;
+
+                    if (framesCountY != 1) {
+                        if (currentFrameY + 1 > lastPosY)
+                            currentFrameY = firstPosY;
+                        else
+                            currentFrameY++;
+                    }
+                } else
+                    currentFrameX++;
+            }
         }
-      //  System.out.println("X: " + currentFrameX + " Y:" + currentFrameY);
+          System.out.println("X2: " + currentFrameX + " Y2:" + currentFrameY);
     }
 
     public String getName() {
