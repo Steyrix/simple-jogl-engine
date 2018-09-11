@@ -63,7 +63,7 @@ public class BasicAnimation {
                     currentFrameX++;
             }
         }
-          System.out.println("X2: " + currentFrameX + " Y2:" + currentFrameY);
+          //System.out.println("X2: " + currentFrameX + " Y2:" + currentFrameY);
     }
 
     public String getName() {

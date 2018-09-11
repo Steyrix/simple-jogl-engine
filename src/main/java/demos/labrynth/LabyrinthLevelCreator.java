@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 class LabyrinthLevelCreator {
     ArrayList<OpenGlObject> createLevelFromFile(GL4 gl, String filePath) {
 
-        int defaultSize = 25, vertSize = 0, horSize = 0;
+        int defaultSize = 25, vertSize, horSize;
         List<String> lines = new ArrayList<>();
         ArrayList<OpenGlObject> outList = new ArrayList<>();
 

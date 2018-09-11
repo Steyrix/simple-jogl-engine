@@ -93,19 +93,17 @@ public class OpenGlObject extends BoundingBox {
     protected void loadTextureArray(String... filePaths) {
         try {
             ArrayList<TextureData> images = new ArrayList<>();
-            ArrayList<BufferedImage> buffImages = new ArrayList<>();
-
             var tl = new TextureLoader();
-            int width, height = 0;
+            int width, height;
+
             for (String path : filePaths) {
-                images.add(tl.loadTextureData(path,gl));
-                buffImages.add(ImageIO.read(new File(path)));
+                images.add(tl.loadTextureData(path, gl));
             }
 
             width = images.get(0).getWidth();
             height = images.get(0).getHeight();
 
-            for(TextureData td : images){
+            for (TextureData td : images) {
                 System.out.println(td.getBuffer().toString());
             }
 
@@ -168,9 +166,9 @@ public class OpenGlObject extends BoundingBox {
 
         Mat4 model = getFinalMatrix(x, y, xSize, ySize, rotationAngle);
 
-        if(this.texture != null)
+        if (this.texture != null)
             defineSingleTextureState(shader, "textureSample");
-        if(this.textureArray != null)
+        if (this.textureArray != null)
             defineArrayTextureState(shader, "textureArray");
 
         shader.setMatrix4f("model", model, true);
@@ -189,9 +187,9 @@ public class OpenGlObject extends BoundingBox {
 
         Mat4 model = getFinalMatrix(xSize, ySize, rotationAngle);
 
-        if(this.texture != null)
+        if (this.texture != null)
             defineSingleTextureState(shader, "textureSample");
-        if(this.textureArray != null)
+        if (this.textureArray != null)
             defineArrayTextureState(shader, "textureArray");
 
         shader.setMatrix4f("model", model, true);
@@ -200,20 +198,20 @@ public class OpenGlObject extends BoundingBox {
         gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount);
     }
 
-    private void defineSingleTextureState(Shader shader, String uniformName){
+    private void defineSingleTextureState(Shader shader, String uniformName) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         this.texture.enable(gl);
         this.texture.bind(gl);
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
     }
 
-    private void defineArrayTextureState(Shader shader, String uniformName){
+    private void defineArrayTextureState(Shader shader, String uniformName) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray.get(0));
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
     }
 
-    private Mat4 getFinalMatrix(float xSize, float ySize, float rotationAngle){
+    private Mat4 getFinalMatrix(float xSize, float ySize, float rotationAngle) {
         var model = Mat4.MAT4_IDENTITY;
         var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
         var scale = getScaleMatrix(xSize, ySize);
@@ -227,7 +225,7 @@ public class OpenGlObject extends BoundingBox {
         return model;
     }
 
-    private Mat4 getFinalMatrix(float x, float y, float xSize, float ySize, float rotationAngle){
+    private Mat4 getFinalMatrix(float x, float y, float xSize, float ySize, float rotationAngle) {
         var model = Mat4.MAT4_IDENTITY;
         var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
         var scale = getScaleMatrix(xSize, ySize);
@@ -241,7 +239,7 @@ public class OpenGlObject extends BoundingBox {
         return model;
     }
 
-    private Mat4 getScaleMatrix(float xSize, float ySize){
+    private Mat4 getScaleMatrix(float xSize, float ySize) {
         return new Mat4(xSize, 0.0f, 0.0f, 0.0f,
                 0.0f, ySize, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 0.0f,
@@ -250,7 +248,7 @@ public class OpenGlObject extends BoundingBox {
 
     }
 
-    private void applyRotation (float xSize, float ySize, Mat4 rotation, Mat4 model){
+    private void applyRotation(float xSize, float ySize, Mat4 rotation, Mat4 model) {
         model = model.translate(new Vec3(0.5f * xSize, 0.5f * ySize, 0.0f));
         model = model.multiply(rotation);
         model = model.translate(new Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f));

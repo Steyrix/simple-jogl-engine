@@ -154,7 +154,7 @@ public class GameLabyrinth implements GameState {
                         ((SpeculativeCollider) c).getNextBox().intersects(o) &&
                         !((SpeculativeCollider)c).getNextBox().isTouching(o)) {
                     System.out.println("Next box is going to intersect!");
-                    ((SpeculativeCollider) c).preventCollision();
+                    //((SpeculativeCollider) c).preventCollision();
                 }
             }
         }

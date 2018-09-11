@@ -1,8 +1,5 @@
 package engine.animation;
 
-import com.hackoeur.jglm.Mat4;
-import com.hackoeur.jglm.Matrices;
-import com.hackoeur.jglm.Vec3;
 import com.jogamp.opengl.GL4;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;

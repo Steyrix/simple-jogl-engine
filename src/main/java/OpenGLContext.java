@@ -40,7 +40,7 @@ public class OpenGLContext implements GLEventListener, KeyListener {
     private float calcDeltaTime() {
 
         long time = System.nanoTime();
-        deltaTime = ((time - lastTime) / 1000000);
+        deltaTime = ((time - lastTime) / 1000000f);
         lastTime = time;
 
         return deltaTime;
