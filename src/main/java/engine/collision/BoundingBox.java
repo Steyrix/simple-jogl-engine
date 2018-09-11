@@ -96,9 +96,14 @@ public class BoundingBox {
         return intersectsX(anotherBox) && intersectsY(anotherBox);
     }
 
-    public boolean containsPoint(PointF point) {
-        return !undefined && (point.x < this.getRightX() && point.x > this.posX &&
-                point.y < this.getBottomY() && point.y > this.posY);
+    public boolean containsPoint(PointF... points) {
+        for (PointF point : points) {
+            if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
+                    point.y < this.getBottomY() && point.y > this.posY))
+                return true;
+        }
+
+        return false;
     }
 
     public boolean containsPoint(float x, float y) {
@@ -106,9 +111,9 @@ public class BoundingBox {
                 y < this.getBottomY() && y > this.posY);
     }
 
-    public boolean containsPoint(ArrayList<PointF> pointFS){
-        for(PointF p : pointFS) {
-            if(containsPoint(p))
+    public boolean containsPoint(ArrayList<PointF> pointFS) {
+        for (PointF p : pointFS) {
+            if (containsPoint(p))
                 return true;
         }
 
@@ -156,8 +161,7 @@ public class BoundingBox {
         return CornerCollision.NO_COLLISION;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return "posX:" + posX + "; posY:" + posY + "; rightX:" + getRightX() + "; bottomY:" + getBottomY();
     }
 }

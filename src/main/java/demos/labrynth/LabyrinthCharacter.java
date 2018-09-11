@@ -17,7 +17,11 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     private boolean[] keys;
     private ArrayList<PointF> collisionPoints;
     private BoundingBox nextBox;
+
     private boolean isWalking;
+    private boolean canJump;
+    private float jumpTime;
+    private static float jumpTimeLimit = 300f;
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
@@ -35,6 +39,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
         this.isWalking = false;
+        this.canJump = true;
+        this.jumpTime = 0f;
     }
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
@@ -53,14 +59,21 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
         this.isWalking = false;
+        this.canJump = true;
+        this.jumpTime = 0f;
     }
 
     @Override
     public void reactToCollision(BoundingBox anotherBox) {
+        if(detectBottomContact(anotherBox))
+            jumpState = false;
         if (anotherBox.containsPoint(this.collisionPoints))
             processCollision(anotherBox);
     }
 
+    private boolean detectBottomContact(BoundingBox anotherBox){
+        return anotherBox.containsPoint(this.collisionPoints.get(1),this.collisionPoints.get(2),this.collisionPoints.get(5));
+    }
 
     //TODO: refactor govnocode
     @Override
@@ -76,24 +89,28 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
 
         //Moving vertically?
         if (keys[KeyEvent.VK_S]) {
-            this.jumpState = true;
+            //this.jumpState = true;
             this.velocityY = 5.0f;
-        }
-        else if (keys[KeyEvent.VK_W] && !jumpState)
+        } else if (keys[KeyEvent.VK_W] && canJump)
             jump();
-        else if (!keys[KeyEvent.VK_W] && !jumpState)
+        else if (!jumpState)
             this.velocityY = 0.0f;
 
-        float gravity = 5f;
+        float gravity = 1f;
 
-        if (jumpState) {
-            this.velocityY += (gravity * deltaTime) / 10;
-
-            if (this.velocityY >= 0.0f && jumpState) {
-                this.velocityY = 0.0f;
-                this.jumpState = false;
+        if (!canJump) {
+            this.jumpTime += deltaTime;
+            if (jumpTime >= jumpTimeLimit) {
+                jumpTime = 0f;
+                canJump = true;
             }
         }
+
+        if (jumpState) {
+            System.out.println("Applying gravity");
+            this.velocityY += (gravity * deltaTime) / 10;
+        }
+
         this.posY += (this.velocityY * deltaTime) / 20;
 
         this.posX += (this.velocityX * deltaTime) / 20;
@@ -110,8 +127,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         updateCollisionPoints();
         updateNextBox(deltaTime);
 
-
         playAnimation(deltaTime);
+        System.out.println("JUMPSTATE:" + jumpState);
         //System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
 
     }
@@ -182,13 +199,12 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
             this.keys[e.getKeyCode()] = true;
 
         if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_A)
-            if(!isWalking)
+            if (!isWalking)
                 setWalkAnim();
-        else if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S)
-            if(!jumpState)
-                setJumpAnimation();
+            else if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S)
+                if (!jumpState)
+                    setJumpAnimation();
 
-        //System.out.println(velocityX);
     }
 
     @Override
@@ -210,12 +226,12 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
                 break;
         }
 
-        System.out.println(e.getKeyCode() + "R");
     }
 
     private void jump() {
-        velocityY -= 25f;
+        velocityY -= 31f;
         jumpState = true;
+        canJump = false;
     }
 
     private void setJumpAnimation() {
@@ -224,7 +240,6 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         currentAnim.setCurrentFrameX(7);
         currentAnim.setFirstPosX(7);
         currentAnim.setLastPosX(10);
-        jumpState = true;
     }
 
     private void setWalkAnim() {
