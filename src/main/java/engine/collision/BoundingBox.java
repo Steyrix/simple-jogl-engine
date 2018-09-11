@@ -164,4 +164,12 @@ public class BoundingBox {
     public String toString() {
         return "posX:" + posX + "; posY:" + posY + "; rightX:" + getRightX() + "; bottomY:" + getBottomY();
     }
+
+    protected float getIntersectionWidth(BoundingBox anotherBox) {
+        return anotherBox.posX >= this.posX ? -(this.getRightX() - anotherBox.posX) : anotherBox.getRightX() - this.posX;
+    }
+
+    protected float getIntersectionHeight(BoundingBox anotherBox) {
+        return anotherBox.posY >= this.posY ? -(this.getBottomY() - anotherBox.posY) : anotherBox.getBottomY() - this.posY;
+    }
 }
