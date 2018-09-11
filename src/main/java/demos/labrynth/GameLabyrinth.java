@@ -145,18 +145,12 @@ public class GameLabyrinth implements GameState {
     @Override
     public void update(float deltaTime) {
         for (ControllableObject c : controls) {
-            c.update(deltaTime);
 
-            for (OpenGlObject o : boundObjects) {
+            for (OpenGlObject o : boundObjects)
                 if (o != c)
                     c.reactToCollision(o);
-                if (c instanceof SpeculativeCollider &&
-                        ((SpeculativeCollider) c).getNextBox().intersects(o) &&
-                        !((SpeculativeCollider)c).getNextBox().isTouching(o)) {
-                    System.out.println("Next box is going to intersect!");
-                    //((SpeculativeCollider) c).preventCollision();
-                }
-            }
+
+            c.update(deltaTime);
         }
     }
 

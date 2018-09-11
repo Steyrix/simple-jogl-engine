@@ -21,7 +21,6 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     private boolean isWalking;
     private boolean canJump;
     private float jumpTime;
-    private static float jumpTimeLimit = 300f;
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
@@ -65,72 +64,94 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
 
     @Override
     public void reactToCollision(BoundingBox anotherBox) {
-        if(detectBottomContact(anotherBox))
+        if (detectBottomContact(anotherBox))
             jumpState = false;
         if (anotherBox.containsPoint(this.collisionPoints))
             processCollision(anotherBox);
     }
 
-    private boolean detectBottomContact(BoundingBox anotherBox){
-        return anotherBox.containsPoint(this.collisionPoints.get(1),this.collisionPoints.get(2),this.collisionPoints.get(5));
+    private boolean detectBottomContact(BoundingBox anotherBox) {
+        return anotherBox.containsPoint(
+                this.collisionPoints.get(1),
+                this.collisionPoints.get(2),
+                this.collisionPoints.get(5));
     }
 
-    //TODO: refactor govnocode
     @Override
     public void update(float deltaTime) {
 
-        //Moving horizontally?
+        applyVelocityX();
+        applyVelocityY();
+
+        processJumpTime(deltaTime);
+        processGravityEffect(deltaTime);
+
+        changePosition(deltaTime);
+        processAnimation();
+
+        updateCollisionPoints();
+        updateNextBox(deltaTime);
+
+        playAnimation(deltaTime);
+
+        //System.out.println("JUMPSTATE:" + jumpState);
+        System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
+
+    }
+
+    private void applyVelocityX() {
         if (keys[KeyEvent.VK_D])
             this.velocityX = 3.5f;
         else if (keys[KeyEvent.VK_A])
             this.velocityX = -3.5f;
         else
             this.velocityX = 0f;
+    }
 
-        //Moving vertically?
+    private void applyVelocityY() {
         if (keys[KeyEvent.VK_S]) {
-            //this.jumpState = true;
             this.velocityY = 5.0f;
+            this.jumpState = true;
+            this.canJump = false;
         } else if (keys[KeyEvent.VK_W] && canJump)
             jump();
         else if (!jumpState)
             this.velocityY = 0.0f;
+    }
 
-        float gravity = 1f;
-
+    private void processJumpTime(float deltaTime) {
         if (!canJump) {
             this.jumpTime += deltaTime;
+            float jumpTimeLimit = 300f;
             if (jumpTime >= jumpTimeLimit) {
                 jumpTime = 0f;
                 canJump = true;
             }
         }
+    }
 
+    private void processGravityEffect(float deltaTime) {
+        float gravity = 1f;
         if (jumpState) {
             System.out.println("Applying gravity");
             this.velocityY += (gravity * deltaTime) / 10;
         }
+    }
 
-        this.posY += (this.velocityY * deltaTime) / 20;
-
-        this.posX += (this.velocityX * deltaTime) / 20;
-
-        if (velocityX == 0 && velocityY == 0) {
-            setAnimation(this.animations.get(2));
+    private void processAnimation() {
+        if (this.velocityX == 0 && this.velocityY == 0) {
+            this.setAnimation(this.animations.get(2));
             this.currentAnim.setCurrentFrameX(0);
             this.currentAnim.setCurrentFrameY(2);
             this.isWalking = false;
-        } else if (velocityY != 0) {
-            setJumpAnimation();
+        } else if (this.velocityY != 0) {
+            this.setJumpAnimation();
         }
+    }
 
-        updateCollisionPoints();
-        updateNextBox(deltaTime);
-
-        playAnimation(deltaTime);
-        System.out.println("JUMPSTATE:" + jumpState);
-        //System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
-
+    private void changePosition(float deltaTime) {
+        this.posY += (this.velocityY * deltaTime) / 20;
+        this.posX += (this.velocityX * deltaTime) / 20;
     }
 
     private void updateCollisionPoints() {
@@ -145,25 +166,23 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     }
 
     private void processCollision(BoundingBox anotherBox) {
-        if (this.velocityX != 0f && this.velocityY != 0f) {
+        float moveX = this.getIntersectionWidth(anotherBox),
+                moveY = this.getIntersectionHeight(anotherBox);
 
+        if (this.velocityX != 0f && this.velocityY != 0f) {
             this.velocityX = 0f;
-            this.velocityY = 0f;
+            if (!jumpState && this.velocityY < 0) {
+                this.velocityY = 0f;
+                this.posX += moveX;
+            }
+            this.posY += moveY;
 
         } else if (this.velocityX != 0f) {
-            if (this.velocityX > 0f)
-                this.posX = anotherBox.getPosX() - this.width;
-            else
-                this.posX = anotherBox.getRightX();
-
+            this.posX += moveX;
             this.velocityX = 0f;
 
         } else if (this.velocityY != 0f) {
-            if (this.velocityY > 0f)
-                this.posY = anotherBox.getPosY() - this.height;
-            else
-                this.posY = anotherBox.getBottomY();
-
+            this.posY += moveY;
             this.velocityY = 0f;
         }
     }
@@ -230,6 +249,10 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
 
     private void jump() {
         velocityY -= 31f;
+        setAirFloating();
+    }
+
+    private void setAirFloating() {
         jumpState = true;
         canJump = false;
     }
