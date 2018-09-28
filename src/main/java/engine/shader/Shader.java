@@ -27,7 +27,7 @@ public class Shader {
 
     public void compile(String[] vertexShaderSource, String[] fragmentShaderSource,
                         String[] geometryShaderSource) {
-        int sVertex = 0, sFragment = 0, sGeometry = 0;
+        int sVertex, sFragment, sGeometry = 0;
 
         sVertex = gl.glCreateShader(GL4.GL_VERTEX_SHADER);
         gl.glShaderSource(sVertex, 1, vertexShaderSource, null);
