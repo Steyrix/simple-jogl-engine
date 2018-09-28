@@ -24,12 +24,14 @@ public class OpenGlObject extends BoundingBox {
     protected final GL4 gl;
 
     private IntBuffer buffers;
+    private IntBuffer bbBuffer;
     private ArrayList<Integer> paramsCount;
     private int buffersFilled;
     private int buffersCount;
 
-    protected int verticesCount;
-    protected IntBuffer vertexArray;
+    private int verticesCount;
+    private IntBuffer vertexArray;
+    private IntBuffer bbVertexArray;
 
     private int textureId;
     protected Texture texture;
@@ -43,7 +45,9 @@ public class OpenGlObject extends BoundingBox {
         this.buffersCount = bufferParamsCount;
         this.verticesCount = verticesCount;
         this.buffers = IntBuffer.allocate(buffersCount);
+        this.bbBuffer = IntBuffer.allocate(1);
         this.vertexArray = IntBuffer.allocate(1);
+        this.bbVertexArray = IntBuffer.allocate(1);
 
         this.paramsCount = new ArrayList<>();
 
@@ -60,7 +64,9 @@ public class OpenGlObject extends BoundingBox {
         this.buffersCount = bufferParamsCount;
         this.verticesCount = verticesCount;
         this.buffers = IntBuffer.allocate(buffersCount);
+        this.bbBuffer = IntBuffer.allocate(1);
         this.vertexArray = IntBuffer.allocate(1);
+        this.bbVertexArray = IntBuffer.allocate(1);
 
         this.paramsCount = new ArrayList<>();
 
@@ -117,6 +123,10 @@ public class OpenGlObject extends BoundingBox {
     public void initRenderData(String[] textureFilePaths, boolean texArray, float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
+
+        initBoundingBoxBuffer();
+        genBoundingBoxVertexArray();
+
         if (textureFilePaths != null && textureFilePaths.length == 1 && !texArray) {
             System.out.println("Loading only single texture");
             loadTexture(textureFilePaths[0]);
@@ -176,6 +186,8 @@ public class OpenGlObject extends BoundingBox {
         gl.glBindVertexArray(this.vertexArray.get(0));
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount);
         //System.out.println(gl.glGetError() + " draw1");
+
+        drawBoundingBox();
     }
 
     public void draw(float xSize, float ySize, float rotationAngle, Shader shader) {
@@ -196,6 +208,8 @@ public class OpenGlObject extends BoundingBox {
 
         gl.glBindVertexArray(this.vertexArray.get(0));
         gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount);
+
+        drawBoundingBox();
     }
 
     private void defineSingleTextureState(Shader shader, String uniformName) {
@@ -252,5 +266,37 @@ public class OpenGlObject extends BoundingBox {
         model = model.translate(new Vec3(0.5f * xSize, 0.5f * ySize, 0.0f));
         model = model.multiply(rotation);
         model = model.translate(new Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f));
+    }
+
+    //TODO: add ability to debug bounding boxes
+    private void initBoundingBoxBuffer() {
+        gl.glGenBuffers(1, bbBuffer);
+        FloatBuffer bbVerticesBuffer = FloatBuffer.wrap(
+                new float[]{
+
+                        0f, 0f,
+                        1f, 0f,
+                        1f, 1f,
+                        0f, 1f,
+                });
+
+        gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0));
+        gl.glBufferData(GL4.GL_ARRAY_BUFFER, 32, bbVerticesBuffer, GL4.GL_STATIC_DRAW);
+    }
+
+    private void genBoundingBoxVertexArray() {
+        gl.glGenVertexArrays(1, this.bbVertexArray);
+        gl.glBindVertexArray(this.bbVertexArray.get(0));
+
+        gl.glEnableVertexAttribArray(0);
+        gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0));
+        gl.glVertexAttribPointer(0, 2, GL4.GL_FLOAT, false, 0, 0);
+    }
+
+    private void drawBoundingBox() {
+        gl.glBindVertexArray(this.bbVertexArray.get(0));
+        System.out.println(gl.glGetError() + " draw bounding box 1");
+        gl.glDrawArrays(GL4.GL_LINES, 0, 4);
+        System.out.println(gl.glGetError() + " draw bounding box 2");
     }
 }

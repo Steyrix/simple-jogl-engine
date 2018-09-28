@@ -5,9 +5,9 @@ import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 import engine.animation.BasicAnimation;
-import engine.collision.SpeculativeCollider;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
@@ -49,6 +49,7 @@ public class GameLabyrinth implements GameState {
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
+
         GL4 gl = glAutoDrawable.getGL().getGL4();
 
         loadShader(gl);
@@ -74,14 +75,19 @@ public class GameLabyrinth implements GameState {
                     new Dimension(50, 70), 5,
                     0.1f, 0.333f,
                     new BasicAnimation("WALK", 1, 0, 6, 1, 100f),
-                    new BasicAnimation("JUMP", 2, 0, 4, 1, 100f),
+                    new BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
                     new BasicAnimation("IDLE", 3, 0, 1, 1, 100f)) {
             };
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        animObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/labyrinth/base_dark.png").getPath()}, false,
+        animObj.initRenderData(new String[]{this.
+                        getClass().
+                        getClassLoader().
+                        getResource("textures/labyrinth/base_dark.png").
+                        getPath()},
+                false,
                 new float[]{0f, 1f,
                         1f, 0f,
                         0f, 0f,
@@ -144,6 +150,7 @@ public class GameLabyrinth implements GameState {
 
     @Override
     public void update(float deltaTime) {
+        //System.out.println("upd" + "; " + elapsedTime + ";" + cnt++);
         for (ControllableObject c : controls) {
 
             for (OpenGlObject o : boundObjects)

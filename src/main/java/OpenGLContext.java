@@ -13,9 +13,8 @@ import java.awt.event.KeyListener;
 public class OpenGLContext implements GLEventListener, KeyListener {
     private GameState state;
     private long lastTime;
-    private float deltaTime;
 
-    public OpenGLContext(GameState state) {
+    private OpenGLContext(GameState state) {
         this.lastTime = System.nanoTime();
         this.state = state;
     }
@@ -40,7 +39,7 @@ public class OpenGLContext implements GLEventListener, KeyListener {
     private float calcDeltaTime() {
 
         long time = System.nanoTime();
-        deltaTime = ((time - lastTime) / 1000000f);
+        float deltaTime = ((time - lastTime) / 1000000f);
         lastTime = time;
 
         return deltaTime;
@@ -82,10 +81,11 @@ public class OpenGLContext implements GLEventListener, KeyListener {
 
             mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-
         });
 
-        while (true) glCanvas.display();
+        while (true) {
+            glCanvas.display();
+        }
     }
 
 }

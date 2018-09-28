@@ -11,12 +11,14 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-//TODO: manage collisions
+//TODO: manage collisions with multiple objects at the same time
+//TODO: cleanup code
 public class LabyrinthCharacter extends ControllableObject implements SpeculativeCollider {
 
     private boolean[] keys;
     private ArrayList<PointF> collisionPoints;
     private BoundingBox nextBox;
+    private BoundingBox currentBottomPlatform;
 
     private boolean isWalking;
     private boolean canJump;
@@ -37,6 +39,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
+        this.currentBottomPlatform = null;
         this.isWalking = false;
         this.canJump = true;
         this.jumpTime = 0f;
@@ -57,24 +60,62 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
+        this.currentBottomPlatform = null;
         this.isWalking = false;
         this.canJump = true;
         this.jumpTime = 0f;
     }
 
+    //TODO: fix bug with horizontal collision
     @Override
     public void reactToCollision(BoundingBox anotherBox) {
-        if (detectBottomContact(anotherBox))
+        if (detectBottomContact(anotherBox)) {
             jumpState = false;
-        if (anotherBox.containsPoint(this.collisionPoints))
+            currentBottomPlatform = anotherBox;
+        }
+
+        if (currentBottomPlatform != null && !detectBottomContact(currentBottomPlatform)) {
+            currentBottomPlatform = null;
+            jumpState = true;
+        }
+
+        if (anotherBox.containsPoint(this.collisionPoints)) {
+            //System.out.println("AnotherBox: " + anotherBox.getPosX() + ", " + anotherBox.getPosY());
             processCollision(anotherBox);
+        }
+    }
+
+    //TODO: fix bug - moveY is applied because of diagonal move towards the vertical bound
+    private void processCollision(BoundingBox anotherBox) {
+        float moveX = this.getIntersectionWidth(anotherBox),
+                moveY = this.getIntersectionHeight(anotherBox);
+
+        boolean fallingState = !jumpState && this.velocityY < 0f;
+
+        if (this.velocityX != 0f && this.velocityY != 0f) {
+            this.velocityX = 0f;
+            if (fallingState) {
+                this.velocityY = 0f;
+                this.posX += moveX;
+            }
+            this.posY += moveY;
+
+        } else if (this.velocityX != 0f) {
+            this.posX += moveX;
+            this.velocityX = 0f;
+
+        } else if (this.velocityY != 0f) {
+            this.posY += moveY;
+            this.velocityY = 0f;
+        }
     }
 
     private boolean detectBottomContact(BoundingBox anotherBox) {
-        return anotherBox.containsPoint(
+        return anotherBox.containsNumberOfPoints(2,
                 this.collisionPoints.get(1),
                 this.collisionPoints.get(2),
                 this.collisionPoints.get(5));
+
     }
 
     @Override
@@ -86,8 +127,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         processJumpTime(deltaTime);
         processGravityEffect(deltaTime);
 
-        changePosition(deltaTime);
         processAnimation();
+        changePosition(deltaTime);
 
         updateCollisionPoints();
         updateNextBox(deltaTime);
@@ -95,16 +136,18 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         playAnimation(deltaTime);
 
         //System.out.println("JUMPSTATE:" + jumpState);
-        System.out.println(this.posX + "   " + this.posY + "||| " + deltaTime + " |||" + this.velocityX + " " + this.velocityY);
+        //System.out.println(this.velocityX + " " + this.velocityY);
 
     }
 
     private void applyVelocityX() {
-        if (keys[KeyEvent.VK_D])
+        if (keys[KeyEvent.VK_D]) {
+            isWalking = true;
             this.velocityX = 3.5f;
-        else if (keys[KeyEvent.VK_A])
+        } else if (keys[KeyEvent.VK_A]) {
+            isWalking = true;
             this.velocityX = -3.5f;
-        else
+        } else
             this.velocityX = 0f;
     }
 
@@ -122,7 +165,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     private void processJumpTime(float deltaTime) {
         if (!canJump) {
             this.jumpTime += deltaTime;
-            float jumpTimeLimit = 300f;
+            float jumpTimeLimit = 600f;
             if (jumpTime >= jumpTimeLimit) {
                 jumpTime = 0f;
                 canJump = true;
@@ -133,7 +176,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     private void processGravityEffect(float deltaTime) {
         float gravity = 1f;
         if (jumpState) {
-            System.out.println("Applying gravity");
+            //System.out.println("Applying gravity");
             this.velocityY += (gravity * deltaTime) / 10;
         }
     }
@@ -144,7 +187,13 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
             this.currentAnim.setCurrentFrameX(0);
             this.currentAnim.setCurrentFrameY(2);
             this.isWalking = false;
-        } else if (this.velocityY != 0) {
+        } else if (this.velocityY != 0 && this.velocityX != 0) {
+            if (!jumpState)
+                this.setJumpAnimation();
+        } else if (this.velocityX != 0 && !jumpState) {
+            if (currentAnim != animations.get(0))
+                this.setWalkAnim();
+        } else if (this.velocityX != 0 && jumpState) {
             this.setJumpAnimation();
         }
     }
@@ -163,28 +212,6 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         collisionPoints.set(5, new PointF(posX + width / 2, getBottomY()));
         collisionPoints.set(6, new PointF(posX, posY + height / 2));
         collisionPoints.set(7, new PointF(getRightX(), posY + height / 2));
-    }
-
-    private void processCollision(BoundingBox anotherBox) {
-        float moveX = this.getIntersectionWidth(anotherBox),
-                moveY = this.getIntersectionHeight(anotherBox);
-
-        if (this.velocityX != 0f && this.velocityY != 0f) {
-            this.velocityX = 0f;
-            if (!jumpState && this.velocityY < 0) {
-                this.velocityY = 0f;
-                this.posX += moveX;
-            }
-            this.posY += moveY;
-
-        } else if (this.velocityX != 0f) {
-            this.posX += moveX;
-            this.velocityX = 0f;
-
-        } else if (this.velocityY != 0f) {
-            this.posY += moveY;
-            this.velocityY = 0f;
-        }
     }
 
     @Override
@@ -217,12 +244,13 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         if (!this.keys[e.getKeyCode()])
             this.keys[e.getKeyCode()] = true;
 
-        if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_A)
-            if (!isWalking)
+        if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_A) {
+            if (!isWalking && !jumpState) {
                 setWalkAnim();
-            else if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S)
-                if (!jumpState)
-                    setJumpAnimation();
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S)
+            if (!jumpState)
+                setJumpAnimation();
 
     }
 
@@ -262,7 +290,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         currentAnim.setCurrentFrameY(1);
         currentAnim.setCurrentFrameX(7);
         currentAnim.setFirstPosX(7);
-        currentAnim.setLastPosX(10);
+        currentAnim.setLastPosX(9);
     }
 
     private void setWalkAnim() {
@@ -271,7 +299,6 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         currentAnim.setCurrentFrameX(1);
         currentAnim.setFirstPosX(1);
         currentAnim.setLastPosX(6);
-        isWalking = true;
     }
 
 }

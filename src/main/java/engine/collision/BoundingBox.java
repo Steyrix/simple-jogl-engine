@@ -60,28 +60,16 @@ public class BoundingBox {
         return posY;
     }
 
-    public float getRightX() {
+    protected float getRightX() {
         return this.posX + this.width;
     }
 
-    public float getBottomY() {
+    protected float getBottomY() {
         return this.posY + this.height;
     }
 
     public Dimension getSize() {
         return new Dimension((int) this.width, (int) this.height);
-    }
-
-    public boolean isTouchingX(BoundingBox anotherBox) {
-        return anotherBox.posX == this.getRightX() || anotherBox.getRightX() == this.posX;
-    }
-
-    public boolean isTouchingY(BoundingBox anotherBox) {
-        return anotherBox.posY == this.getBottomY() || anotherBox.getBottomY() == this.posY;
-    }
-
-    public boolean isTouching(BoundingBox anotherBox) {
-        return isTouchingX(anotherBox) || isTouchingY(anotherBox);
     }
 
     public boolean intersectsX(BoundingBox anotherBox) {
@@ -96,7 +84,31 @@ public class BoundingBox {
         return intersectsX(anotherBox) && intersectsY(anotherBox);
     }
 
-    public boolean containsPoint(PointF... points) {
+    public boolean containsEveryPointOf(PointF... points) {
+        for (PointF point : points) {
+            if (undefined || !(point.x < this.getRightX() && point.x > this.posX &&
+                    point.y < this.getBottomY() && point.y > this.posY))
+                return false;
+        }
+
+        return true;
+    }
+
+    public boolean containsNumberOfPoints(int numberOfPoints, PointF... points) {
+        if(numberOfPoints <= 0)
+            return true;
+
+        int cnt = 0;
+        for (PointF point : points) {
+            if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
+                    point.y < this.getBottomY() && point.y > this.posY))
+                cnt++;
+        }
+
+        return cnt >= numberOfPoints;
+    }
+
+    public boolean containsAnyPointOf(PointF... points) {
         for (PointF point : points) {
             if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
                     point.y < this.getBottomY() && point.y > this.posY))
@@ -106,59 +118,13 @@ public class BoundingBox {
         return false;
     }
 
-    public boolean containsPoint(float x, float y) {
-        return !undefined && (x < this.getRightX() && x > this.posX &&
-                y < this.getBottomY() && y > this.posY);
-    }
-
     public boolean containsPoint(ArrayList<PointF> pointFS) {
         for (PointF p : pointFS) {
-            if (containsPoint(p))
+            if (containsAnyPointOf(p))
                 return true;
         }
 
         return false;
-    }
-
-    public boolean leftUpperCollision(BoundingBox anotherBox) {
-        BoundingBox thisPointBox = new BoundingBox(this.posX, this.posY, 1, 1);
-        if (!undefined && (thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)))
-            return true;
-
-        return false;
-    }
-
-    public boolean rightUpperCollision(BoundingBox anotherBox) {
-        BoundingBox thisPointBox = new BoundingBox(this.getRightX(), this.posY, 1, 1);
-        if (!undefined && (thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)))
-            return true;
-
-        return false;
-    }
-
-    public boolean leftBottomCollision(BoundingBox anotherBox) {
-        BoundingBox thisPointBox = new BoundingBox(this.posX, this.getBottomY(), 1, 1);
-        if (!undefined && ((thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)) || isTouching(anotherBox)))
-            return true;
-
-        return false;
-    }
-
-    public boolean rightBottomCollision(BoundingBox anotherBox) {
-        BoundingBox thisPointBox = new BoundingBox(this.getRightX(), this.getBottomY(), 1, 1);
-        if (!undefined && ((thisPointBox.intersectsX(anotherBox) || thisPointBox.intersectsY(anotherBox)) || isTouching(anotherBox)))
-            return true;
-
-        return false;
-    }
-
-    public CornerCollision detectCornerCollision(BoundingBox anotherBox) {
-        if (leftUpperCollision(anotherBox)) return CornerCollision.LEFT_UPPER;
-        if (leftBottomCollision(anotherBox)) return CornerCollision.LEFT_BOTTOM;
-        if (rightUpperCollision(anotherBox)) return CornerCollision.RIGHT_UPPER;
-        if (rightBottomCollision(anotherBox)) return CornerCollision.RIGHT_BOTTOM;
-
-        return CornerCollision.NO_COLLISION;
     }
 
     public String toString() {
