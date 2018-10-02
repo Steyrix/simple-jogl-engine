@@ -73,11 +73,11 @@ public class BoundingBox {
     }
 
     public boolean intersectsX(BoundingBox anotherBox) {
-        return !undefined && !(this.posX > anotherBox.getRightX() - 1 || this.getRightX() - 1 < anotherBox.posX);
+        return !undefined && !(this.posX > anotherBox.getRightX() || this.getRightX() < anotherBox.posX);
     }
 
     public boolean intersectsY(BoundingBox anotherBox) {
-        return !undefined && !(this.posY > anotherBox.getBottomY() - 1 || this.getBottomY() - 1 < anotherBox.posY);
+        return !undefined && !(this.posY > anotherBox.getBottomY() || this.getBottomY() < anotherBox.posY);
     }
 
     public boolean intersects(BoundingBox anotherBox) {
@@ -94,33 +94,46 @@ public class BoundingBox {
         return true;
     }
 
-    public boolean containsNumberOfPoints(int numberOfPoints, PointF... points) {
-        if(numberOfPoints <= 0)
+    public boolean containsNumberOfPoints(int numberOfPoints, boolean strict, PointF... points) {
+        if (numberOfPoints <= 0)
             return true;
 
         int cnt = 0;
         for (PointF point : points) {
-            if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
-                    point.y < this.getBottomY() && point.y > this.posY))
-                cnt++;
+            if (strict) {
+                if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
+                        point.y < this.getBottomY() && point.y > this.posY))
+                    cnt++;
+            } else {
+                if (!undefined && (point.x <= this.getRightX() && point.x >= this.posX &&
+                        point.y <= this.getBottomY() && point.y >= this.posY))
+                    cnt++;
+            }
+
         }
 
         return cnt >= numberOfPoints;
     }
 
-    public boolean containsAnyPointOf(PointF... points) {
+    public boolean containsAnyPointOf(boolean strict, PointF... points) {
         for (PointF point : points) {
-            if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
-                    point.y < this.getBottomY() && point.y > this.posY))
-                return true;
+            if (strict) {
+                if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
+                        point.y < this.getBottomY() && point.y > this.posY))
+                    return true;
+            } else {
+                if (!undefined && (point.x <= this.getRightX() && point.x >= this.posX &&
+                        point.y <= this.getBottomY() && point.y >= this.posY))
+                    return true;
+            }
         }
 
         return false;
     }
 
-    public boolean containsPoint(ArrayList<PointF> pointFS) {
+    public boolean containsPoint(boolean strict, ArrayList<PointF> pointFS) {
         for (PointF p : pointFS) {
-            if (containsAnyPointOf(p))
+            if (containsAnyPointOf(strict, p))
                 return true;
         }
 
