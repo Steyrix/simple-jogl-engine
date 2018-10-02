@@ -5,7 +5,6 @@ import com.hackoeur.jglm.Matrices;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 import engine.animation.BasicAnimation;
 import engine.core.ControllableObject;

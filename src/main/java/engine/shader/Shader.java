@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+@SuppressWarnings("unused")
 public class Shader {
     private int id;
     private final GL4 gl;

@@ -1,5 +1,6 @@
 package engine.collision;
 
+@SuppressWarnings("WeakerAccess")
 public class PointF {
     public float x;
     public float y;

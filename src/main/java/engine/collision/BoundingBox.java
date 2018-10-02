@@ -3,6 +3,7 @@ package engine.collision;
 import java.awt.*;
 import java.util.ArrayList;
 
+@SuppressWarnings({"unused","WeakerAccess"})
 public class BoundingBox {
     protected float posX;
 
