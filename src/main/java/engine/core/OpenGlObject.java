@@ -29,11 +29,13 @@ public class OpenGlObject extends BoundingBox {
     private int buffersFilled;
     private int buffersCount;
 
+
     private int verticesCount;
     private IntBuffer vertexArray;
     private IntBuffer bbVertexArray;
 
     private int textureId;
+    private String uniformName;
     protected Texture texture;
     protected IntBuffer textureArray;
 
@@ -51,6 +53,7 @@ public class OpenGlObject extends BoundingBox {
 
         this.paramsCount = new ArrayList<>();
 
+        this.uniformName = "textureSample";
         this.texture = null;
         this.textureArray = null;
         this.textureId = textureId;
@@ -73,6 +76,7 @@ public class OpenGlObject extends BoundingBox {
         this.posX = posX;
         this.posY = posY;
 
+        this.uniformName = null;
         this.texture = null;
         this.textureArray = null;
         this.textureId = textureId;
@@ -176,10 +180,14 @@ public class OpenGlObject extends BoundingBox {
 
         Mat4 model = getFinalMatrix(x, y, xSize, ySize, rotationAngle);
 
-        if (this.texture != null)
-            defineSingleTextureState(shader, "textureSample");
-        if (this.textureArray != null)
-            defineArrayTextureState(shader, "textureArray");
+        if (this.texture != null) {
+            this.setUniformName("textureSample");
+            defineSingleTextureState(shader);
+        }
+        if (this.textureArray != null) {
+            this.setUniformName("textureArray");
+            defineArrayTextureState(shader);
+        }
 
         shader.setMatrix4f("model", model, true);
 
@@ -199,10 +207,14 @@ public class OpenGlObject extends BoundingBox {
 
         Mat4 model = getFinalMatrix(xSize, ySize, rotationAngle);
 
-        if (this.texture != null)
-            defineSingleTextureState(shader, "textureSample");
-        if (this.textureArray != null)
-            defineArrayTextureState(shader, "textureArray");
+        if (this.texture != null) {
+            this.setUniformName("textureSample");
+            defineSingleTextureState(shader);
+        }
+        if (this.textureArray != null) {
+            this.setUniformName("textureArray");
+            defineArrayTextureState(shader);
+        }
 
         shader.setMatrix4f("model", model, true);
 
@@ -212,14 +224,14 @@ public class OpenGlObject extends BoundingBox {
         drawBoundingBox();
     }
 
-    private void defineSingleTextureState(Shader shader, String uniformName) {
+    private void defineSingleTextureState(Shader shader) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         this.texture.enable(gl);
         this.texture.bind(gl);
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
     }
 
-    private void defineArrayTextureState(Shader shader, String uniformName) {
+    private void defineArrayTextureState(Shader shader) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray.get(0));
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
@@ -295,8 +307,10 @@ public class OpenGlObject extends BoundingBox {
 
     private void drawBoundingBox() {
         gl.glBindVertexArray(this.bbVertexArray.get(0));
-        System.out.println(gl.glGetError() + " draw bounding box 1");
         gl.glDrawArrays(GL4.GL_LINES, 0, 4);
-        System.out.println(gl.glGetError() + " draw bounding box 2");
+    }
+
+    public void setUniformName(String newName) {
+        this.uniformName = newName;
     }
 }
