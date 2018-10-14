@@ -4,7 +4,7 @@ import com.jogamp.opengl.GL4;
 import engine.animation.AnimatedObject;
 import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
-import engine.collision.SimpleCollider;
+import engine.collision.collider.SimpleCollider;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

@@ -75,8 +75,7 @@ public class GameLabyrinth implements GameState {
                     0.1f, 0.333f,
                     new BasicAnimation("WALK", 1, 0, 6, 1, 100f),
                     new BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
-                    new BasicAnimation("IDLE", 3, 0, 1, 1, 100f)) {
-            };
+                    new BasicAnimation("IDLE", 3, 0, 1, 1, 100f));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,7 +105,6 @@ public class GameLabyrinth implements GameState {
                 0.0f, 0.0f, 1.0f);
 
         //System.out.println(gl.glGetError() + " init end");
-
     }
 
     @Override
@@ -153,7 +151,6 @@ public class GameLabyrinth implements GameState {
         for (ControllableObject c : controls) {
 
             for (OpenGlObject o : boundObjects)
-                if (o != c)
                     c.reactToCollision(o);
 
             c.update(deltaTime);

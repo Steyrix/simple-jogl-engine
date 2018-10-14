@@ -29,7 +29,6 @@ public class OpenGlObject extends BoundingBox {
     private int buffersFilled;
     private int buffersCount;
 
-
     private int verticesCount;
     private IntBuffer vertexArray;
     private IntBuffer bbVertexArray;

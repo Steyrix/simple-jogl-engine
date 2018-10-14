@@ -1,4 +1,6 @@
-package engine.collision;
+package engine.collision.collider;
+
+import engine.collision.BoundingBox;
 
 @SuppressWarnings("unused")
 public interface SpeculativeCollider extends SimpleCollider {

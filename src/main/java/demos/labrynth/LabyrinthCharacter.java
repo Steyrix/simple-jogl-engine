@@ -4,7 +4,7 @@ import com.jogamp.opengl.GL4;
 import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
 import engine.collision.PointF;
-import engine.collision.SpeculativeCollider;
+import engine.collision.collider.SpeculativeCollider;
 import engine.core.ControllableObject;
 
 import java.awt.*;
@@ -29,14 +29,18 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.keys = new boolean[1000000];
 
         this.collisionPoints = new ArrayList<>();
-        this.collisionPoints.add(new PointF(posX, posY)); //
-        this.collisionPoints.add(new PointF(posX, getBottomY())); //
-        this.collisionPoints.add(new PointF(getRightX(), getBottomY()));
-        this.collisionPoints.add(new PointF(getRightX(), posY));
-        this.collisionPoints.add(new PointF(posX + width / 2, posY));
-        this.collisionPoints.add(new PointF(posX + width / 2, getBottomY()));
-        this.collisionPoints.add(new PointF(posX, posY + height / 2));
-        this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
+        this.collisionPoints.add(new PointF(posX, posY)); // 0
+        this.collisionPoints.add(new PointF(posX, getBottomY())); // 1
+        this.collisionPoints.add(new PointF(getRightX(), getBottomY())); // 2
+        this.collisionPoints.add(new PointF(getRightX(), posY)); // 3
+        this.collisionPoints.add(new PointF(posX + width / 2, posY)); // 4
+        this.collisionPoints.add(new PointF(posX + width / 2, getBottomY())); // 5
+        this.collisionPoints.add(new PointF(posX, posY + height / 2)); // 6
+        this.collisionPoints.add(new PointF(getRightX(), posY + height / 2)); // 7
+        this.collisionPoints.add(new PointF(posX, posY + height / 4)); // 8
+        this.collisionPoints.add(new PointF(posX, posY + 3 * height / 4)); // 9
+        this.collisionPoints.add(new PointF(getRightX(), posY + height / 4)); // 10
+        this.collisionPoints.add(new PointF(getRightX(), posY + 3 * height / 4)); // 11
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
         this.currentBottomPlatform = null;
@@ -58,6 +62,10 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.collisionPoints.add(new PointF(posX + width / 2, getBottomY()));
         this.collisionPoints.add(new PointF(posX, posY + height / 2));
         this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
+        this.collisionPoints.add(new PointF(posX, posY + height / 4)); // 8
+        this.collisionPoints.add(new PointF(posX, getBottomY() - height / 4)); // 9
+        this.collisionPoints.add(new PointF(getRightX(), posY + height / 4)); // 10
+        this.collisionPoints.add(new PointF(getRightX(), getBottomY() - height / 5)); // 11
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
         this.currentBottomPlatform = null;
@@ -84,45 +92,33 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         }
     }
 
-    //TODO: fix bug - moveY is applied because of diagonal move towards the vertical bound
+    //TODO: fix bug - collision to horizontal above the vertical is ignored
     private void processCollision(BoundingBox anotherBox) {
+        System.out.println(anotherBox.toString());
         float moveX = this.getIntersectionWidth(anotherBox),
                 moveY = this.getIntersectionHeight(anotherBox);
-
-        boolean horizontalCollision =
-                anotherBox.containsNumberOfPoints(2, true,
-                        this.collisionPoints.get(0),
-                        this.collisionPoints.get(1),
-                        this.collisionPoints.get(6)) ||
-                        anotherBox.containsNumberOfPoints(2, true,
-                                this.collisionPoints.get(2),
-                                this.collisionPoints.get(3),
-                                this.collisionPoints.get(7));
-
+        boolean horizontalContact = detectHorizontalContact(anotherBox);
         boolean fallingState = !jumpState && this.velocityY < 0f;
 
-        //TODO: fix
-        if (horizontalCollision)
+        //System.out.println("1 MoveX: " + moveX + ".  MoveY: " + moveY);
+
+        if (horizontalContact)
             moveY = 0f;
         else
             moveX = 0f;
 
+        //System.out.println("2 MoveX: " + moveX + ".  MoveY: " + moveY);
 
         if (this.velocityX != 0f && this.velocityY != 0f) {
-            System.out.println(1);
             this.velocityX = 0f;
-            if (fallingState) {
+            if (fallingState)
                 this.velocityY = 0f;
-            }
             this.posX += moveX;
-
             this.posY += moveY;
-
         } else if (this.velocityX != 0f) {
             this.posX += moveX;
             this.posY += moveY;
             this.velocityX = 0f;
-
         } else if (this.velocityY != 0f) {
             this.posY += moveY;
             this.posX += moveX;
@@ -135,6 +131,22 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
                 this.collisionPoints.get(1),
                 this.collisionPoints.get(2),
                 this.collisionPoints.get(5));
+    }
+
+    private boolean detectHorizontalContact(BoundingBox anotherBox) {
+        return anotherBox.containsNumberOfPoints(2, true,
+                this.collisionPoints.get(0),
+                this.collisionPoints.get(1),
+                this.collisionPoints.get(6)) ||
+                anotherBox.containsNumberOfPoints(2, true,
+                        this.collisionPoints.get(2),
+                        this.collisionPoints.get(3),
+                        this.collisionPoints.get(7)) ||
+                anotherBox.containsAnyPointOf(true,
+                        this.collisionPoints.get(8),
+                        this.collisionPoints.get(9),
+                        this.collisionPoints.get(10),
+                        this.collisionPoints.get(11));
     }
 
     @Override
@@ -154,12 +166,11 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
 
         playAnimation(deltaTime);
 
-
-//        System.out.println("Detect bottom contact " + (currentBottomPlatform == null ? "NULL" :
-//                detectBottomContact(currentBottomPlatform)) + "posY " + posY);
+        //System.out.println("Detect bottom contact " + (currentBottomPlatform == null ? "NULL" :
+          //      detectBottomContact(currentBottomPlatform)) + "posY " + posY);
         //System.out.println(currentBottomPlatform == null ? "NULL" : currentBottomPlatform.toString());
         //System.out.println("JUMPSTATE:" + jumpState);
-        System.out.println(this.velocityX + " " + this.velocityY);
+        //System.out.println(this.velocityX + " " + this.velocityY);
 
     }
 
@@ -211,14 +222,18 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
             this.currentAnim.setCurrentFrameY(2);
             this.isWalking = false;
         } else if (this.velocityY != 0 && this.velocityX != 0) {
-            if (!jumpState)
-                this.setJumpAnimation();
+
         } else if (this.velocityX != 0 && !jumpState) {
             if (currentAnim != animations.get(0))
                 this.setWalkAnim();
         } else if (this.velocityX != 0 && jumpState) {
             this.setJumpAnimation();
+        } else if (this.velocityY > 0f && this.velocityY <= 0.2f) {
+            this.setAnimation(this.animations.get(2));
+            this.currentAnim.setCurrentFrameX(0);
+            this.currentAnim.setCurrentFrameY(2);
         }
+
     }
 
     private void changePosition(float deltaTime) {
