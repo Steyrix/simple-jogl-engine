@@ -94,7 +94,6 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
 
     //TODO: fix bug - collision to horizontal above the vertical is ignored
     private void processCollision(BoundingBox anotherBox) {
-        System.out.println(anotherBox.toString());
         float moveX = this.getIntersectionWidth(anotherBox),
                 moveY = this.getIntersectionHeight(anotherBox);
         boolean horizontalContact = detectHorizontalContact(anotherBox);

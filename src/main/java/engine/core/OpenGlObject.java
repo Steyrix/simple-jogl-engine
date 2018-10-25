@@ -81,8 +81,8 @@ public class OpenGlObject extends BoundingBox {
         this.textureId = textureId;
     }
 
-    public boolean isTextured() {
-        return this.texture != null || this.textureArray != null;
+    public boolean isTextured(){
+        return (this.texture != null || this.textureArray != null);
     }
 
     protected void loadTexture(String filePath) {
@@ -309,7 +309,14 @@ public class OpenGlObject extends BoundingBox {
         gl.glDrawArrays(GL4.GL_LINES, 0, 4);
     }
 
-    public void setUniformName(String newName) {
+    private void setUniformName(String newName) {
         this.uniformName = newName;
+    }
+
+    @Override
+    public String toString(){
+        return "OpenGlObject: \n Number of vertices: " + verticesCount +
+                "\n Number of buffers: " + buffersCount + "\n" +
+                (isTextured() ? (" Texture id: " + textureId) : " Not textured");
     }
 }

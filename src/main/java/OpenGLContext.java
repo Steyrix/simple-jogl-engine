@@ -10,6 +10,8 @@ import java.awt.event.KeyListener;
 public class OpenGLContext implements GLEventListener, KeyListener {
     private GameState state;
     private long lastTime;
+    private int updatePeriod = 0;
+    private int a = 0;
 
     private OpenGLContext(GameState state) {
         this.lastTime = System.nanoTime();
@@ -24,9 +26,14 @@ public class OpenGLContext implements GLEventListener, KeyListener {
         this.state.dispose(glAutoDrawable);
     }
 
+    //TODO: fix deltaTime counting
     public void display(GLAutoDrawable glAutoDrawable) {
-        this.state.update(this.calcDeltaTime());
-        this.state.display(glAutoDrawable);
+        if(++updatePeriod > 60) {
+            //System.out.println(System.nanoTime() / 1000000000f + " " + ++a);
+            this.state.update(this.calcDeltaTime());
+            this.state.display(glAutoDrawable);
+            updatePeriod = 0;
+        }
     }
 
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
@@ -34,7 +41,6 @@ public class OpenGLContext implements GLEventListener, KeyListener {
     }
 
     private float calcDeltaTime() {
-
         long time = System.nanoTime();
         float deltaTime = ((time - lastTime) / 1000000f);
         lastTime = time;
@@ -66,6 +72,7 @@ public class OpenGLContext implements GLEventListener, KeyListener {
         glCanvas.setFocusable(true);
         glCanvas.requestFocus();
 
+        //Put your state here
         OpenGLContext basicListener = new OpenGLContext(new GameLabyrinth(glCanvas.getSize()));
         glCanvas.addGLEventListener(basicListener);
         glCanvas.addKeyListener(basicListener);

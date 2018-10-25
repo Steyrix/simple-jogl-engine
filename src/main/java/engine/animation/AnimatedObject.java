@@ -87,4 +87,9 @@ public class AnimatedObject extends OpenGlObject {
             this.currentAnim = a;
     }
 
+    @Override
+    public String toString(){
+        return super.toString() + "\n Animated";
+    }
+
 }

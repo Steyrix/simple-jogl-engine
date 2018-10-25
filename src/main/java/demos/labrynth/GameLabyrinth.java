@@ -227,7 +227,8 @@ public class GameLabyrinth implements GameState {
 
         LabyrinthLevelCreator lc = new LabyrinthLevelCreator();
         ArrayList<OpenGlObject> perimeter = lc.createLevelFromFile(gl, this.getClass().getClassLoader().
-                getResource("config/labyrinthlevels/defaultlevel.ini").getPath());
+                getResource("config/labyrinthlevels/defaultlevel/defaultlevel.ini").getPath());
+
         this.boundObjects.addAll(perimeter);
 
         background = new OpenGlObject(2, 6, gl, 0f, 0f, new Dimension(1280, 720), 0) {

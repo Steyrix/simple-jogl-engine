@@ -47,4 +47,9 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
 
     @Override
     public abstract void keyReleased(KeyEvent e);
+
+    @Override
+    public String toString(){
+        return super.toString() + "\n Controllable";
+    }
 }
