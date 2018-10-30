@@ -1,4 +1,4 @@
-package engine.collision;
+package engine.utilgeometry;
 
 @SuppressWarnings("WeakerAccess")
 public class PointF {
