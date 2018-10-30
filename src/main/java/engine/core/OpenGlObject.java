@@ -52,7 +52,7 @@ public class OpenGlObject extends BoundingBox {
 
         this.paramsCount = new ArrayList<>();
 
-        this.uniformName = "textureSample";
+        this.uniformName = null;
         this.texture = null;
         this.textureArray = null;
         this.textureId = textureId;
@@ -81,7 +81,7 @@ public class OpenGlObject extends BoundingBox {
         this.textureId = textureId;
     }
 
-    public boolean isTextured(){
+    private boolean isTextured(){
         return (this.texture != null || this.textureArray != null);
     }
 
@@ -99,7 +99,7 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    protected void loadTextureArray(String... filePaths) {
+    private void loadTextureArray(String... filePaths) {
         try {
             ArrayList<TextureData> images = new ArrayList<>();
             var tl = new TextureLoader();
@@ -140,7 +140,7 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    protected void addBuffers(float[]... dataArrays) {
+    private void addBuffers(float[]... dataArrays) {
         gl.glGenBuffers(buffersCount, buffers);
         for (float[] fData : dataArrays) {
             FloatBuffer floatBuffer = FloatBuffer.wrap(fData);
@@ -151,7 +151,7 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    protected void genVertexArray() {
+    private void genVertexArray() {
         gl.glGenVertexArrays(1, this.vertexArray);
         gl.glBindVertexArray(this.vertexArray.get(0));
 

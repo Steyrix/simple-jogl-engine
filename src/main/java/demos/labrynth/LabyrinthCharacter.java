@@ -3,7 +3,7 @@ package demos.labrynth;
 import com.jogamp.opengl.GL4;
 import engine.animation.BasicAnimation;
 import engine.collision.BoundingBox;
-import engine.collision.PointF;
+import engine.utilgeometry.PointF;
 import engine.collision.collider.SpeculativeCollider;
 import engine.core.ControllableObject;
 
@@ -29,18 +29,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.keys = new boolean[1000000];
 
         this.collisionPoints = new ArrayList<>();
-        this.collisionPoints.add(new PointF(posX, posY)); // 0
-        this.collisionPoints.add(new PointF(posX, getBottomY())); // 1
-        this.collisionPoints.add(new PointF(getRightX(), getBottomY())); // 2
-        this.collisionPoints.add(new PointF(getRightX(), posY)); // 3
-        this.collisionPoints.add(new PointF(posX + width / 2, posY)); // 4
-        this.collisionPoints.add(new PointF(posX + width / 2, getBottomY())); // 5
-        this.collisionPoints.add(new PointF(posX, posY + height / 2)); // 6
-        this.collisionPoints.add(new PointF(getRightX(), posY + height / 2)); // 7
-        this.collisionPoints.add(new PointF(posX, posY + height / 4)); // 8
-        this.collisionPoints.add(new PointF(posX, posY + 3 * height / 4)); // 9
-        this.collisionPoints.add(new PointF(getRightX(), posY + height / 4)); // 10
-        this.collisionPoints.add(new PointF(getRightX(), posY + 3 * height / 4)); // 11
+        initPoints(collisionPoints);
+
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
         this.currentBottomPlatform = null;
@@ -54,24 +44,29 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.keys = new boolean[1000000];
 
         this.collisionPoints = new ArrayList<>();
-        this.collisionPoints.add(new PointF(posX, posY));
-        this.collisionPoints.add(new PointF(posX, getBottomY()));
-        this.collisionPoints.add(new PointF(getRightX(), getBottomY()));
-        this.collisionPoints.add(new PointF(getRightX(), posY));
-        this.collisionPoints.add(new PointF(posX + width / 2, posY));
-        this.collisionPoints.add(new PointF(posX + width / 2, getBottomY()));
-        this.collisionPoints.add(new PointF(posX, posY + height / 2));
-        this.collisionPoints.add(new PointF(getRightX(), posY + height / 2));
-        this.collisionPoints.add(new PointF(posX, posY + height / 4)); // 8
-        this.collisionPoints.add(new PointF(posX, getBottomY() - height / 4)); // 9
-        this.collisionPoints.add(new PointF(getRightX(), posY + height / 4)); // 10
-        this.collisionPoints.add(new PointF(getRightX(), getBottomY() - height / 5)); // 11
+        initPoints(collisionPoints);
+
         this.nextBox = new BoundingBox(posX, posY, width, height);
 
         this.currentBottomPlatform = null;
         this.isWalking = false;
         this.canJump = true;
         this.jumpTime = 0f;
+    }
+
+    private void initPoints(ArrayList<PointF> target){
+        target.add(new PointF(posX, posY));
+        target.add(new PointF(posX, getBottomY()));
+        target.add(new PointF(getRightX(), getBottomY()));
+        target.add(new PointF(getRightX(), posY));
+        target.add(new PointF(posX + width / 2, posY));
+        target.add(new PointF(posX + width / 2, getBottomY()));
+        target.add(new PointF(posX, posY + height / 2));
+        target.add(new PointF(getRightX(), posY + height / 2));
+        target.add(new PointF(posX, posY + height / 4)); // 8
+        target.add(new PointF(posX, getBottomY() - height / 4)); // 9
+        target.add(new PointF(getRightX(), posY + height / 4)); // 10
+        target.add(new PointF(getRightX(), getBottomY() - height / 5)); // 11
     }
 
     //TODO: fix bug with horizontal collision
@@ -313,7 +308,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     }
 
     private void jump() {
-        velocityY -= 31f;
+        velocityY -= 25f;
         setAirFloating();
     }
 
