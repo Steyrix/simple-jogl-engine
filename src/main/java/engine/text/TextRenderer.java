@@ -11,9 +11,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class TextRenderer {
     private HashMap<Character, PointF> characterCoordinates;
+    private HashMap<Character, OpenGlObject> cache;
     private Texture textureAtlas;
     private Dimension charSize;
 
@@ -45,6 +47,7 @@ public class TextRenderer {
         this.textureAtlas = textureAtlas;
         this.characterCoordinates = characterCoordinates;
         this.charSize = charSize;
+        this.cache = new HashMap<>();
     }
 
     private static HashMap<Character, PointF> generateMap(Dimension charSize, Texture textureAtlas, ArrayList<Character> characters) {
@@ -69,28 +72,50 @@ public class TextRenderer {
             }
             out.put(characters.get(i), new PointF(j++, k));
         }
-
-        System.out.println(out.toString());
+        
         return out;
     }
 
     //TODO: optimize (implement cashing of gl objects)
-    public void drawCharacter(Character c, Dimension fontSize, GL4 gl, PointF pos, Shader shader) {
-        OpenGlObject glObject = new OpenGlObject(2, 6, gl, pos.x, pos.y,
-                fontSize, 100);
+    private void drawCharacter(Character c, Dimension fontSize, GL4 gl, PointF pos, Shader shader) {
 
-        float[] UVcoordinates = getUV(c);
+        OpenGlObject glObject;
 
-        glObject.initRenderData(this.textureAtlas,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                UVcoordinates);
+        if (!cache.containsKey(c)) {
+            glObject = new OpenGlObject(2, 6, gl, pos.x, pos.y,
+                    fontSize, 100);
+
+            float[] UVcoordinates = getUV(c);
+
+            glObject.initRenderData(this.textureAtlas,
+                    new float[]{0f, 1f,
+                            1f, 0f,
+                            0f, 0f,
+                            0f, 1f,
+                            1f, 1f,
+                            1f, 0f},
+                    UVcoordinates);
+
+            cache.put(c, glObject);
+        } else
+            glObject = cache.get(c);
 
         glObject.draw(pos.x, pos.y, (float) fontSize.getWidth(), (float) fontSize.getHeight(), 0f, shader);
+    }
+
+    public void drawText(String text, Dimension fontSize, GL4 gl, PointF pos, Shader shader) {
+        int x = 0, y = 0;
+        for (Character c : text.toCharArray()) {
+            if (c == '\n') {
+                y++;
+                continue;
+            }
+
+            drawCharacter(c, fontSize, gl,
+                    new PointF(pos.x + (float)(fontSize.getWidth() * x++),
+                            pos.y + (float)(fontSize.getHeight() * y)),
+                    shader);
+        }
     }
 
     //TODO: fix UV coordinates (now they are upside down)
