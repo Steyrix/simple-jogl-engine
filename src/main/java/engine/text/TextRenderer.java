@@ -72,13 +72,12 @@ public class TextRenderer {
             }
             out.put(characters.get(i), new PointF(j++, k));
         }
-        
+
         return out;
     }
 
     //TODO: optimize (implement cashing of gl objects)
     private void drawCharacter(Character c, Dimension fontSize, GL4 gl, PointF pos, Shader shader) {
-
         OpenGlObject glObject;
 
         if (!cache.containsKey(c)) {
@@ -108,6 +107,7 @@ public class TextRenderer {
         for (Character c : text.toCharArray()) {
             if (c == '\n') {
                 y++;
+                x = 0;
                 continue;
             }
 
@@ -118,9 +118,7 @@ public class TextRenderer {
         }
     }
 
-    //TODO: fix UV coordinates (now they are upside down)
     private float[] getUV(Character c) {
-
         PointF curr = characterCoordinates.get(c);
         float width = (float) (charSize.getWidth() / textureAtlas.getWidth());
         float height = (float) (charSize.getHeight() / textureAtlas.getHeight());

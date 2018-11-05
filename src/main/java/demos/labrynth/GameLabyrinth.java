@@ -158,7 +158,7 @@ public class GameLabyrinth implements GameState {
         animObj.draw(animObj.getSize().width, animObj.getSize().height, 0.0f, animShader);
 
         texShader.setMatrix4f("projection", renderProjection, false);
-        myRenderer.drawText("Hello", new Dimension(50,50), gl, new PointF(600,200), texShader);
+        myRenderer.drawText("Hello \n World!", new Dimension(50,50), gl, new PointF(600,200), texShader);
         //texArrayShader.setMatrix4f("projection", renderProjection, false);
         //texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
     }
