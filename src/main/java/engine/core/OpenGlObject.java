@@ -88,15 +88,17 @@ public class OpenGlObject extends BoundingBox {
     protected void loadTexture(String filePath) {
         try {
             this.texture = TextureLoader.loadTexture(filePath);
-
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE);
-
+            setTexParameters();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setTexParameters(){
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE);
+        texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE);
     }
 
     private void loadTextureArray(String... filePaths) {
@@ -137,6 +139,20 @@ public class OpenGlObject extends BoundingBox {
         if ((textureFilePaths != null && textureFilePaths.length > 1) || texArray) {
             System.out.println("Loading texture array");
             loadTextureArray(textureFilePaths);
+        }
+    }
+
+    public void initRenderData(Texture texture, float[]... dataArrays) {
+        addBuffers(dataArrays);
+        genVertexArray();
+
+        initBoundingBoxBuffer();
+        genBoundingBoxVertexArray();
+
+        if(texture != null) {
+            System.out.println("Loading only single texture");
+            this.texture = texture;
+            setTexParameters();
         }
     }
 

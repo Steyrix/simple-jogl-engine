@@ -10,13 +10,17 @@ import engine.animation.BasicAnimation;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
+import engine.text.TextRenderer;
 import engine.texture.TextureLoader;
+import engine.utilgeometry.PointF;
 import states.GameState;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 //TODO: load every texture with its own unique id
 public class GameLabyrinth implements GameState {
@@ -27,6 +31,7 @@ public class GameLabyrinth implements GameState {
     //TEST
     //private OpenGlObject texArrayObj;
     //private OpenGlObject testObject;
+    private TextRenderer myRenderer;
     private LabyrinthCharacter animObj;
     private Shader texShader;
     private Shader boundShader;
@@ -71,7 +76,7 @@ public class GameLabyrinth implements GameState {
 //                        1f, 1f});
         try {
             animObj = new LabyrinthCharacter(2, 6, gl, 25, 25,
-                    new Dimension(30, 50), 5,
+                    new Dimension(50, 70), 5,
                     0.1f, 0.333f,
                     new BasicAnimation("WALK", 1, 0, 6, 1, 100f),
                     new BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
@@ -105,6 +110,22 @@ public class GameLabyrinth implements GameState {
                 0.0f, 0.0f, 1.0f);
 
         //System.out.println(gl.glGetError() + " init end");
+
+        //TODO: test text renderer
+        Character[] charArr = new Character[]{
+                'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±',
+                '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+                'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_',
+                '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
+                ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
+        };
+        ArrayList<Character> chars = new ArrayList<>();
+        chars.addAll(Arrays.asList(charArr));
+        //Collections.reverse(chars);
+
+        myRenderer = TextRenderer.getRenderer(new Dimension(64,64),
+                this.getClass().getClassLoader().getResource("textures/simpleFontAtlas.png").getPath(), chars);
     }
 
     @Override
@@ -136,6 +157,8 @@ public class GameLabyrinth implements GameState {
         animShader.setMatrix4f("projection", renderProjection, false);
         animObj.draw(animObj.getSize().width, animObj.getSize().height, 0.0f, animShader);
 
+        texShader.setMatrix4f("projection", renderProjection, false);
+        myRenderer.drawCharacter('!', new Dimension(100,100), gl, new PointF(200,200), texShader);
         //texArrayShader.setMatrix4f("projection", renderProjection, false);
         //texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
     }
@@ -180,8 +203,8 @@ public class GameLabyrinth implements GameState {
         String[] textVertexSource = new String[1];
         String[] textFragmSource = new String[1];
         try {
-            textVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader").getPath());
-            textFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader").getPath());
+            textVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader.glsl").getPath());
+            textFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,8 +214,8 @@ public class GameLabyrinth implements GameState {
         String[] boundVertexSource = new String[1];
         String[] boundFragmSource = new String[1];
         try {
-            boundVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundVertexShader").getPath());
-            boundFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundFragmentShader").getPath());
+            boundVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundVertexShader.glsl").getPath());
+            boundFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -202,8 +225,8 @@ public class GameLabyrinth implements GameState {
         String[] arrayVertexSource = new String[1];
         String[] arrayFragmSource = new String[1];
         try {
-            arrayVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayVertexShader").getPath());
-            arrayFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayFragmentShader").getPath());
+            arrayVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayVertexShader.glsl").getPath());
+            arrayFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -213,8 +236,8 @@ public class GameLabyrinth implements GameState {
         String[] animVertexSource = new String[1];
         String[] animFragmSource = new String[1];
         try {
-            animVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animVertexShader").getPath());
-            animFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animFragmentShader").getPath());
+            animVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animVertexShader.glsl").getPath());
+            animFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
