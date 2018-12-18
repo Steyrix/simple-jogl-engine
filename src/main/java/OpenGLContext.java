@@ -1,6 +1,7 @@
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import demos.labrynth.GameLabyrinth;
+import modules.ElapsedTimeUpdater;
 import states.GameState;
 
 import javax.swing.*;
@@ -10,34 +11,12 @@ import java.awt.event.KeyListener;
 public class OpenGLContext implements GLEventListener, KeyListener {
     private GameState state;
     private long lastTime;
-    private int updatePeriod = 0;
-    private int a = 0;
+    private ElapsedTimeUpdater elapsedTimeUpdater;
 
-    private OpenGLContext(GameState state) {
+    private OpenGLContext(GameState state, int updatePeriod) {
         this.lastTime = System.nanoTime();
         this.state = state;
-    }
-
-    public void init(GLAutoDrawable glAutoDrawable) {
-        this.state.init(glAutoDrawable);
-    }
-
-    public void dispose(GLAutoDrawable glAutoDrawable) {
-        this.state.dispose(glAutoDrawable);
-    }
-
-    //TODO: fix deltaTime counting
-    public void display(GLAutoDrawable glAutoDrawable) {
-        if(++updatePeriod > 60) {
-            //System.out.println(System.nanoTime() / 1000000000f + " " + ++a);
-            this.state.update(this.calcDeltaTime());
-            this.state.display(glAutoDrawable);
-            updatePeriod = 0;
-        }
-    }
-
-    public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
-        this.state.reshape(glAutoDrawable, i, i1, i2, i3);
+        this.elapsedTimeUpdater = new ElapsedTimeUpdater(updatePeriod);
     }
 
     private float calcDeltaTime() {
@@ -46,6 +25,27 @@ public class OpenGLContext implements GLEventListener, KeyListener {
         lastTime = time;
 
         return deltaTime;
+    }
+
+    public void init(GLAutoDrawable glAutoDrawable) {
+        this.state.init(glAutoDrawable);
+        this.elapsedTimeUpdater.resetFunc(() -> {
+            this.state.update(this.calcDeltaTime());
+            this.state.display(glAutoDrawable);
+        });
+    }
+
+    public void dispose(GLAutoDrawable glAutoDrawable) {
+        this.state.dispose(glAutoDrawable);
+    }
+
+    //TODO: fix deltaTime counting
+    public void display(GLAutoDrawable glAutoDrawable) {
+        elapsedTimeUpdater.update();
+    }
+
+    public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
+        this.state.reshape(glAutoDrawable, i, i1, i2, i3);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class OpenGLContext implements GLEventListener, KeyListener {
         glCanvas.requestFocus();
 
         //Put your state here
-        OpenGLContext basicListener = new OpenGLContext(new GameLabyrinth(glCanvas.getSize()));
+        OpenGLContext basicListener = new OpenGLContext(new GameLabyrinth(glCanvas.getSize()), 60);
         glCanvas.addGLEventListener(basicListener);
         glCanvas.addKeyListener(basicListener);
 
