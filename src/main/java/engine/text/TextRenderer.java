@@ -2,11 +2,13 @@ package engine.text;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
+import dagger.Provides;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
 import engine.utilgeometry.PointF;
 
+import javax.inject.Inject;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;

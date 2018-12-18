@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.texture.Texture;
+import dagger.Component;
 import engine.animation.BasicAnimation;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
