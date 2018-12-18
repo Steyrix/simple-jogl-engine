@@ -1,6 +1,7 @@
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import demos.labrynth.GameLabyrinth;
+import modules.DeltaTimeCalculator;
 import modules.ElapsedTimeUpdater;
 import states.GameState;
 
@@ -10,27 +11,19 @@ import java.awt.event.KeyListener;
 
 public class OpenGLContext implements GLEventListener, KeyListener {
     private GameState state;
-    private long lastTime;
     private ElapsedTimeUpdater elapsedTimeUpdater;
+    private DeltaTimeCalculator timer;
 
     private OpenGLContext(GameState state, int updatePeriod) {
-        this.lastTime = System.nanoTime();
         this.state = state;
         this.elapsedTimeUpdater = new ElapsedTimeUpdater(updatePeriod);
-    }
-
-    private float calcDeltaTime() {
-        long time = System.nanoTime();
-        float deltaTime = ((time - lastTime) / 1000000f);
-        lastTime = time;
-
-        return deltaTime;
+        this.timer = new DeltaTimeCalculator();
     }
 
     public void init(GLAutoDrawable glAutoDrawable) {
         this.state.init(glAutoDrawable);
         this.elapsedTimeUpdater.resetFunc(() -> {
-            this.state.update(this.calcDeltaTime());
+            this.state.update(timer.calcDeltaTime());
             this.state.display(glAutoDrawable);
         });
     }
