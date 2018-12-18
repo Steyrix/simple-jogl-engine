@@ -11,10 +11,7 @@ import engine.collision.BoundingBox;
 import engine.shader.Shader;
 import engine.texture.TextureLoader;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;

@@ -11,7 +11,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class TextRenderer {
     private HashMap<Character, PointF> characterCoordinates;
@@ -76,7 +75,6 @@ public class TextRenderer {
         return out;
     }
 
-    //TODO: optimize (implement cashing of gl objects)
     private void drawCharacter(Character c, Dimension fontSize, GL4 gl, PointF pos, Shader shader) {
         OpenGlObject glObject;
 
@@ -131,5 +129,11 @@ public class TextRenderer {
                 width * (curr.x + 1), height * curr.y,
                 width * (curr.x + 1), height * (curr.y + 1)
         };
+    }
+
+    @Override
+    public String toString() {
+        return "Text renderer with " + characterCoordinates.size() + " characters. \n" +
+                characterCoordinates.toString();
     }
 }
