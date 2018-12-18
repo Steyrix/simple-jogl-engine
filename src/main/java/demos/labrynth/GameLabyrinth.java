@@ -37,6 +37,7 @@ public class GameLabyrinth implements GameState {
     private Shader boundShader;
     private Shader texArrayShader;
     private Shader animShader;
+    private Shader textRenderShader;
 
     private OpenGlObject background;
     private int screenWidth;
@@ -157,8 +158,8 @@ public class GameLabyrinth implements GameState {
         animShader.setMatrix4f("projection", renderProjection, false);
         animObj.draw(animObj.getSize().width, animObj.getSize().height, 0.0f, animShader);
 
-        texShader.setMatrix4f("projection", renderProjection, false);
-        myRenderer.drawText("Hello \n World!", new Dimension(50,50), gl, new PointF(600,200), texShader);
+        textRenderShader.setMatrix4f("projection", renderProjection, false);
+        myRenderer.drawText("Hello \n World!", new Dimension(50,50), gl, new PointF(600,200), textRenderShader);
         //texArrayShader.setMatrix4f("projection", renderProjection, false);
         //texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
     }
@@ -200,49 +201,62 @@ public class GameLabyrinth implements GameState {
 
     private void loadShader(GL4 gl) {
         //-----------------------SHADER TEST------------------------
-        String[] textVertexSource = new String[1];
-        String[] textFragmSource = new String[1];
+        String[] vertexSource = new String[1];
+        String[] fragmentSource = new String[1];
+
         try {
-            textVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader.glsl").getPath());
-            textFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader.glsl").getPath());
+            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader.glsl").getPath());
+            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
         texShader = new Shader(gl);
-        texShader.compile(textVertexSource, textFragmSource, null);
+        texShader.compile(vertexSource, fragmentSource, null);
 
-        String[] boundVertexSource = new String[1];
-        String[] boundFragmSource = new String[1];
         try {
-            boundVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundVertexShader.glsl").getPath());
-            boundFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundFragmentShader.glsl").getPath());
+            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/textRenderVertexShader.glsl").getPath());
+            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/textRenderFragmentShader.glsl").getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        textRenderShader = new Shader(gl);
+        textRenderShader.compile(vertexSource, fragmentSource, null);
+
+        try {
+            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader.glsl").getPath());
+            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader.glsl").getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        texShader = new Shader(gl);
+        texShader.compile(vertexSource, fragmentSource, null);
+
+        try {
+            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundVertexShader.glsl").getPath());
+            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
         boundShader = new Shader(gl);
-        boundShader.compile(boundVertexSource, boundFragmSource, null);
+        boundShader.compile(vertexSource, fragmentSource, null);
 
-        String[] arrayVertexSource = new String[1];
-        String[] arrayFragmSource = new String[1];
         try {
-            arrayVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayVertexShader.glsl").getPath());
-            arrayFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayFragmentShader.glsl").getPath());
+            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayVertexShader.glsl").getPath());
+            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
         texArrayShader = new Shader(gl);
-        texArrayShader.compile(arrayVertexSource, arrayFragmSource, null);
+        texArrayShader.compile(vertexSource, fragmentSource, null);
 
-        String[] animVertexSource = new String[1];
-        String[] animFragmSource = new String[1];
         try {
-            animVertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animVertexShader.glsl").getPath());
-            animFragmSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animFragmentShader.glsl").getPath());
+            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animVertexShader.glsl").getPath());
+            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animFragmentShader.glsl").getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
         animShader = new Shader(gl);
-        animShader.compile(animVertexSource, animFragmSource, null);
+        animShader.compile(vertexSource, fragmentSource, null);
         //--------------------------------------------------------
     }
 
