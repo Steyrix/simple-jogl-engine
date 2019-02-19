@@ -6,7 +6,6 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.texture.Texture;
-import dagger.Component;
 import engine.animation.BasicAnimation;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
@@ -14,14 +13,13 @@ import engine.shader.Shader;
 import engine.text.TextRenderer;
 import engine.texture.TextureLoader;
 import engine.utilgeometry.PointF;
-import states.GameState;
+import engine.core.states.GameState;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 //TODO: load every texture with its own unique id
 public class GameLabyrinth implements GameState {

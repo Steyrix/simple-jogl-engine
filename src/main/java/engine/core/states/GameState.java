@@ -1,8 +1,7 @@
-package states;
+package engine.core.states;
 
 import com.jogamp.opengl.GLAutoDrawable;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 public interface GameState {

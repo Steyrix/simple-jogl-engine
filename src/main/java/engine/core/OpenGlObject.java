@@ -19,6 +19,8 @@ import java.util.ArrayList;
 public class OpenGlObject extends BoundingBox {
 
     protected final GL4 gl;
+    protected Texture texture;
+    protected IntBuffer textureArray;
 
     private IntBuffer buffers;
     private IntBuffer bbBuffer;
@@ -32,8 +34,7 @@ public class OpenGlObject extends BoundingBox {
 
     private int textureId;
     private String uniformName;
-    protected Texture texture;
-    protected IntBuffer textureArray;
+
 
     public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int textureId) {
         super(0.0f, 0.0f, boxDim.width, boxDim.height);
