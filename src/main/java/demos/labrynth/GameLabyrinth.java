@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.texture.Texture;
+import dagger.Component;
 import engine.animation.BasicAnimation;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
@@ -220,15 +221,6 @@ public class GameLabyrinth implements GameState {
         }
         textRenderShader = new Shader(gl);
         textRenderShader.compile(vertexSource, fragmentSource, null);
-
-        try {
-            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader.glsl").getPath());
-            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader.glsl").getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        texShader = new Shader(gl);
-        texShader.compile(vertexSource, fragmentSource, null);
 
         try {
             vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundVertexShader.glsl").getPath());
