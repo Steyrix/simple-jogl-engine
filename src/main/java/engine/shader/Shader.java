@@ -7,6 +7,7 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL4;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.Charset;
@@ -143,4 +144,6 @@ public class Shader {
         byte[] encoded = Files.readAllBytes(Paths.get(filePath));
         return new String(encoded, Charset.defaultCharset());
     }
+
+
 }

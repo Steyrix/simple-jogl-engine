@@ -5,21 +5,22 @@ import java.util.TreeMap;
 
 public class BasicAnimation {
 
-    private static Map<String, BasicAnimation> map = new TreeMap<>();
+    int currentFrameX;
+    int currentFrameY;
 
-    protected int animationId;
-    protected int usedLayerId;
-    protected int currentFrameX;
-    protected int currentFrameY;
-    protected int firstPosX;
-    protected int lastPosX;
-    protected int firstPosY;
-    protected int lastPosY;
-    protected int framesCountX;
-    protected int framesCountY;
-    protected float accumulatedTime;
+    private static Map<String, BasicAnimation> map = new TreeMap<>();
+    private String animName;
+
+    private int animationId;
+    private int usedLayerId;
+    private int firstPosX;
+    private int lastPosX;
+    private int firstPosY;
+    private int lastPosY;
+    private int framesCountX;
+    private int framesCountY;
+    private float accumulatedTime;
     private float timeLimit;
-    protected String animName;
 
     public BasicAnimation(String animName, int animationId, int usedLayerId, int framesCountX, int framesCountY, float timeLimit) {
         this.animName = animName;
@@ -79,40 +80,12 @@ public class BasicAnimation {
         return map.get(animName);
     }
 
-    public int getUsedLayerId() {
-        return usedLayerId;
-    }
-
-    public int getCurrentFrameX() {
-        return currentFrameX;
-    }
-
-    public int getCurrentFrameY() {
-        return currentFrameY;
-    }
-
-    public int getFramesCountX() {
-        return framesCountX;
-    }
-
-    public int getFramesCountY() {
-        return framesCountY;
-    }
-
     public void setFirstPosX(int firstPosX) {
         this.firstPosX = firstPosX;
     }
 
     public void setLastPosX(int lastPosX) {
         this.lastPosX = lastPosX;
-    }
-
-    public void setFirstPosY(int firstPosY) {
-        this.firstPosY = firstPosY;
-    }
-
-    public void setLastPosY(int lastPosY) {
-        this.lastPosY = lastPosY;
     }
 
     public void setCurrentFrameX(int currentFrameX) {

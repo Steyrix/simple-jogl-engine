@@ -6,11 +6,11 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.texture.Texture;
-import dagger.Component;
 import engine.animation.BasicAnimation;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
 import engine.shader.Shader;
+import engine.shader.ShaderCreator;
 import engine.text.TextRenderer;
 import engine.texture.TextureLoader;
 import engine.utilgeometry.PointF;
@@ -18,11 +18,11 @@ import engine.core.states.GameState;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 //TODO: load every texture with its own unique id
+//TODO: DI
 public class GameLabyrinth implements GameState {
 
     private ArrayList<ControllableObject> controls;
@@ -33,6 +33,7 @@ public class GameLabyrinth implements GameState {
     //private OpenGlObject testObject;
     private TextRenderer myRenderer;
     private LabyrinthCharacter animObj;
+    private ShaderCreator shaderCreator;
     private Shader texShader;
     private Shader boundShader;
     private Shader texArrayShader;
@@ -44,12 +45,14 @@ public class GameLabyrinth implements GameState {
     private int screenHeight;
     private Mat4 renderProjection;
 
-    public GameLabyrinth(Dimension dim) {
+    public GameLabyrinth(Dimension dim, ShaderCreator shaderCreator) {
         this.screenWidth = dim.width;
         this.screenHeight = dim.height;
 
         this.controls = new ArrayList<>();
         this.boundObjects = new ArrayList<>();
+
+        this.shaderCreator = shaderCreator;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class GameLabyrinth implements GameState {
 
         GL4 gl = glAutoDrawable.getGL().getGL4();
 
-        loadShader(gl);
+        loadShaders(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -125,7 +128,7 @@ public class GameLabyrinth implements GameState {
         chars.addAll(Arrays.asList(charArr));
         //Collections.reverse(chars);
 
-        myRenderer = TextRenderer.getRenderer(new Dimension(64,64),
+        myRenderer = TextRenderer.getRenderer(new Dimension(64, 64),
                 this.getClass().getClassLoader().getResource("textures/simpleFontAtlas.png").getPath(), chars);
     }
 
@@ -159,7 +162,7 @@ public class GameLabyrinth implements GameState {
         animObj.draw(animObj.getSize().width, animObj.getSize().height, 0.0f, animShader);
 
         textRenderShader.setMatrix4f("projection", renderProjection, false);
-        myRenderer.drawText("Hello \n World!", new Dimension(50,50), gl, new PointF(600,200), textRenderShader);
+        myRenderer.drawText("Hello \n World!", new Dimension(50, 50), gl, new PointF(600, 200), textRenderShader);
         //texArrayShader.setMatrix4f("projection", renderProjection, false);
         //texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
     }
@@ -175,7 +178,7 @@ public class GameLabyrinth implements GameState {
         for (ControllableObject c : controls) {
 
             for (OpenGlObject o : boundObjects)
-                    c.reactToCollision(o);
+                c.reactToCollision(o);
 
             c.update(deltaTime);
         }
@@ -199,57 +202,27 @@ public class GameLabyrinth implements GameState {
             c.keyReleased(e);
     }
 
-    private void loadShader(GL4 gl) {
+    private void loadShaders(GL4 gl) {
         //-----------------------SHADER TEST------------------------
-        String[] vertexSource = new String[1];
-        String[] fragmentSource = new String[1];
+        texShader = shaderCreator.create("shaders/texturedVertexShader.glsl",
+                "shaders/texturedFragmentShader.glsl", gl);
 
-        try {
-            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedVertexShader.glsl").getPath());
-            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texturedFragmentShader.glsl").getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        texShader = new Shader(gl);
-        texShader.compile(vertexSource, fragmentSource, null);
+        textRenderShader = shaderCreator.create("shaders/textRenderVertexShader.glsl",
+                "shaders/textRenderFragmentShader.glsl", gl);
 
-        try {
-            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/textRenderVertexShader.glsl").getPath());
-            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/textRenderFragmentShader.glsl").getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        textRenderShader = new Shader(gl);
-        textRenderShader.compile(vertexSource, fragmentSource, null);
 
-        try {
-            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundVertexShader.glsl").getPath());
-            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/boundFragmentShader.glsl").getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        boundShader = new Shader(gl);
-        boundShader.compile(vertexSource, fragmentSource, null);
+        boundShader = shaderCreator.create("shaders/boundVertexShader.glsl",
+                "shaders/boundFragmentShader.glsl", gl);
 
-        try {
-            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayVertexShader.glsl").getPath());
-            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/texArrayFragmentShader.glsl").getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        texArrayShader = new Shader(gl);
-        texArrayShader.compile(vertexSource, fragmentSource, null);
 
-        try {
-            vertexSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animVertexShader.glsl").getPath());
-            fragmentSource[0] = Shader.readFromFile(getClass().getClassLoader().getResource("shaders/animFragmentShader.glsl").getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        animShader = new Shader(gl);
-        animShader.compile(vertexSource, fragmentSource, null);
+        texArrayShader = shaderCreator.create("shaders/texArrayVertexShader.glsl",
+                "shaders/texArrayFragmentShader.glsl", gl);
+
+        animShader = shaderCreator.create("shaders/animVertexShader.glsl",
+                "shaders/animFragmentShader.glsl", gl);
         //--------------------------------------------------------
     }
+
 
     private void initLevelGeography(GL4 gl) {
 
@@ -286,7 +259,7 @@ public class GameLabyrinth implements GameState {
                         0f, 10f});
     }
 
-    static void initRepeatableTexParameters(Texture texture, GL4 gl){
+    static void initRepeatableTexParameters(Texture texture, GL4 gl) {
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT);
