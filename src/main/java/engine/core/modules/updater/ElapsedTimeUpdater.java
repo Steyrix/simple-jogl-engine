@@ -29,7 +29,6 @@ public class ElapsedTimeUpdater implements Updater {
     }
 
     private void execUpdateFuncOnCondition() {
-        if (condition())
-            func.exec();
+        if (condition()) func.exec();
     }
 }

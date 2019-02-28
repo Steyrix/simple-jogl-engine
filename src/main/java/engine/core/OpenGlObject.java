@@ -26,7 +26,7 @@ public class OpenGlObject extends BoundingBox {
     private IntBuffer bbBuffer;
     private ArrayList<Integer> paramsCount;
     private int buffersFilled;
-    private int buffersCount;
+    protected int buffersCount;
 
     private int verticesCount;
     private IntBuffer vertexArray;
@@ -79,7 +79,7 @@ public class OpenGlObject extends BoundingBox {
         this.textureId = textureId;
     }
 
-    private boolean isTextured(){
+    private boolean isTextured() {
         return (this.texture != null || this.textureArray != null);
     }
 
@@ -92,7 +92,7 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    private void setTexParameters(){
+    private void setTexParameters() {
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR);
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR);
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE);
@@ -147,7 +147,7 @@ public class OpenGlObject extends BoundingBox {
         initBoundingBoxBuffer();
         genBoundingBoxVertexArray();
 
-        if(texture != null) {
+        if (texture != null) {
             System.out.println("Loading only single texture");
             this.texture = texture;
             setTexParameters();
@@ -193,14 +193,7 @@ public class OpenGlObject extends BoundingBox {
 
         Mat4 model = getFinalMatrix(x, y, xSize, ySize, rotationAngle);
 
-        if (this.texture != null) {
-            this.setUniformName("textureSample");
-            defineSingleTextureState(shader);
-        }
-        if (this.textureArray != null) {
-            this.setUniformName("textureArray");
-            defineArrayTextureState(shader);
-        }
+        defineTextureState(shader);
 
         shader.setMatrix4f("model", model, true);
 
@@ -220,6 +213,17 @@ public class OpenGlObject extends BoundingBox {
 
         Mat4 model = getFinalMatrix(xSize, ySize, rotationAngle);
 
+        defineTextureState(shader);
+
+        shader.setMatrix4f("model", model, true);
+
+        gl.glBindVertexArray(this.vertexArray.get(0));
+        gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount);
+
+        drawBoundingBox();
+    }
+
+    private void defineTextureState(Shader shader) {
         if (this.texture != null) {
             this.setUniformName("textureSample");
             defineSingleTextureState(shader);
@@ -228,13 +232,6 @@ public class OpenGlObject extends BoundingBox {
             this.setUniformName("textureArray");
             defineArrayTextureState(shader);
         }
-
-        shader.setMatrix4f("model", model, true);
-
-        gl.glBindVertexArray(this.vertexArray.get(0));
-        gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount);
-
-        drawBoundingBox();
     }
 
     private void defineSingleTextureState(Shader shader) {
@@ -328,7 +325,7 @@ public class OpenGlObject extends BoundingBox {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "OpenGlObject: \n Number of vertices: " + verticesCount +
                 "\n Number of buffers: " + buffersCount + "\n" +
                 (isTextured() ? (" Texture id: " + textureId) : " Not textured");
