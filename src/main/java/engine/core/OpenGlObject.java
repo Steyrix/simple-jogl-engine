@@ -16,7 +16,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-public class OpenGlObject extends BoundingBox {
+public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
 
     protected final GL4 gl;
     protected Texture texture;
@@ -123,7 +123,7 @@ public class OpenGlObject extends BoundingBox {
             e.printStackTrace();
         }
     }
-
+    
     public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
@@ -155,7 +155,8 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    private void addBuffers(final float[]... dataArrays) {
+    @Override
+    public void addBuffers(final float[]... dataArrays) {
         if(dataArrays.length != buffersCount)
             throw new IllegalArgumentException("Number of buffers supplied must be the number of buffers created for the object");
 
@@ -169,7 +170,8 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    private void genVertexArray() {
+    @Override
+    public void genVertexArray() {
         gl.glGenVertexArrays(1, this.vertexArray);
         gl.glBindVertexArray(this.vertexArray.get(0));
 

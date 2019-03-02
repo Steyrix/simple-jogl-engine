@@ -23,22 +23,22 @@ public class Rectangle extends OpenGlObject {
 
     private static String ERR_NOT_VALID_ATTRIB_BUFFER = "The buffer supplied is not valid for rectangle";
 
-    public Rectangle (final GL4 gl, final float width, final float height, final int textureId) {
-        super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, new Dimension((int)width, (int)height), textureId);
+    public Rectangle(final GL4 gl, final float width, final float height, final int textureId) {
+        super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, new Dimension((int) width, (int) height), textureId);
     }
 
-    public Rectangle (final GL4 gl, final float posX, final float posY, final float width, final float height, final int textureId) {
-        super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, posX, posY, new Dimension((int)width, (int)height), textureId);
+    public Rectangle(final GL4 gl, final float posX, final float posY, final float width, final float height, final int textureId) {
+        super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, posX, posY, new Dimension((int) width, (int) height), textureId);
     }
 
-    public void initRectangleRenderData (final String[] textureFilePaths, final boolean texArray, final float[] attribDataArray) {
+    public void init(final String[] textureFilePaths, final boolean texArray, final float[] attribDataArray) {
         if (!isValidBufferForRectangle(attribDataArray))
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
 
         super.initRenderData(textureFilePaths, texArray, RECTANGLE_BUFFER, attribDataArray);
     }
 
-    public void initRectangleRenderData (final Texture texture, final float[] attribDataArray) {
+    public void init(final Texture texture, final float[] attribDataArray) {
         if (!isValidBufferForRectangle(attribDataArray))
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
 
@@ -71,7 +71,7 @@ public class Rectangle extends OpenGlObject {
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
     }
 
-    private boolean isValidBufferForRectangle (float[] dataArray) {
+    private boolean isValidBufferForRectangle(float[] dataArray) {
         return dataArray.length == 12;
     }
 }
