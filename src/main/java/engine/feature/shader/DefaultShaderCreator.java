@@ -1,4 +1,4 @@
-package engine.shader;
+package engine.feature.shader;
 
 import com.jogamp.opengl.GL4;
 

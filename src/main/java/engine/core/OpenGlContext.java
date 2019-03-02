@@ -1,19 +1,19 @@
 package engine.core;
 
 import com.jogamp.opengl.*;
-import engine.core.modules.DeltaTimeCalculator;
-import engine.core.modules.updater.Updater;
-import engine.core.states.GameState;
+import engine.core.util.DeltaTimeCalculator;
+import engine.core.util.updater.Updater;
+import engine.core.state.GameState;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class OpenGLContext implements GLEventListener, KeyListener {
+public class OpenGlContext implements GLEventListener, KeyListener {
 
     private GameState state;
     private Updater updater;
     private DeltaTimeCalculator timer;
 
-    public OpenGLContext(GameState state, Updater updater) {
+    public OpenGlContext(GameState state, Updater updater) {
         this.state = state;
         this.updater = updater;
         this.timer = new DeltaTimeCalculator();

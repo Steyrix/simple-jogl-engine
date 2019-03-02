@@ -1,6 +1,6 @@
-package engine.collision.collider;
+package engine.feature.collision.collider;
 
-import engine.collision.BoundingBox;
+import engine.feature.collision.BoundingBox;
 
 @SuppressWarnings("unused")
 public interface SimpleCollider {

@@ -2,7 +2,7 @@ package demos.labrynth;
 
 import com.jogamp.opengl.GL4;
 import engine.core.OpenGlObject;
-import engine.texture.TextureLoader;
+import engine.feature.texture.TextureLoader;
 
 import java.awt.*;
 import java.nio.file.Files;

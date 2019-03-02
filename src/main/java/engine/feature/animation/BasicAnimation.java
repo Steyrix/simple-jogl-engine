@@ -1,4 +1,4 @@
-package engine.animation;
+package engine.feature.animation;
 
 import java.util.Map;
 import java.util.TreeMap;

@@ -1,10 +1,10 @@
 package demos.labrynth;
 
 import com.jogamp.opengl.GL4;
-import engine.animation.BasicAnimation;
-import engine.collision.BoundingBox;
-import engine.utilgeometry.PointF;
-import engine.collision.collider.SpeculativeCollider;
+import engine.feature.animation.BasicAnimation;
+import engine.feature.collision.BoundingBox;
+import engine.core.util.utilgeometry.PointF;
+import engine.feature.collision.collider.SpeculativeCollider;
 import engine.core.ControllableObject;
 
 import java.awt.*;

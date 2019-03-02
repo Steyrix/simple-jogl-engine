@@ -1,10 +1,10 @@
 package engine.core;
 
 import com.jogamp.opengl.GL4;
-import engine.animation.AnimatedObject;
-import engine.animation.BasicAnimation;
-import engine.collision.BoundingBox;
-import engine.collision.collider.SimpleCollider;
+import engine.feature.animation.AnimatedObject;
+import engine.feature.animation.BasicAnimation;
+import engine.feature.collision.BoundingBox;
+import engine.feature.collision.collider.SimpleCollider;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

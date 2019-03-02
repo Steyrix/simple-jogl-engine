@@ -1,4 +1,4 @@
-package engine.core.states;
+package engine.core.state;
 
 import com.jogamp.opengl.GLAutoDrawable;
 

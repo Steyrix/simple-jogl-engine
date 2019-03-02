@@ -1,6 +1,6 @@
-package engine.collision;
+package engine.feature.collision;
 
-import engine.utilgeometry.PointF;
+import engine.core.util.utilgeometry.PointF;
 
 import java.awt.*;
 import java.util.ArrayList;

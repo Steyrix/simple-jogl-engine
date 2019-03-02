@@ -1,4 +1,4 @@
-package engine.core.modules.updater;
+package engine.core.util.updater;
 
 @FunctionalInterface
 public interface UpdateFunc {

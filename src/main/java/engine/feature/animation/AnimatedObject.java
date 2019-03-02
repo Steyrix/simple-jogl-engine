@@ -1,8 +1,8 @@
-package engine.animation;
+package engine.feature.animation;
 
 import com.jogamp.opengl.GL4;
 import engine.core.OpenGlObject;
-import engine.shader.Shader;
+import engine.feature.shader.Shader;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -1,13 +1,11 @@
-package engine.shader;
+package engine.feature.shader;
 
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Vec3;
 import com.hackoeur.jglm.Vec4;
-import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL4;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.Charset;

@@ -7,9 +7,9 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
-import engine.collision.BoundingBox;
-import engine.shader.Shader;
-import engine.texture.TextureLoader;
+import engine.feature.collision.BoundingBox;
+import engine.feature.shader.Shader;
+import engine.feature.texture.TextureLoader;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
@@ -28,7 +28,7 @@ public class OpenGlObject extends BoundingBox {
     private int buffersFilled;
     protected int buffersCount;
 
-    private int verticesCount;
+    protected int verticesCount;
     private IntBuffer vertexArray;
     private IntBuffer bbVertexArray;
 
@@ -155,6 +155,9 @@ public class OpenGlObject extends BoundingBox {
     }
 
     private void addBuffers(float[]... dataArrays) {
+        if(dataArrays.length != buffersCount)
+            throw new IllegalArgumentException("Number of buffers supplied must be the number of buffers created for the object");
+
         gl.glGenBuffers(buffersCount, buffers);
         for (float[] fData : dataArrays) {
             FloatBuffer floatBuffer = FloatBuffer.wrap(fData);
