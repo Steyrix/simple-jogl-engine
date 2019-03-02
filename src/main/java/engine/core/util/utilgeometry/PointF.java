@@ -2,15 +2,15 @@ package engine.core.util.utilgeometry;
 
 @SuppressWarnings("WeakerAccess")
 public class PointF {
-    public float x;
-    public float y;
+    public final float x;
+    public final float y;
 
     public PointF(){
         this.x = 0f;
         this.y = 0f;
     }
 
-    public PointF(float x, float y){
+    public PointF(final float x, final float y){
         this.x = x;
         this.y = y;
     }

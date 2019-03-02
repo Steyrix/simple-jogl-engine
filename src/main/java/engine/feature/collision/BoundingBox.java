@@ -23,7 +23,7 @@ public class BoundingBox {
         this.undefined = true;
     }
 
-    public BoundingBox(float posX, float posY, float width, float height) {
+    public BoundingBox(final float posX, final float posY, final float width, final float height) {
         this.posX = posX;
         this.posY = posY;
         this.width = width;
@@ -32,7 +32,7 @@ public class BoundingBox {
         this.undefined = false;
     }
 
-    public BoundingBox(float posX, float posY) {
+    public BoundingBox(final float posX, final float posY) {
         this.posX = posX;
         this.posY = posY;
         this.width = 0.0f;
@@ -41,7 +41,7 @@ public class BoundingBox {
         this.undefined = true;
     }
 
-    public BoundingBox(Dimension dimension) {
+    public BoundingBox(final Dimension dimension) {
         this.posX = 0.0f;
         this.posY = 0.0f;
         this.width = dimension.width;
@@ -50,7 +50,7 @@ public class BoundingBox {
         this.undefined = true;
     }
 
-    public void setPosition(float nX, float nY) {
+    public void setPosition(final float nX, final float nY) {
         this.posX = nX;
         this.posY = nY;
     }
@@ -75,19 +75,19 @@ public class BoundingBox {
         return new Dimension((int) this.width, (int) this.height);
     }
 
-    public boolean intersectsX(BoundingBox anotherBox) {
+    public boolean intersectsX(final BoundingBox anotherBox) {
         return !undefined && !(this.posX > anotherBox.getRightX() || this.getRightX() < anotherBox.posX);
     }
 
-    public boolean intersectsY(BoundingBox anotherBox) {
+    public boolean intersectsY(final BoundingBox anotherBox) {
         return !undefined && !(this.posY > anotherBox.getBottomY() || this.getBottomY() < anotherBox.posY);
     }
 
-    public boolean intersects(BoundingBox anotherBox) {
+    public boolean intersects(final BoundingBox anotherBox) {
         return intersectsX(anotherBox) && intersectsY(anotherBox);
     }
 
-    public boolean containsEveryPointOf(PointF... points) {
+    public boolean containsEveryPointOf(final PointF... points) {
         for (PointF point : points) {
             if (undefined || !(point.x < this.getRightX() && point.x > this.posX &&
                     point.y < this.getBottomY() && point.y > this.posY))
@@ -97,7 +97,7 @@ public class BoundingBox {
         return true;
     }
 
-    public boolean containsNumberOfPoints(int numberOfPoints, boolean strict, PointF... points) {
+    public boolean containsNumberOfPoints(final int numberOfPoints, final boolean strict, final PointF... points) {
         if (numberOfPoints <= 0)
             return true;
 
@@ -118,7 +118,7 @@ public class BoundingBox {
         return cnt >= numberOfPoints;
     }
 
-    public boolean containsAnyPointOf(boolean strict, PointF... points) {
+    public boolean containsAnyPointOf(final boolean strict, final PointF... points) {
         for (PointF point : points) {
             if (strict) {
                 if (!undefined && (point.x < this.getRightX() && point.x > this.posX &&
@@ -134,7 +134,7 @@ public class BoundingBox {
         return false;
     }
 
-    public boolean containsPoint(boolean strict, ArrayList<PointF> pointFS) {
+    public boolean containsPoint(final boolean strict, final ArrayList<PointF> pointFS) {
         for (PointF p : pointFS) {
             if (containsAnyPointOf(strict, p))
                 return true;
@@ -147,11 +147,11 @@ public class BoundingBox {
         return "posX:" + posX + "; posY:" + posY + "; rightX:" + getRightX() + "; bottomY:" + getBottomY();
     }
 
-    protected float getIntersectionWidth(BoundingBox anotherBox) {
+    protected float getIntersectionWidth(final BoundingBox anotherBox) {
         return anotherBox.posX >= this.posX ? -(this.getRightX() - anotherBox.posX) : anotherBox.getRightX() - this.posX;
     }
 
-    protected float getIntersectionHeight(BoundingBox anotherBox) {
+    protected float getIntersectionHeight(final BoundingBox anotherBox) {
         return anotherBox.posY >= this.posY ? -(this.getBottomY() - anotherBox.posY) : anotherBox.getBottomY() - this.posY;
     }
 }

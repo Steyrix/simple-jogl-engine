@@ -16,8 +16,8 @@ public class AnimatedObject extends OpenGlObject {
     private float frameSizeX;
     private float frameSizeY;
 
-    public AnimatedObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id,
-                          float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+    public AnimatedObject(final int bufferParamsCount, final int verticesCount, final GL4 gl, final Dimension boxDim, final int id,
+                          final float frameSizeX, final float frameSizeY, final BasicAnimation... animationSet) throws Exception {
 
         super(bufferParamsCount, verticesCount, gl, boxDim, id);
 
@@ -32,9 +32,9 @@ public class AnimatedObject extends OpenGlObject {
         this.currentAnim = this.animations.get(0);
     }
 
-    public AnimatedObject(int bufferParamsCount, int verticesCount, GL4 gl,
-                          float posX, float posY, Dimension boxDim, int id,
-                          float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+    public AnimatedObject(final int bufferParamsCount, final int verticesCount, final GL4 gl,
+                          final float posX, final float posY, Dimension boxDim, final int id,
+                          final float frameSizeX, final float frameSizeY, final BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id);
 
         if (animationSet == null)
@@ -49,7 +49,7 @@ public class AnimatedObject extends OpenGlObject {
     }
 
     @Override
-    public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader) {
+    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
 
         shader.use();
 
@@ -60,7 +60,7 @@ public class AnimatedObject extends OpenGlObject {
     }
 
     @Override
-    public void draw(float xSize, float ySize, float rotationAngle, Shader shader) {
+    public void draw(final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
 
         shader.use();
 
@@ -69,7 +69,7 @@ public class AnimatedObject extends OpenGlObject {
         super.draw(xSize, ySize, rotationAngle, shader);
     }
 
-    private void defineAnimationVariables(Shader shader) {
+    private void defineAnimationVariables(final Shader shader) {
         if (this.texture != null || this.textureArray != null) {
             shader.setFloat("xChanging", currentAnim.currentFrameX * frameSizeX, false);
             shader.setInteger("frameNumberX", currentAnim.currentFrameX + 1, false);
@@ -78,11 +78,11 @@ public class AnimatedObject extends OpenGlObject {
         }
     }
 
-    protected void playAnimation(float deltaTime) {
+    protected void playAnimation(final float deltaTime) {
         this.currentAnim.changeFrame(deltaTime);
     }
 
-    protected void setAnimation(BasicAnimation a) {
+    protected void setAnimation(final BasicAnimation a) {
         if (animations.contains(a))
             this.currentAnim = a;
     }

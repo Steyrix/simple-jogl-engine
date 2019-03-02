@@ -22,7 +22,8 @@ public class BasicAnimation {
     private float accumulatedTime;
     private float timeLimit;
 
-    public BasicAnimation(String animName, int animationId, int usedLayerId, int framesCountX, int framesCountY, float timeLimit) {
+    public BasicAnimation(final String animName, final int animationId, final int usedLayerId,
+                          final int framesCountX, final int framesCountY, final float timeLimit) {
         this.animName = animName;
         this.animationId = animationId;
         this.usedLayerId = usedLayerId;
@@ -44,7 +45,7 @@ public class BasicAnimation {
         addNewAnim(this);
     }
 
-    public void changeFrame(float deltaTime) {
+    public void changeFrame(final float deltaTime) {
         accumulatedTime += deltaTime;
         if (accumulatedTime >= timeLimit) {
             accumulatedTime = 0f;
@@ -71,28 +72,28 @@ public class BasicAnimation {
         return this.animName;
     }
 
-    public static void addNewAnim(BasicAnimation a) {
+    public static void addNewAnim(final BasicAnimation a) {
         if (!map.containsKey(a.getName()))
             map.put(a.getName(), a);
     }
 
-    public BasicAnimation animForName(String animName) {
+    public BasicAnimation animForName(final String animName) {
         return map.get(animName);
     }
 
-    public void setFirstPosX(int firstPosX) {
+    public void setFirstPosX(final int firstPosX) {
         this.firstPosX = firstPosX;
     }
 
-    public void setLastPosX(int lastPosX) {
+    public void setLastPosX(final int lastPosX) {
         this.lastPosX = lastPosX;
     }
 
-    public void setCurrentFrameX(int currentFrameX) {
+    public void setCurrentFrameX(final int currentFrameX) {
         this.currentFrameX = currentFrameX;
     }
 
-    public void setCurrentFrameY(int currentFrameY) {
+    public void setCurrentFrameY(final int currentFrameY) {
         this.currentFrameY = currentFrameY;
     }
 }

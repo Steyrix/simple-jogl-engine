@@ -10,16 +10,16 @@ import java.awt.event.KeyListener;
 public class OpenGlContext implements GLEventListener, KeyListener {
 
     private GameState state;
-    private Updater updater;
-    private DeltaTimeCalculator timer;
+    private final Updater updater;
+    private final DeltaTimeCalculator timer;
 
-    public OpenGlContext(GameState state, Updater updater) {
+    public OpenGlContext(final GameState state, final Updater updater) {
         this.state = state;
         this.updater = updater;
         this.timer = new DeltaTimeCalculator();
     }
 
-    public void init(GLAutoDrawable glAutoDrawable) {
+    public void init(final GLAutoDrawable glAutoDrawable) {
         state.init(glAutoDrawable);
         updater.setUpdateFunc(() -> {
             this.state.update(timer.calcDeltaTime());

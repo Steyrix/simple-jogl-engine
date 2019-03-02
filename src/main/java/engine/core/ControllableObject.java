@@ -15,8 +15,8 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
     protected float velocityY;
     protected boolean jumpState;
 
-    public ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int id,
-                              float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+    public ControllableObject(final int bufferParamsCount, final int verticesCount, final GL4 gl, final Dimension boxDim, final int id,
+                              final float frameSizeX, final float frameSizeY, final BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
 
         this.velocityX = 0.0f;
@@ -24,9 +24,9 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
         this.jumpState = false;
     }
 
-    protected ControllableObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim,
-                                 int id,
-                                 float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
+    protected ControllableObject(final int bufferParamsCount, final int verticesCount, final GL4 gl, final float posX, final float posY,
+                                 final Dimension boxDim, final int id,
+                                 final float frameSizeX, final float frameSizeY, final BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, animationSet);
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;
@@ -34,19 +34,19 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
     }
 
     @Override
-    public abstract void reactToCollision(BoundingBox anotherBox);
+    public abstract void reactToCollision(final BoundingBox anotherBox);
 
     @Override
     public abstract void update(float deltaTime);
 
     @Override
-    public abstract void keyTyped(KeyEvent e);
+    public abstract void keyTyped(final KeyEvent e);
 
     @Override
-    public abstract void keyPressed(KeyEvent e);
+    public abstract void keyPressed(final KeyEvent e);
 
     @Override
-    public abstract void keyReleased(KeyEvent e);
+    public abstract void keyReleased(final KeyEvent e);
 
     @Override
     public String toString(){

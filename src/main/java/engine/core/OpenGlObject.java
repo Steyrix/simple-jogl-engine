@@ -22,21 +22,21 @@ public class OpenGlObject extends BoundingBox {
     protected Texture texture;
     protected IntBuffer textureArray;
 
-    private IntBuffer buffers;
-    private IntBuffer bbBuffer;
-    private ArrayList<Integer> paramsCount;
+    private final IntBuffer buffers;
+    private final IntBuffer bbBuffer;
+    private final ArrayList<Integer> paramsCount;
     private int buffersFilled;
-    protected int buffersCount;
+    private final int buffersCount;
 
-    protected int verticesCount;
-    private IntBuffer vertexArray;
-    private IntBuffer bbVertexArray;
+    private final int verticesCount;
+    private final IntBuffer vertexArray;
+    private final IntBuffer bbVertexArray;
 
-    private int textureId;
+    private final int textureId;
     private String uniformName;
 
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, Dimension boxDim, int textureId) {
+    public OpenGlObject(final int bufferParamsCount, final int verticesCount, final GL4 gl, final Dimension boxDim, final int textureId) {
         super(0.0f, 0.0f, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -56,7 +56,8 @@ public class OpenGlObject extends BoundingBox {
         this.textureId = textureId;
     }
 
-    public OpenGlObject(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, int textureId) {
+    public OpenGlObject(final int bufferParamsCount, final int verticesCount, final GL4 gl,
+                        final float posX, final float posY, final Dimension boxDim, final int textureId) {
         super(posX, posY, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -83,7 +84,7 @@ public class OpenGlObject extends BoundingBox {
         return (this.texture != null || this.textureArray != null);
     }
 
-    protected void loadTexture(String filePath) {
+    protected void loadTexture(final String filePath) {
         try {
             this.texture = TextureLoader.loadTexture(filePath);
             setTexParameters();
@@ -99,7 +100,7 @@ public class OpenGlObject extends BoundingBox {
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE);
     }
 
-    private void loadTextureArray(String... filePaths) {
+    private void loadTextureArray(final String... filePaths) {
         try {
             ArrayList<TextureData> images = new ArrayList<>();
             var tl = new TextureLoader();
@@ -123,7 +124,7 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    public void initRenderData(String[] textureFilePaths, boolean texArray, float[]... dataArrays) {
+    public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
 
@@ -140,7 +141,7 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    public void initRenderData(Texture texture, float[]... dataArrays) {
+    public void initRenderData(final Texture texture, final float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
 
@@ -154,7 +155,7 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    private void addBuffers(float[]... dataArrays) {
+    private void addBuffers(final float[]... dataArrays) {
         if(dataArrays.length != buffersCount)
             throw new IllegalArgumentException("Number of buffers supplied must be the number of buffers created for the object");
 
@@ -187,7 +188,7 @@ public class OpenGlObject extends BoundingBox {
 
     }
 
-    public void draw(float x, float y, float xSize, float ySize, float rotationAngle, Shader shader) {
+    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
 
         shader.use();
 
@@ -207,7 +208,7 @@ public class OpenGlObject extends BoundingBox {
         drawBoundingBox();
     }
 
-    public void draw(float xSize, float ySize, float rotationAngle, Shader shader) {
+    public void draw(final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
 
         shader.use();
 
@@ -226,7 +227,7 @@ public class OpenGlObject extends BoundingBox {
         drawBoundingBox();
     }
 
-    private void defineTextureState(Shader shader) {
+    private void defineTextureState(final Shader shader) {
         if (this.texture != null) {
             this.setUniformName("textureSample");
             defineSingleTextureState(shader);
@@ -237,20 +238,20 @@ public class OpenGlObject extends BoundingBox {
         }
     }
 
-    private void defineSingleTextureState(Shader shader) {
+    private void defineSingleTextureState(final Shader shader) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         this.texture.enable(gl);
         this.texture.bind(gl);
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
     }
 
-    private void defineArrayTextureState(Shader shader) {
+    private void defineArrayTextureState(final Shader shader) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray.get(0));
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
     }
 
-    private Mat4 getFinalMatrix(float xSize, float ySize, float rotationAngle) {
+    private Mat4 getFinalMatrix(final float xSize, final float ySize, final float rotationAngle) {
         var model = Mat4.MAT4_IDENTITY;
         var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
         var scale = getScaleMatrix(xSize, ySize);
@@ -264,7 +265,7 @@ public class OpenGlObject extends BoundingBox {
         return model;
     }
 
-    private Mat4 getFinalMatrix(float x, float y, float xSize, float ySize, float rotationAngle) {
+    private Mat4 getFinalMatrix(final float x, final float y, final float xSize, final float ySize, final float rotationAngle) {
         var model = Mat4.MAT4_IDENTITY;
         var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
         var scale = getScaleMatrix(xSize, ySize);
@@ -278,7 +279,7 @@ public class OpenGlObject extends BoundingBox {
         return model;
     }
 
-    private Mat4 getScaleMatrix(float xSize, float ySize) {
+    private Mat4 getScaleMatrix(final float xSize, final float ySize) {
         return new Mat4(xSize, 0.0f, 0.0f, 0.0f,
                 0.0f, ySize, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 0.0f,
@@ -287,7 +288,8 @@ public class OpenGlObject extends BoundingBox {
 
     }
 
-    private void applyRotation(float xSize, float ySize, Mat4 rotation, Mat4 model) {
+    //TODO: move to separate class
+    private void applyRotation(final float xSize, final float ySize, final Mat4 rotation, Mat4 model) {
         model = model.translate(new Vec3(0.5f * xSize, 0.5f * ySize, 0.0f));
         model = model.multiply(rotation);
         model = model.translate(new Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f));
@@ -323,7 +325,7 @@ public class OpenGlObject extends BoundingBox {
         gl.glDrawArrays(GL4.GL_LINES, 0, 4);
     }
 
-    private void setUniformName(String newName) {
+    private void setUniformName(final String newName) {
         this.uniformName = newName;
     }
 
