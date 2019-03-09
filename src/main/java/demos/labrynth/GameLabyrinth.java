@@ -9,6 +9,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import engine.feature.animation.BasicAnimation;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
+import engine.feature.primitives.Rectangle;
 import engine.feature.shader.Shader;
 import engine.feature.shader.ShaderCreator;
 import engine.feature.text.TextRenderer;
@@ -28,9 +29,6 @@ public class GameLabyrinth implements GameState {
     private ArrayList<ControllableObject> controls;
     private ArrayList<OpenGlObject> boundObjects;
 
-    //TEST
-    //private OpenGlObject texArrayObj;
-    //private OpenGlObject testObject;
     private TextRenderer myRenderer;
     private LabyrinthCharacter animObj;
     private ShaderCreator shaderCreator;
@@ -39,7 +37,9 @@ public class GameLabyrinth implements GameState {
     private Shader texArrayShader;
     private Shader animShader;
     private Shader textRenderShader;
+    private Shader colorShader;
 
+    private Rectangle rect;
     private OpenGlObject background;
     private int screenWidth;
     private int screenHeight;
@@ -64,20 +64,7 @@ public class GameLabyrinth implements GameState {
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//        texArrayObj = new OpenGlObject(2, 6, gl, 500, 300, new Dimension(1024, 512), 2);
-//        texArrayObj.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/Idle.png").getPath()}, true,
-//                new float[]{0f, 1f,
-//                        1f, 0f,
-//                        0f, 0f,
-//                        0f, 1f,
-//                        1f, 1f,
-//                        1f, 0f},
-//                new float[]{0f, 0f,
-//                        1f, 1f,
-//                        0f, 1f,
-//                        0f, 0f,
-//                        1f, 0f,
-//                        1f, 1f});
+
         try {
             animObj = new LabyrinthCharacter(2, 6, gl, 25, 25,
                     new Dimension(50, 70), 5,
@@ -113,9 +100,9 @@ public class GameLabyrinth implements GameState {
         this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight,
                 0.0f, 0.0f, 1.0f);
 
-        //System.out.println(gl.glGetError() + " init end");
+        rect = new Rectangle(gl, 200, 200, 100, 50, 0);
+        rect.init(Color.RED);
 
-        //TODO: test text renderer
         Character[] charArr = new Character[]{
                 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±',
                 '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
@@ -126,7 +113,6 @@ public class GameLabyrinth implements GameState {
         };
         ArrayList<Character> chars = new ArrayList<>();
         chars.addAll(Arrays.asList(charArr));
-        //Collections.reverse(chars);
 
         myRenderer = TextRenderer.getRenderer(new Dimension(64, 64),
                 this.getClass().getClassLoader().getResource("textures/simpleFontAtlas.png").getPath(), chars);
@@ -163,6 +149,9 @@ public class GameLabyrinth implements GameState {
 
         textRenderShader.setMatrix4f("projection", renderProjection, false);
         myRenderer.drawText("Hello \n World!", new Dimension(50, 50), gl, new PointF(600, 200), textRenderShader);
+
+        colorShader.setMatrix4f("projection", renderProjection, false);
+        rect.draw(50, 100, 0, colorShader);
         //texArrayShader.setMatrix4f("projection", renderProjection, false);
         //texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
     }
@@ -220,6 +209,9 @@ public class GameLabyrinth implements GameState {
 
         animShader = shaderCreator.create("shaders/animVertexShader.glsl",
                 "shaders/animFragmentShader.glsl", gl);
+
+        colorShader = shaderCreator.create("shaders/coloredVertexShader.glsl",
+                "shaders/coloredFragmentShader.glsl", gl);
         //--------------------------------------------------------
     }
 

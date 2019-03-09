@@ -123,7 +123,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
             e.printStackTrace();
         }
     }
-    
+
     public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
@@ -157,7 +157,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
 
     @Override
     public void addBuffers(final float[]... dataArrays) {
-        if(dataArrays.length != buffersCount)
+        if (dataArrays.length != buffersCount)
             throw new IllegalArgumentException("Number of buffers supplied must be the number of buffers created for the object");
 
         gl.glGenBuffers(buffersCount, buffers);
@@ -185,8 +185,9 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
     public void dispose() {
         gl.glDeleteBuffers(buffersCount, buffers);
         gl.glDeleteVertexArrays(1, this.vertexArray);
-        if (this.texture != null)
+        if (this.texture != null) {
             this.texture.destroy(gl);
+        }
 
     }
 
@@ -302,7 +303,6 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         gl.glGenBuffers(1, bbBuffer);
         FloatBuffer bbVerticesBuffer = FloatBuffer.wrap(
                 new float[]{
-
                         0f, 0f,
                         1f, 0f,
                         1f, 1f,
