@@ -3,6 +3,7 @@ package engine.feature.primitives;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
 import engine.core.OpenGlObject;
+import engine.core.util.color.ColorUtil;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -45,6 +46,10 @@ public class Rectangle extends OpenGlObject {
         super.initRenderData(texture, RECTANGLE_BUFFER, attribDataArray);
     }
 
+    public void init(final Color color) {
+        super.initRenderData(null, RECTANGLE_BUFFER, ColorUtil.getBufferForColor(6, color));
+    }
+
     @Override
     public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
         validateDataSupplied(dataArrays);
@@ -72,6 +77,6 @@ public class Rectangle extends OpenGlObject {
     }
 
     private boolean isValidBufferForRectangle(float[] dataArray) {
-        return dataArray.length == 12;
+        return dataArray.length % 6 == 0;
     }
 }

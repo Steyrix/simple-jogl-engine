@@ -13,6 +13,8 @@ public class AnimatedObject extends OpenGlObject {
     protected ArrayList<BasicAnimation> animations;
     protected BasicAnimation currentAnim;
 
+    private static String emptyAnimationSetMessage = "Must be at least 1 animation!";
+
     private float frameSizeX;
     private float frameSizeY;
 
@@ -22,7 +24,7 @@ public class AnimatedObject extends OpenGlObject {
         super(bufferParamsCount, verticesCount, gl, boxDim, id);
 
         if (animationSet == null)
-            throw new Exception("Must be atleast 1 animation!");
+            throw new Exception(emptyAnimationSetMessage);
 
         this.frameSizeX = frameSizeX;
         this.frameSizeY = frameSizeY;
@@ -38,7 +40,7 @@ public class AnimatedObject extends OpenGlObject {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id);
 
         if (animationSet == null)
-            throw new Exception("Must be atleast 1 animation!");
+            throw new Exception(emptyAnimationSetMessage);
 
         this.frameSizeX = frameSizeX;
         this.frameSizeY = frameSizeY;
@@ -50,22 +52,15 @@ public class AnimatedObject extends OpenGlObject {
 
     @Override
     public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
-
         shader.use();
-
         defineAnimationVariables(shader);
-
         super.draw(x, y, xSize, ySize, rotationAngle, shader);
-
     }
 
     @Override
     public void draw(final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
-
         shader.use();
-
         defineAnimationVariables(shader);
-
         super.draw(xSize, ySize, rotationAngle, shader);
     }
 
