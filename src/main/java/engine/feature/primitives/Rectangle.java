@@ -12,12 +12,12 @@ import java.util.Arrays;
 public class Rectangle extends OpenGlObject {
 
     private static float[] RECTANGLE_BUFFER = new float[]{
-            0f, 1f,
-            1f, 0f,
             0f, 0f,
             0f, 1f,
             1f, 1f,
-            1f, 0f};
+            0f, 0f,
+            1f, 0f,
+            1f, 1f};
 
     private static int RECTANGLE_BUFFER_PARAMS_COUNT = 2;
     private static int RECTANGLE_VERTICES_COUNT = 6;
@@ -33,21 +33,21 @@ public class Rectangle extends OpenGlObject {
     }
 
     public void init(final String[] textureFilePaths, final boolean texArray, final float[] attribDataArray) {
-        if (!isValidBufferForRectangle(attribDataArray))
+        if (isNotValidBufferForRectangle(attribDataArray))
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
 
         super.initRenderData(textureFilePaths, texArray, RECTANGLE_BUFFER, attribDataArray);
     }
 
     public void init(final Texture texture, final float[] attribDataArray) {
-        if (!isValidBufferForRectangle(attribDataArray))
+        if (isNotValidBufferForRectangle(attribDataArray))
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
 
         super.initRenderData(texture, RECTANGLE_BUFFER, attribDataArray);
     }
 
     public void init(final Color color) {
-        super.initRenderData(null, RECTANGLE_BUFFER, ColorUtil.getBufferForColor(6, color));
+        super.initRenderData(null, RECTANGLE_BUFFER, ColorUtil.getBufferForColor(RECTANGLE_VERTICES_COUNT, color));
     }
 
     @Override
@@ -72,11 +72,11 @@ public class Rectangle extends OpenGlObject {
         if (!Arrays.equals(RECTANGLE_BUFFER, dataArrays[0]))
             throw new IllegalArgumentException(ERR_NOT_VALID_VERTEX_BUFFER);
 
-        if (!isValidBufferForRectangle(dataArrays[1]))
+        if (isNotValidBufferForRectangle(dataArrays[1]))
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
     }
 
-    private boolean isValidBufferForRectangle(float[] dataArray) {
-        return dataArray.length % 6 == 0;
+    private boolean isNotValidBufferForRectangle(float[] dataArray) {
+        return dataArray.length % 6 != 0;
     }
 }

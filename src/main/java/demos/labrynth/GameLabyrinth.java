@@ -101,7 +101,7 @@ public class GameLabyrinth implements GameState {
                 0.0f, 0.0f, 1.0f);
 
         rect = new Rectangle(gl, 200, 200, 100, 50, 0);
-        rect.init(Color.RED);
+        rect.init(Color.WHITE);
 
         Character[] charArr = new Character[]{
                 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±',
