@@ -94,6 +94,7 @@ public class GameLabyrinth implements GameState {
                         0f, 0f,
                         0.1f, 0f,
                         0.1f, 0.333f});
+
         this.controls.add(animObj);
 
         initLevelGeography(gl);
@@ -158,7 +159,7 @@ public class GameLabyrinth implements GameState {
 
     @Override
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
-
+        this.renderProjection = Matrices.ortho(0.0f, (float) screenWidth, (float) screenHeight, 0.0f, 0.0f, 1.0f);
     }
 
     @Override
