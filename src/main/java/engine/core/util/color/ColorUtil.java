@@ -4,9 +4,6 @@ import java.awt.*;
 
 public class ColorUtil {
 
-    private static final int CHANNEL_COUNT_RGB = 3;
-    private static final int CHANNEL_COUNT_RGBA = 4;
-
     public static float[] getBufferForColor(int verticesCount, Color color) {
 
         int colorLineLength = 3;
