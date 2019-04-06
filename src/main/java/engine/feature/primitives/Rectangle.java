@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.Arrays;
 
 
-public class Rectangle extends OpenGlObject {
+public class Rectangle extends OpenGlObject implements Primitive {
 
     private static float[] RECTANGLE_BUFFER = new float[]{
             0f, 0f,
@@ -33,17 +33,21 @@ public class Rectangle extends OpenGlObject {
     }
 
     public void init(final String[] textureFilePaths, final boolean texArray, final float[] attribDataArray) {
-        if (isNotValidBufferForRectangle(attribDataArray))
-            throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
 
-        super.initRenderData(textureFilePaths, texArray, RECTANGLE_BUFFER, attribDataArray);
+        if (isBufferValidForPrimitive(attribDataArray)) {
+            super.initRenderData(textureFilePaths, texArray, RECTANGLE_BUFFER, attribDataArray);
+        } else {
+            throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
+        }
     }
 
     public void init(final Texture texture, final float[] attribDataArray) {
-        if (isNotValidBufferForRectangle(attribDataArray))
-            throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
 
-        super.initRenderData(texture, RECTANGLE_BUFFER, attribDataArray);
+        if (isBufferValidForPrimitive(attribDataArray)) {
+            super.initRenderData(texture, RECTANGLE_BUFFER, attribDataArray);
+        } else {
+            throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
+        }
     }
 
     public void init(final Color color) {
@@ -52,31 +56,34 @@ public class Rectangle extends OpenGlObject {
 
     @Override
     public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
-        validateDataSupplied(dataArrays);
+        validateSuppliedData(dataArrays);
         super.initRenderData(textureFilePaths, texArray, dataArrays);
     }
 
     @Override
     public void initRenderData(final Texture texture, final float[]... dataArrays) {
-        validateDataSupplied(dataArrays);
+        validateSuppliedData(dataArrays);
         super.initRenderData(texture, dataArrays);
     }
 
-    private void validateDataSupplied(float[]... dataArrays) {
+    @Override
+    public void validateSuppliedData(float[]... dataArrays) {
+
         final String ERR_NOT_VALID_BUFFER_COUNT = "Rectangle primitive can only have 2 buffers (vertex and attrib).";
         if (dataArrays.length != RECTANGLE_BUFFER_PARAMS_COUNT)
             throw new IllegalArgumentException(ERR_NOT_VALID_BUFFER_COUNT);
 
-        final String ERR_NOT_VALID_VERTEX_BUFFER = "Rectangular vertex data should be supplied as the first argument for rectangle primitve. \n" +
-                "You can use initRectangleRenderData() instead";
+        final String ERR_NOT_VALID_VERTEX_BUFFER = "Rectangular vertex data should be supplied as the first argument for rectangle primitive. \n" +
+                "You can use Rectangle.init() instead";
         if (!Arrays.equals(RECTANGLE_BUFFER, dataArrays[0]))
             throw new IllegalArgumentException(ERR_NOT_VALID_VERTEX_BUFFER);
 
-        if (isNotValidBufferForRectangle(dataArrays[1]))
+        if (isBufferValidForPrimitive(dataArrays[1]))
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
     }
 
-    private boolean isNotValidBufferForRectangle(float[] dataArray) {
-        return dataArray.length % 6 != 0;
+    @Override
+    public boolean isBufferValidForPrimitive(float[] dataArray) {
+        return dataArray.length % RECTANGLE_VERTICES_COUNT == 0;
     }
 }
