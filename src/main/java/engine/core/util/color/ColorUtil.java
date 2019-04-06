@@ -4,7 +4,11 @@ import java.awt.*;
 
 public class ColorUtil {
 
+    private static final int CHANNEL_COUNT_RGB = 3;
+    private static final int CHANNEL_COUNT_RGBA = 4;
+
     public static float[] getBufferForColor(int verticesCount, Color color) {
+
         int colorLineLength = 3;
 
         float[] out = new float[verticesCount * colorLineLength];
@@ -20,18 +24,11 @@ public class ColorUtil {
     }
 
     private static float[] getColorValues(Color color) {
-        if (color == Color.RED) {
-            return new float[]{1f, 0f, 0f};
-        } else if (color == Color.GREEN) {
-            return new float[]{0f, 1f, 0f};
-        } else if (color == Color.BLUE) {
-            return new float[]{0f, 0f, 1f};
-        } else if (color == Color.WHITE) {
-            return new float[]{1f, 1f, 1f};
-        } else if (color == Color.BLACK) {
-            return new float[]{0f, 0f, 0f};
-        } else {
-            return new float[]{0f, 0f, 0f};
-        }
+
+        return new float[]{
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue()
+        };
     }
 }
