@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class Rectangle extends OpenGlObject implements Primitive {
 
-    private static float[] RECTANGLE_BUFFER = new float[]{
+    public static float[] RECTANGLE_BUFFER = new float[]{
             0f, 0f,
             0f, 1f,
             1f, 1f,
