@@ -280,7 +280,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
             if (!isWalking && !jumpState) {
                 setWalkAnim();
             }
-        } else if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S)
+        } else if (e.getKeyCode() == KeyEvent.VK_W)
             if (!jumpState)
                 setJumpAnimation();
 
