@@ -6,6 +6,7 @@ import engine.feature.collision.BoundingBox;
 import engine.core.util.utilgeometry.PointF;
 import engine.feature.collision.collider.SpeculativeCollider;
 import engine.core.ControllableObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -71,7 +72,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
 
     //TODO: fix bug with horizontal collision
     @Override
-    public void reactToCollision(BoundingBox anotherBox) {
+    public void reactToCollision(@NotNull BoundingBox anotherBox) {
         if (detectBottomContact(anotherBox)) {
             jumpState = false;
             currentBottomPlatform = anotherBox;
@@ -261,17 +262,18 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         nextBox.setPosition(posX + velocityX * deltaTime, posY + velocityY * deltaTime);
     }
 
+    @NotNull
     @Override
     public BoundingBox getNextBox() {
         return this.nextBox;
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(@NotNull KeyEvent e) {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(@NotNull KeyEvent e) {
 
         if (!this.keys[e.getKeyCode()])
             this.keys[e.getKeyCode()] = true;
@@ -287,7 +289,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(@NotNull KeyEvent e) {
 
         if (this.keys[e.getKeyCode()])
             this.keys[e.getKeyCode()] = false;

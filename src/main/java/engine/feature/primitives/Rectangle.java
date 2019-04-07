@@ -4,6 +4,8 @@ import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
 import engine.core.OpenGlObject;
 import engine.core.util.color.ColorUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -24,15 +26,15 @@ public class Rectangle extends OpenGlObject implements Primitive {
 
     private static String ERR_NOT_VALID_ATTRIB_BUFFER = "The buffer supplied is not valid for rectangle";
 
-    public Rectangle(final GL4 gl, final float width, final float height, final int textureId) {
+    public Rectangle(@NotNull final GL4 gl, final float width, final float height, final int textureId) {
         super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, new Dimension((int) width, (int) height), textureId);
     }
 
-    public Rectangle(final GL4 gl, final float posX, final float posY, final float width, final float height, final int textureId) {
+    public Rectangle(@NotNull final GL4 gl, final float posX, final float posY, final float width, final float height, final int textureId) {
         super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, posX, posY, new Dimension((int) width, (int) height), textureId);
     }
 
-    public void init(final String[] textureFilePaths, final boolean texArray, final float[] attribDataArray) {
+    public void init(@NotNull final String[] textureFilePaths, final boolean texArray, @NotNull final float[] attribDataArray) {
 
         if (isBufferValidForPrimitive(attribDataArray)) {
             super.initRenderData(textureFilePaths, texArray, RECTANGLE_BUFFER, attribDataArray);
@@ -41,7 +43,8 @@ public class Rectangle extends OpenGlObject implements Primitive {
         }
     }
 
-    public void init(final Texture texture, final float[] attribDataArray) {
+    public void init(@Nullable final Texture texture,
+                     @NotNull final float[] attribDataArray) {
 
         if (isBufferValidForPrimitive(attribDataArray)) {
             super.initRenderData(texture, RECTANGLE_BUFFER, attribDataArray);
@@ -50,24 +53,24 @@ public class Rectangle extends OpenGlObject implements Primitive {
         }
     }
 
-    public void init(final Color color) {
+    public void init(@NotNull final Color color) {
         super.initRenderData(null, RECTANGLE_BUFFER, ColorUtil.getBufferForColor(RECTANGLE_VERTICES_COUNT, color));
     }
 
     @Override
-    public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
+    public void initRenderData(@NotNull final String[] textureFilePaths, final boolean texArray, @NotNull final float[]... dataArrays) {
         validateSuppliedData(dataArrays);
         super.initRenderData(textureFilePaths, texArray, dataArrays);
     }
 
     @Override
-    public void initRenderData(final Texture texture, final float[]... dataArrays) {
+    public void initRenderData(final Texture texture, @NotNull final float[]... dataArrays) {
         validateSuppliedData(dataArrays);
         super.initRenderData(texture, dataArrays);
     }
 
     @Override
-    public void validateSuppliedData(float[]... dataArrays) {
+    public void validateSuppliedData(@NotNull float[]... dataArrays) {
 
         final String ERR_NOT_VALID_BUFFER_COUNT = "Rectangle primitive can only have 2 buffers (vertex and attrib).";
         if (dataArrays.length != RECTANGLE_BUFFER_PARAMS_COUNT)
@@ -83,7 +86,7 @@ public class Rectangle extends OpenGlObject implements Primitive {
     }
 
     @Override
-    public boolean isBufferValidForPrimitive(float[] dataArray) {
+    public boolean isBufferValidForPrimitive(@NotNull float[] dataArray) {
         return dataArray.length % RECTANGLE_VERTICES_COUNT == 0;
     }
 }

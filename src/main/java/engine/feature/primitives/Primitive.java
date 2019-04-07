@@ -1,8 +1,10 @@
 package engine.feature.primitives;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface Primitive {
 
-    boolean isBufferValidForPrimitive(final float[] buffer);
+    boolean isBufferValidForPrimitive(@NotNull final float[] buffer);
 
-    void validateSuppliedData(final float[]... dataArrays);
+    void validateSuppliedData(@NotNull final float[]... dataArrays);
 }

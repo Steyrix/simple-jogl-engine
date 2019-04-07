@@ -6,6 +6,7 @@ import engine.core.OpenGlObject;
 import engine.feature.shader.Shader;
 import engine.feature.texture.TextureLoader;
 import engine.core.util.utilgeometry.PointF;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.IOException;
@@ -18,7 +19,10 @@ public class TextRenderer {
     private Texture textureAtlas;
     private Dimension charSize;
 
-    public static TextRenderer getRenderer(Dimension charSize, String textureFilePath, ArrayList<Character> characters) {
+    @NotNull
+    public static TextRenderer getRenderer(@NotNull Dimension charSize,
+                                           @NotNull String textureFilePath,
+                                           @NotNull ArrayList<Character> characters) {
         Texture textureAtlas = null;
         HashMap<Character, PointF> characterCoordinates = null;
 
@@ -42,14 +46,19 @@ public class TextRenderer {
         return this.textureAtlas != null && this.characterCoordinates != null;
     }
 
-    private TextRenderer(Texture textureAtlas, HashMap<Character, PointF> characterCoordinates, Dimension charSize) {
+    private TextRenderer(@NotNull Texture textureAtlas,
+                         @NotNull HashMap<Character, PointF> characterCoordinates,
+                         @NotNull Dimension charSize) {
         this.textureAtlas = textureAtlas;
         this.characterCoordinates = characterCoordinates;
         this.charSize = charSize;
         this.cache = new HashMap<>();
     }
 
-    private static HashMap<Character, PointF> generateMap(Dimension charSize, Texture textureAtlas, ArrayList<Character> characters) {
+    @NotNull
+    private static HashMap<Character, PointF> generateMap(@NotNull Dimension charSize,
+                                                          @NotNull Texture textureAtlas,
+                                                          @NotNull ArrayList<Character> characters) {
         HashMap<Character, PointF> out = new HashMap<>();
         int xStep, yStep, charsCount;
 
@@ -75,8 +84,12 @@ public class TextRenderer {
         return out;
     }
 
-    private void drawCharacter(Character c, Dimension fontSize, GL4 gl, PointF pos, Shader shader) {
-        OpenGlObject glObject;
+    private void drawCharacter(@NotNull Character c,
+                               @NotNull Dimension fontSize,
+                               @NotNull GL4 gl,
+                               @NotNull PointF pos,
+                               @NotNull Shader shader) {
+        final OpenGlObject glObject;
 
         if (!cache.containsKey(c)) {
             glObject = new OpenGlObject(2, 6, gl, pos.x, pos.y,
@@ -100,7 +113,11 @@ public class TextRenderer {
         glObject.draw(pos.x, pos.y, (float) fontSize.getWidth(), (float) fontSize.getHeight(), 0f, shader);
     }
 
-    public void drawText(String text, Dimension fontSize, GL4 gl, PointF pos, Shader shader) {
+    public void drawText(@NotNull String text,
+                         @NotNull Dimension fontSize,
+                         @NotNull GL4 gl,
+                         @NotNull PointF pos,
+                         @NotNull Shader shader) {
         int x = 0, y = 0;
         for (Character c : text.toCharArray()) {
             if (c == '\n') {
@@ -116,7 +133,7 @@ public class TextRenderer {
         }
     }
 
-    private float[] getUV(Character c) {
+    private float[] getUV(@NotNull Character c) {
         PointF curr = characterCoordinates.get(c);
         float width = (float) (charSize.getWidth() / textureAtlas.getWidth());
         float height = (float) (charSize.getHeight() / textureAtlas.getHeight());

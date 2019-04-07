@@ -3,6 +3,7 @@ package engine.feature.animation;
 import com.jogamp.opengl.GL4;
 import engine.core.OpenGlObject;
 import engine.feature.shader.Shader;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,8 +19,14 @@ public class AnimatedObject extends OpenGlObject {
     private float frameSizeX;
     private float frameSizeY;
 
-    public AnimatedObject(final int bufferParamsCount, final int verticesCount, final GL4 gl, final Dimension boxDim, final int id,
-                          final float frameSizeX, final float frameSizeY, final BasicAnimation... animationSet) throws Exception {
+    public AnimatedObject(final int bufferParamsCount,
+                          final int verticesCount,
+                          @NotNull final GL4 gl,
+                          @NotNull final Dimension boxDim,
+                          final int id,
+                          final float frameSizeX,
+                          final float frameSizeY,
+                          @NotNull final BasicAnimation... animationSet) throws Exception {
 
         super(bufferParamsCount, verticesCount, gl, boxDim, id);
 
@@ -34,9 +41,16 @@ public class AnimatedObject extends OpenGlObject {
         this.currentAnim = this.animations.get(0);
     }
 
-    public AnimatedObject(final int bufferParamsCount, final int verticesCount, final GL4 gl,
-                          final float posX, final float posY, Dimension boxDim, final int id,
-                          final float frameSizeX, final float frameSizeY, final BasicAnimation... animationSet) throws Exception {
+    public AnimatedObject(final int bufferParamsCount,
+                          final int verticesCount,
+                          @NotNull final GL4 gl,
+                          final float posX,
+                          final float posY,
+                          @NotNull final Dimension boxDim,
+                          final int id,
+                          final float frameSizeX,
+                          final float frameSizeY,
+                          @NotNull final BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id);
 
         if (animationSet == null)
@@ -51,20 +65,22 @@ public class AnimatedObject extends OpenGlObject {
     }
 
     @Override
-    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
+    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle,
+                     @NotNull final Shader shader) {
         shader.use();
         defineAnimationVariables(shader);
         super.draw(x, y, xSize, ySize, rotationAngle, shader);
     }
 
     @Override
-    public void draw(final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
+    public void draw(final float xSize, final float ySize, final float rotationAngle,
+                     @NotNull final Shader shader) {
         shader.use();
         defineAnimationVariables(shader);
         super.draw(xSize, ySize, rotationAngle, shader);
     }
 
-    private void defineAnimationVariables(final Shader shader) {
+    private void defineAnimationVariables(@NotNull final Shader shader) {
         if (this.texture != null || this.textureArray != null) {
             shader.setFloat("xChanging", currentAnim.currentFrameX * frameSizeX, false);
             shader.setInteger("frameNumberX", currentAnim.currentFrameX + 1, false);
@@ -77,11 +93,12 @@ public class AnimatedObject extends OpenGlObject {
         this.currentAnim.changeFrame(deltaTime);
     }
 
-    protected void setAnimation(final BasicAnimation a) {
+    protected void setAnimation(@NotNull final BasicAnimation a) {
         if (animations.contains(a))
             this.currentAnim = a;
     }
 
+    @NotNull
     @Override
     public String toString(){
         return super.toString() + "\n Animated";

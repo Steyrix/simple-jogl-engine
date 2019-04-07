@@ -1,5 +1,7 @@
 package engine.feature.animation;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -72,7 +74,7 @@ public class BasicAnimation {
         return this.animName;
     }
 
-    public static void addNewAnim(final BasicAnimation a) {
+    public static void addNewAnim(@NotNull final BasicAnimation a) {
         if (!map.containsKey(a.getName()))
             map.put(a.getName(), a);
     }

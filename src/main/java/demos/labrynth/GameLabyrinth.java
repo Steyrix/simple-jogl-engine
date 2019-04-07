@@ -67,7 +67,7 @@ public class GameLabyrinth implements GameState {
 
         try {
             animObj = new LabyrinthCharacter(2, 6, gl, 25, 25,
-                    new Dimension(50, 70), 5,
+                    new Dimension(50, 70), 0,
                     0.1f, 0.333f,
                     new BasicAnimation("WALK", 1, 0, 6, 1, 100f),
                     new BasicAnimation("JUMP", 2, 0, 3, 1, 200f),

@@ -10,6 +10,8 @@ import com.jogamp.opengl.util.texture.TextureData;
 import engine.feature.collision.BoundingBox;
 import engine.feature.shader.Shader;
 import engine.feature.texture.TextureLoader;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
@@ -36,7 +38,11 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
     private String uniformName;
 
 
-    public OpenGlObject(final int bufferParamsCount, final int verticesCount, final GL4 gl, final Dimension boxDim, final int textureId) {
+    public OpenGlObject(final int bufferParamsCount,
+                        final int verticesCount,
+                        @NotNull final GL4 gl,
+                        @NotNull final Dimension boxDim,
+                        final int textureId) {
         super(0.0f, 0.0f, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -56,8 +62,13 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         this.textureId = textureId;
     }
 
-    public OpenGlObject(final int bufferParamsCount, final int verticesCount, final GL4 gl,
-                        final float posX, final float posY, final Dimension boxDim, final int textureId) {
+    public OpenGlObject(final int bufferParamsCount,
+                        final int verticesCount,
+                        @NotNull final GL4 gl,
+                        final float posX,
+                        final float posY,
+                        @NotNull final Dimension boxDim,
+                        final int textureId) {
         super(posX, posY, boxDim.width, boxDim.height);
         this.gl = gl;
 
@@ -84,7 +95,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         return (this.texture != null || this.textureArray != null);
     }
 
-    protected void loadTexture(final String filePath) {
+    protected void loadTexture(@NotNull final String filePath) {
         try {
             this.texture = TextureLoader.loadTexture(filePath);
             setTexParameters();
@@ -100,7 +111,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE);
     }
 
-    private void loadTextureArray(final String... filePaths) {
+    private void loadTextureArray(@NotNull final String... filePaths) {
         try {
             ArrayList<TextureData> images = new ArrayList<>();
             var tl = new TextureLoader();
@@ -124,24 +135,26 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         }
     }
 
-    public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
+    public void initRenderData(@NotNull final String[] textureFilePaths,
+                               final boolean texArray,
+                               @NotNull final float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
 
         initBoundingBoxBuffer();
         genBoundingBoxVertexArray();
 
-        if (textureFilePaths != null && textureFilePaths.length == 1 && !texArray) {
+        if (textureFilePaths.length == 1 && !texArray) {
             System.out.println("Loading only single texture");
             loadTexture(textureFilePaths[0]);
         }
-        if ((textureFilePaths != null && textureFilePaths.length > 1) || texArray) {
+        if (textureFilePaths.length > 1 || texArray) {
             System.out.println("Loading texture array");
             loadTextureArray(textureFilePaths);
         }
     }
 
-    public void initRenderData(final Texture texture, final float[]... dataArrays) {
+    public void initRenderData(@Nullable final Texture texture, @NotNull final float[]... dataArrays) {
         addBuffers(dataArrays);
         genVertexArray();
 
@@ -156,7 +169,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
     }
 
     @Override
-    public void addBuffers(final float[]... dataArrays) {
+    public void addBuffers(@NotNull final float[]... dataArrays) {
         if (dataArrays.length != buffersCount)
             throw new IllegalArgumentException("Number of buffers supplied must be the number of buffers created for the object");
 
@@ -191,7 +204,8 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
 
     }
 
-    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
+    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle,
+                     @NotNull final Shader shader) {
 
         shader.use();
 
@@ -211,7 +225,8 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         drawBoundingBox();
     }
 
-    public void draw(final float xSize, final float ySize, final float rotationAngle, final Shader shader) {
+    public void draw(final float xSize, final float ySize, final float rotationAngle,
+                     @NotNull final Shader shader) {
 
         shader.use();
 
@@ -230,7 +245,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         drawBoundingBox();
     }
 
-    private void defineTextureState(final Shader shader) {
+    private void defineTextureState(@NotNull final Shader shader) {
         if (this.texture != null) {
             this.setUniformName("textureSample");
             defineSingleTextureState(shader);
@@ -241,14 +256,14 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         }
     }
 
-    private void defineSingleTextureState(final Shader shader) {
+    private void defineSingleTextureState(@NotNull final Shader shader) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         this.texture.enable(gl);
         this.texture.bind(gl);
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
     }
 
-    private void defineArrayTextureState(final Shader shader) {
+    private void defineArrayTextureState(@NotNull final Shader shader) {
         gl.glActiveTexture(GL4.GL_TEXTURE0);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray.get(0));
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
@@ -292,7 +307,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
     }
 
     //TODO: move to separate class
-    private void applyRotation(final float xSize, final float ySize, final Mat4 rotation, Mat4 model) {
+    private void applyRotation(final float xSize, final float ySize, final Mat4 rotation, @NotNull Mat4 model) {
         model = model.translate(new Vec3(0.5f * xSize, 0.5f * ySize, 0.0f));
         model = model.multiply(rotation);
         model = model.translate(new Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f));
@@ -327,10 +342,11 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         gl.glDrawArrays(GL4.GL_LINES, 0, 4);
     }
 
-    private void setUniformName(final String newName) {
+    private void setUniformName(@NotNull final String newName) {
         this.uniformName = newName;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "OpenGlObject: \n Number of vertices: " + verticesCount +

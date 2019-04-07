@@ -1,6 +1,7 @@
 package engine.feature.shader;
 
 import com.jogamp.opengl.GL4;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -10,7 +11,8 @@ public class DefaultShaderCreator implements ShaderCreator {
     public DefaultShaderCreator() {
     }
 
-    private String getShaderSource(String resourceName) {
+    @NotNull
+    private String getShaderSource(@NotNull String resourceName) {
         URL fileURL = getClass().getClassLoader().getResource(resourceName);
         String out = null;
         try {
@@ -22,21 +24,23 @@ public class DefaultShaderCreator implements ShaderCreator {
         return out;
     }
 
-    private String[] getShaderBuffer(String resourceName) {
+    @NotNull
+    private String[] getShaderBuffer(@NotNull String resourceName) {
         return new String[]{getShaderSource(resourceName)};
     }
 
-
+    @NotNull
     @Override
-    public Shader create(String vertexResName, String fragmentResName, GL4 gl) {
+    public Shader create(@NotNull String vertexResName, @NotNull String fragmentResName, @NotNull GL4 gl) {
         Shader out = new Shader(gl);
         out.compile(getShaderBuffer(vertexResName), getShaderBuffer(fragmentResName), null);
 
         return out;
     }
 
+    @NotNull
     @Override
-    public Shader create(String vertexResName, String fragmentResName, String geometryResName, GL4 gl) {
+    public Shader create(@NotNull String vertexResName, @NotNull String fragmentResName, @NotNull String geometryResName, @NotNull GL4 gl) {
         Shader out = new Shader(gl);
         out.compile(getShaderBuffer(vertexResName), getShaderBuffer(fragmentResName), getShaderBuffer(geometryResName));
 

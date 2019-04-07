@@ -4,6 +4,7 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -15,21 +16,31 @@ import java.util.ArrayList;
 
 //TODO: implement texture arrays robust support
 public class TextureLoader {
-    public static Texture loadTexture (String filePath) throws GLException, IOException {
+
+    @NotNull
+    public static Texture loadTexture (@NotNull String filePath) throws GLException, IOException {
         var outputStream = new ByteArrayOutputStream();
         ImageIO.write(ImageIO.read(new File(filePath)), "png", outputStream);
         InputStream fileInputStream = new ByteArrayInputStream(outputStream.toByteArray());
         return TextureIO.newTexture(fileInputStream, true, TextureIO.PNG);
     }
 
-    public TextureData loadTextureData (String filePath, GL4 gl) throws GLException, IOException {
+    @NotNull
+    public TextureData loadTextureData (@NotNull String filePath, @NotNull GL4 gl) throws GLException, IOException {
         var imageFile = new File(filePath);
         return TextureIO.newTextureData(gl.getGLProfile(), imageFile,true, TextureIO.PNG);
     }
 
     //TODO: implement check that textures are same size for avoiding exceptions
     //TODO: fix wrong colors
-    public static IntBuffer loadTextureArrayTD(ArrayList<TextureData> textures, GL4 gl, int texLayerWidth, int texLayerHeight, boolean repeatable, int id) {
+
+    @NotNull
+    public static IntBuffer loadTextureArrayTD(@NotNull ArrayList<TextureData> textures,
+                                               @NotNull GL4 gl,
+                                               int texLayerWidth,
+                                               int texLayerHeight,
+                                               boolean repeatable,
+                                               int id) {
 
         var texture = IntBuffer.allocate(1);
         gl.glGenTextures(1, texture);
@@ -65,7 +76,8 @@ public class TextureLoader {
         return texture;
     }
 
-    private static ByteBuffer getImageDataByte(BufferedImage texImg) {
+    @NotNull
+    private static ByteBuffer getImageDataByte(@NotNull BufferedImage texImg) {
         byte[] pixels = ((DataBufferByte) texImg.getRaster().getDataBuffer()).getData();
         return ByteBuffer.wrap(pixels);
     }

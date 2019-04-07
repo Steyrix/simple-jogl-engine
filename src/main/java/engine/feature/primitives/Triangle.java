@@ -5,6 +5,8 @@ import com.jogamp.opengl.util.texture.Texture;
 import engine.core.OpenGlObject;
 import engine.core.util.color.ColorUtil;
 import engine.core.util.utilgeometry.PointF;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -17,15 +19,22 @@ public class Triangle extends OpenGlObject implements Primitive {
 
     private static String ERR_NOT_VALID_ATTRIB_BUFFER = "The buffer supplied is not valid for triangle";
 
-    public Triangle(final GL4 gl, final Dimension boxDim, final int textureId) {
+    public Triangle(@NotNull final GL4 gl,
+                    @NotNull final Dimension boxDim,
+                    final int textureId) {
         super(TRIANGLE_BUFFER_PARAMS_COUNT, TRIANGLE_VERTICES_COUNT, gl, boxDim, textureId);
     }
 
-    public Triangle(final GL4 gl, final float posX, final float posY, final Dimension boxDim, final int textureId) {
+    public Triangle(@NotNull final GL4 gl,
+                    final float posX,
+                    final float posY,
+                    @NotNull final Dimension boxDim,
+                    final int textureId) {
         super(TRIANGLE_BUFFER_PARAMS_COUNT, TRIANGLE_VERTICES_COUNT, gl, posX, posY, boxDim, textureId);
     }
 
-    public void init(final Color color, final float[] vertices) {
+    public void init(@NotNull final Color color,
+                     @NotNull final float[] vertices) {
 
         if (isBufferValidForPrimitive(vertices) && isValidVerticesForTriangle(vertices)) {
             super.initRenderData(null, vertices, ColorUtil.getBufferForColor(TRIANGLE_VERTICES_COUNT, color));
@@ -35,7 +44,10 @@ public class Triangle extends OpenGlObject implements Primitive {
 
     }
 
-    public void init(final String[] textureFilePaths, final boolean texArray, final float[] vertices, final float[] attribDataArray) {
+    public void init(@NotNull final String[] textureFilePaths,
+                     final boolean texArray,
+                     @NotNull final float[] vertices,
+                     @NotNull final float[] attribDataArray) {
 
         if (isBufferValidForPrimitive(vertices) && isValidVerticesForTriangle(vertices)
                 && isBufferValidForPrimitive(attribDataArray)) {
@@ -45,7 +57,9 @@ public class Triangle extends OpenGlObject implements Primitive {
         }
     }
 
-    public void init(final Texture texture, final float[] vertices, final float[] attribDataArray) {
+    public void init(@Nullable final Texture texture,
+                     @NotNull final float[] vertices,
+                     @NotNull final float[] attribDataArray) {
 
         if (isBufferValidForPrimitive(vertices) && isValidVerticesForTriangle(vertices)
                 && isBufferValidForPrimitive(attribDataArray)) {
@@ -57,19 +71,20 @@ public class Triangle extends OpenGlObject implements Primitive {
     }
 
     @Override
-    public void initRenderData(final String[] textureFilePaths, final boolean texArray, final float[]... dataArrays) {
+    public void initRenderData(@NotNull final String[] textureFilePaths, final boolean texArray, @NotNull final float[]... dataArrays) {
         validateSuppliedData(dataArrays);
         super.initRenderData(textureFilePaths, texArray, dataArrays);
     }
 
     @Override
-    public void initRenderData(final Texture texture, final float[]... dataArrays) {
+    public void initRenderData(@Nullable final Texture texture,
+                               @NotNull final float[]... dataArrays) {
         validateSuppliedData(dataArrays);
         super.initRenderData(texture, dataArrays);
     }
 
     @Override
-    public void validateSuppliedData(final float[]... dataArrays) {
+    public void validateSuppliedData(@NotNull final float[]... dataArrays) {
 
         final String ERR_NOT_VALID_BUFFER_COUNT = "Triangle primitive can only have 2 buffers (vertex and attrib).";
         if (dataArrays.length != TRIANGLE_BUFFER_PARAMS_COUNT) {
@@ -86,11 +101,11 @@ public class Triangle extends OpenGlObject implements Primitive {
     }
 
     @Override
-    public boolean isBufferValidForPrimitive(float[] buffer) {
+    public boolean isBufferValidForPrimitive(@NotNull float[] buffer) {
         return buffer.length % TRIANGLE_BUFFER_LENGTH == 0;
     }
 
-    private static boolean isValidVerticesForTriangle(float[] buffer) {
+    private static boolean isValidVerticesForTriangle(@NotNull float[] buffer) {
 
         final PointF a = new PointF(buffer[0], buffer[1]);
         final PointF b = new PointF(buffer[2], buffer[3]);

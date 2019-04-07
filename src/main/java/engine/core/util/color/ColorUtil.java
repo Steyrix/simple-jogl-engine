@@ -1,10 +1,12 @@
 package engine.core.util.color;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.*;
 
 public class ColorUtil {
 
-    public static float[] getBufferForColor(int verticesCount, Color color) {
+    public static float[] getBufferForColor(int verticesCount, @NotNull Color color) {
 
         int colorLineLength = 3;
 
@@ -20,7 +22,7 @@ public class ColorUtil {
         return out;
     }
 
-    private static float[] getColorValues(Color color) {
+    private static float[] getColorValues(@NotNull Color color) {
 
         return new float[]{
                 color.getRed(),
