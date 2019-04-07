@@ -3,7 +3,7 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import demos.labrynth.GameLabyrinth;
 import engine.core.OpenGlContext;
-import engine.core.util.updater.ElapsedTimeUpdater;
+import engine.util.updater.ElapsedTimeUpdater;
 import engine.feature.shader.DefaultShaderCreator;
 
 import javax.swing.*;

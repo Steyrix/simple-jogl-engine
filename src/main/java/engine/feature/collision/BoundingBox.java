@@ -1,6 +1,6 @@
 package engine.feature.collision;
 
-import engine.core.util.utilgeometry.PointF;
+import engine.util.utilgeometry.PointF;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

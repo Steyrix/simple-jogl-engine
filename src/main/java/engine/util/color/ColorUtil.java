@@ -1,4 +1,4 @@
-package engine.core.util.color;
+package engine.util.color;
 
 import org.jetbrains.annotations.NotNull;
 

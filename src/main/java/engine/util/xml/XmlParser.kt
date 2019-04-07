@@ -1,4 +1,4 @@
-package engine.core.util.xml
+package engine.util.xml
 
 import org.w3c.dom.Document
 import java.io.File

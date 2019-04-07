@@ -1,4 +1,4 @@
-package engine.core.util.updater;
+package engine.util.updater;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -3,13 +3,12 @@ package engine.feature.primitives;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
 import engine.core.OpenGlObject;
-import engine.core.util.color.ColorUtil;
-import engine.core.util.utilgeometry.PointF;
+import engine.util.color.ColorUtil;
+import engine.util.utilgeometry.PointF;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Arrays;
 
 public class Triangle extends OpenGlObject implements Primitive {
 

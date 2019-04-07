@@ -1,7 +1,7 @@
 package engine.feature.tilemap
 
 import com.jogamp.opengl.GL4
-import engine.core.util.xml.XmlParser
+import engine.util.xml.XmlParser
 import engine.feature.primitives.Rectangle
 import engine.feature.primitives.Rectangle.RECTANGLE_BUFFER
 import engine.feature.shader.Shader

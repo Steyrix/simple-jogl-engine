@@ -1,4 +1,4 @@
-package engine.core.util.updater;
+package engine.util.updater;
 
 
 public class ElapsedTimeUpdater implements Updater {

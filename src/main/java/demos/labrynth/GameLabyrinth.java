@@ -14,7 +14,7 @@ import engine.feature.shader.Shader;
 import engine.feature.shader.ShaderCreator;
 import engine.feature.text.TextRenderer;
 import engine.feature.texture.TextureLoader;
-import engine.core.util.utilgeometry.PointF;
+import engine.util.utilgeometry.PointF;
 import engine.core.state.GameState;
 
 import java.awt.*;

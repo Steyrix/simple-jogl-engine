@@ -3,7 +3,7 @@ package demos.labrynth;
 import com.jogamp.opengl.GL4;
 import engine.feature.animation.BasicAnimation;
 import engine.feature.collision.BoundingBox;
-import engine.core.util.utilgeometry.PointF;
+import engine.util.utilgeometry.PointF;
 import engine.feature.collision.collider.SpeculativeCollider;
 import engine.core.ControllableObject;
 import org.jetbrains.annotations.NotNull;

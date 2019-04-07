@@ -1,4 +1,4 @@
-package engine.core.util;
+package engine.util;
 
 public class DeltaTimeCalculator {
 

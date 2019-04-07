@@ -1,8 +1,8 @@
 package engine.core;
 
 import com.jogamp.opengl.*;
-import engine.core.util.DeltaTimeCalculator;
-import engine.core.util.updater.Updater;
+import engine.util.DeltaTimeCalculator;
+import engine.util.updater.Updater;
 import engine.core.state.GameState;
 import org.jetbrains.annotations.NotNull;
 

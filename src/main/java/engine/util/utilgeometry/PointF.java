@@ -1,4 +1,4 @@
-package engine.core.util.utilgeometry;
+package engine.util.utilgeometry;
 
 @SuppressWarnings("WeakerAccess")
 public class PointF {
