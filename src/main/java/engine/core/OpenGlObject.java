@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
 
-    protected final GL4 gl;
+    @NotNull protected final GL4 gl;
     protected Texture texture;
     protected IntBuffer textureArray;
 
@@ -204,7 +204,11 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
 
     }
 
-    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle,
+    public void draw(final float x,
+                     final float y,
+                     final float xSize,
+                     final float ySize,
+                     final float rotationAngle,
                      @NotNull final Shader shader) {
 
         shader.use();
@@ -225,7 +229,9 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         drawBoundingBox();
     }
 
-    public void draw(final float xSize, final float ySize, final float rotationAngle,
+    public void draw(final float xSize,
+                     final float ySize,
+                     final float rotationAngle,
                      @NotNull final Shader shader) {
 
         shader.use();
@@ -269,7 +275,10 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         gl.glUniform1i(gl.glGetUniformLocation(shader.getId(), uniformName), 0);
     }
 
-    private Mat4 getFinalMatrix(final float xSize, final float ySize, final float rotationAngle) {
+    private Mat4 getFinalMatrix(final float xSize,
+                                final float ySize,
+                                final float rotationAngle) {
+
         var model = Mat4.MAT4_IDENTITY;
         var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
         var scale = getScaleMatrix(xSize, ySize);
@@ -283,7 +292,12 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         return model;
     }
 
-    private Mat4 getFinalMatrix(final float x, final float y, final float xSize, final float ySize, final float rotationAngle) {
+    private Mat4 getFinalMatrix(final float x,
+                                final float y,
+                                final float xSize,
+                                final float ySize,
+                                final float rotationAngle) {
+
         var model = Mat4.MAT4_IDENTITY;
         var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
         var scale = getScaleMatrix(xSize, ySize);
@@ -298,6 +312,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
     }
 
     private Mat4 getScaleMatrix(final float xSize, final float ySize) {
+
         return new Mat4(xSize, 0.0f, 0.0f, 0.0f,
                 0.0f, ySize, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 0.0f,
@@ -307,7 +322,10 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
     }
 
     //TODO: move to separate class
-    private void applyRotation(final float xSize, final float ySize, final Mat4 rotation, @NotNull Mat4 model) {
+    private void applyRotation(final float xSize,
+                               final float ySize,
+                               final Mat4 rotation,
+                               @NotNull Mat4 model) {
         model = model.translate(new Vec3(0.5f * xSize, 0.5f * ySize, 0.0f));
         model = model.multiply(rotation);
         model = model.translate(new Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f));

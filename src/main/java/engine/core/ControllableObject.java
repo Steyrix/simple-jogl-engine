@@ -24,6 +24,7 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
                               final float frameSizeX,
                               final float frameSizeY,
                               @NotNull final BasicAnimation... animationSet) throws Exception {
+
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
 
         this.velocityX = 0.0f;
@@ -41,7 +42,9 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
                                  final float frameSizeX,
                                  final float frameSizeY,
                                  @NotNull final BasicAnimation... animationSet) throws Exception {
+
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, animationSet);
+
         this.velocityX = 0.0f;
         this.velocityY = 0.0f;
         this.jumpState = false;

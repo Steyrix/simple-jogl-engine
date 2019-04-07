@@ -11,10 +11,8 @@ import java.util.Collections;
 
 public class AnimatedObject extends OpenGlObject {
 
-    protected ArrayList<BasicAnimation> animations;
-    protected BasicAnimation currentAnim;
-
-    private static String emptyAnimationSetMessage = "Must be at least 1 animation!";
+    @NotNull protected ArrayList<BasicAnimation> animations;
+    @NotNull protected BasicAnimation currentAnim;
 
     private float frameSizeX;
     private float frameSizeY;
@@ -26,12 +24,9 @@ public class AnimatedObject extends OpenGlObject {
                           final int id,
                           final float frameSizeX,
                           final float frameSizeY,
-                          @NotNull final BasicAnimation... animationSet) throws Exception {
+                          @NotNull final BasicAnimation... animationSet) {
 
         super(bufferParamsCount, verticesCount, gl, boxDim, id);
-
-        if (animationSet == null)
-            throw new Exception(emptyAnimationSetMessage);
 
         this.frameSizeX = frameSizeX;
         this.frameSizeY = frameSizeY;
@@ -50,11 +45,8 @@ public class AnimatedObject extends OpenGlObject {
                           final int id,
                           final float frameSizeX,
                           final float frameSizeY,
-                          @NotNull final BasicAnimation... animationSet) throws Exception {
+                          @NotNull final BasicAnimation... animationSet) {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id);
-
-        if (animationSet == null)
-            throw new Exception(emptyAnimationSetMessage);
 
         this.frameSizeX = frameSizeX;
         this.frameSizeY = frameSizeY;
@@ -65,7 +57,11 @@ public class AnimatedObject extends OpenGlObject {
     }
 
     @Override
-    public void draw(final float x, final float y, final float xSize, final float ySize, final float rotationAngle,
+    public void draw(final float x,
+                     final float y,
+                     final float xSize,
+                     final float ySize,
+                     final float rotationAngle,
                      @NotNull final Shader shader) {
         shader.use();
         defineAnimationVariables(shader);
@@ -73,7 +69,9 @@ public class AnimatedObject extends OpenGlObject {
     }
 
     @Override
-    public void draw(final float xSize, final float ySize, final float rotationAngle,
+    public void draw(final float xSize,
+                     final float ySize,
+                     final float rotationAngle,
                      @NotNull final Shader shader) {
         shader.use();
         defineAnimationVariables(shader);
