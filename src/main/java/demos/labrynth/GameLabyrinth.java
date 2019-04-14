@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.texture.Texture;
+import engine.feature.ResourceLoader;
 import engine.feature.animation.BasicAnimation;
 import engine.core.ControllableObject;
 import engine.core.OpenGlObject;
@@ -28,6 +29,8 @@ public class GameLabyrinth implements GameState {
 
     private ArrayList<ControllableObject> controls;
     private ArrayList<OpenGlObject> boundObjects;
+
+    private ResourceLoader loader;
 
     private TextRenderer myRenderer;
     private LabyrinthCharacter animObj;
@@ -53,6 +56,8 @@ public class GameLabyrinth implements GameState {
         this.boundObjects = new ArrayList<>();
 
         this.shaderCreator = shaderCreator;
+
+        this.loader = new ResourceLoader();
     }
 
     @Override
@@ -76,24 +81,15 @@ public class GameLabyrinth implements GameState {
             e.printStackTrace();
         }
 
-        animObj.initRenderData(new String[]{this.
-                        getClass().
-                        getClassLoader().
-                        getResource("textures/labyrinth/base_dark.png").
-                        getPath()},
-                false,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{0f, 0f,
-                        0.1f, 0.333f,
-                        0f, 0.333f,
-                        0f, 0f,
-                        0.1f, 0f,
-                        0.1f, 0.333f});
+        final float[] UV = new float[]{0f, 0f,
+                0.1f, 0.333f,
+                0f, 0.333f,
+                0f, 0f,
+                0.1f, 0f,
+                0.1f, 0.333f};
+
+        animObj.initRenderData(new String[]{loader.get("textures/labyrinth/base_dark.png")},
+                false, Rectangle.RECTANGLE_BUFFER, UV);
 
         this.controls.add(animObj);
 
@@ -220,8 +216,7 @@ public class GameLabyrinth implements GameState {
     private void initLevelGeography(GL4 gl) {
 
         LabyrinthLevelCreator lc = new LabyrinthLevelCreator();
-        ArrayList<OpenGlObject> perimeter = lc.createLevelFromFile(gl, this.getClass().getClassLoader().
-                getResource("config/labyrinthlevels/defaultlevel/defaultlevel.ini").getPath());
+        ArrayList<OpenGlObject> perimeter = lc.createLevelFromFile(gl,loader.get("config/labyrinthlevels/defaultlevel/defaultlevel.ini"));
 
         this.boundObjects.addAll(perimeter);
 
@@ -237,19 +232,22 @@ public class GameLabyrinth implements GameState {
             }
         };
 
-        background.initRenderData(new String[]{this.getClass().getClassLoader().getResource("textures/labyrinth/abbey_base.jpg").getPath()}, false,
-                new float[]{0f, 1f,
-                        1f, 0f,
-                        0f, 0f,
-                        0f, 1f,
-                        1f, 1f,
-                        1f, 0f},
-                new float[]{10f, 0f,
-                        0f, 10f,
-                        10f, 10f,
-                        10f, 0f,
-                        0f, 0f,
-                        0f, 10f});
+        final float[] bgVertices = new float[]{0f, 1f,
+                                                1f, 0f,
+                                                0f, 0f,
+                                                0f, 1f,
+                                                1f, 1f,
+                                                1f, 0f};
+
+        final float[] bgUVdata = new float[]{10f, 0f,
+                                                0f, 10f,
+                                                10f, 10f,
+                                                10f, 0f,
+                                                0f, 0f,
+                                                0f, 10f};
+
+        background.initRenderData(new String[]{loader.get("textures/labyrinth/abbey_base.jpg")},
+                false, bgVertices, bgUVdata);
     }
 
     static void initRepeatableTexParameters(Texture texture, GL4 gl) {
