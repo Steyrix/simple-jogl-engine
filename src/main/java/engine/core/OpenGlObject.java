@@ -251,6 +251,9 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         drawBoundingBox();
     }
 
+    public void update(final float deltaTime) {
+    }
+
     private void defineTextureState(@NotNull final Shader shader) {
         if (this.texture != null) {
             this.setUniformName("textureSample");

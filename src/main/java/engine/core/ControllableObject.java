@@ -54,9 +54,6 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
     public abstract void reactToCollision(@NotNull final BoundingBox anotherBox);
 
     @Override
-    public abstract void update(float deltaTime);
-
-    @Override
     public abstract void keyTyped(@NotNull final KeyEvent e);
 
     @Override
