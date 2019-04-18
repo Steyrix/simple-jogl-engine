@@ -34,7 +34,7 @@ class TileMap(private val tiles: ArrayList<Tile>) {
 
             val document = XmlParser.getDocument(xmlFile)
 
-
+            return TileMap(ArrayList())
         }
 
         private fun createTile(xmlTile: String) {

@@ -14,12 +14,12 @@ import java.util.Arrays;
 public class Rectangle extends OpenGlObject implements Primitive {
 
     public static float[] RECTANGLE_BUFFER = new float[]{
+            0f, 1f,
+            1f, 0f,
             0f, 0f,
             0f, 1f,
             1f, 1f,
-            0f, 0f,
-            1f, 0f,
-            1f, 1f};
+            1f, 0f};
 
     private static int RECTANGLE_BUFFER_PARAMS_COUNT = 2;
     private static int RECTANGLE_VERTICES_COUNT = 6;
@@ -34,7 +34,9 @@ public class Rectangle extends OpenGlObject implements Primitive {
         super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, posX, posY, new Dimension((int) width, (int) height), textureId);
     }
 
-    public void init(@NotNull final String[] textureFilePaths, final boolean texArray, @NotNull final float[] attribDataArray) {
+    public void init(@NotNull final String[] textureFilePaths,
+                     final boolean texArray,
+                     @NotNull final float[] attribDataArray) {
 
         if (isBufferValidForPrimitive(attribDataArray)) {
             super.initRenderData(textureFilePaths, texArray, RECTANGLE_BUFFER, attribDataArray);
