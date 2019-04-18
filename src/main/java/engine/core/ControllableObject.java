@@ -23,7 +23,7 @@ public abstract class ControllableObject extends AnimatedObject implements Contr
                               final int id,
                               final float frameSizeX,
                               final float frameSizeY,
-                              @NotNull final BasicAnimation... animationSet) throws Exception {
+                              @NotNull final BasicAnimation... animationSet) {
 
         super(bufferParamsCount, verticesCount, gl, boxDim, id, frameSizeX, frameSizeY, animationSet);
 
