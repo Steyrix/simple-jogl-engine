@@ -7,6 +7,7 @@ import engine.feature.primitives.Rectangle
 import engine.feature.primitives.Rectangle.RECTANGLE_BUFFER
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
+import engine.util.utilgeometry.PointF
 import java.io.File
 
 class Tile(private val width: Float,
@@ -54,6 +55,16 @@ class TileSet(private val tiles: ArrayList<Tile>,
               private val tileCount: Int,
               private val columnCount: Int,
               private val texture: Texture) {
+
+    private val relativeTileWidth: Float = tileWidth.toFloat() / texture.width.toFloat()
+    private val relativeTileHeight: Float = tileHeight.toFloat() / texture.height.toFloat()
+    private val rowCount = tileCount / columnCount
+
+    fun getTilePosition(num: Int) : PointF {
+        val rowNumber = num / columnCount
+        val columnNumber = num % columnCount
+        return PointF(rowNumber * relativeTileWidth, columnNumber * relativeTileHeight)
+    }
 
     companion object {
         private const val TILE_SET = "tileset"
