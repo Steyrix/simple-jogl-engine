@@ -17,6 +17,7 @@ class XmlParser {
 
         private const val ERROR_MSG_PARSE_ERR = "Unable to parse xml file"
 
+        @JvmStatic
         fun getDocument(xmlFile: File): Document? {
 
             if (!xmlFile.exists()) {

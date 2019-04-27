@@ -17,9 +17,12 @@ import engine.feature.text.TextRenderer;
 import engine.feature.texture.TextureLoader;
 import engine.util.utilgeometry.PointF;
 import engine.core.state.GameState;
+import engine.util.xml.XmlParser;
+import org.w3c.dom.Document;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -113,6 +116,10 @@ public class GameLabyrinth implements GameState {
 
         myRenderer = TextRenderer.getRenderer(new Dimension(64, 64),
                 this.getClass().getClassLoader().getResource("textures/simpleFontAtlas.png").getPath(), chars);
+
+        Document doc = XmlParser.getDocument(new File(loader.get("townRpg.xml")));
+        var tilesetNodes = doc.getElementsByTagName("image");
+        System.out.println(tilesetNodes.item(0).getAttributes().getNamedItem("source").getNodeValue());
     }
 
     @Override
