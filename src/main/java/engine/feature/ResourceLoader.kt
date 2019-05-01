@@ -1,7 +1,10 @@
 package engine.feature
 
 class ResourceLoader {
-    fun get(relativePath: String): String {
-        return javaClass.classLoader.getResource(relativePath).path
+    companion object {
+        @JvmStatic
+        fun get(relativePath: String): String {
+            return javaClass.classLoader.getResource(relativePath).path
+        }
     }
 }
