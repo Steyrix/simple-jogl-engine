@@ -2,13 +2,18 @@ package engine.feature.tilemap
 
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
+import engine.feature.ResourceLoader
 import engine.util.xml.XmlParser
 import engine.feature.primitives.Rectangle
 import engine.feature.primitives.Rectangle.RECTANGLE_BUFFER
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
 import engine.util.utilgeometry.PointF
+import org.w3c.dom.Document
 import java.io.File
+
+private const val SOURCE = "source"
+private const val TILE_SET = "tileset"
 
 class Tile(private val width: Float,
            private val height: Float,
@@ -36,12 +41,24 @@ class TileMap(private val tiles: ArrayList<Tile>, private val tileSet: TileSet) 
 //        fun createTileMap(xmlFile: File): TileMap {
 //
 //            val document = XmlParser.getDocument(xmlFile)
+//            val tileSet = retrieveTileSet(document!!)
+//
 //            return TileMap(ArrayList())
 //        }
 
-//        private fun createTile(xmlTile: String) {
-//
-//        }
+        private fun retrieveTileSet(doc: Document) : TileSet {
+
+            val tileSetNode = doc.getElementsByTagName(TILE_SET)
+            val tileSetAttribs = tileSetNode?.item(0)?.attributes
+            val tileSetPath = tileSetAttribs?.getNamedItem(SOURCE)?.nodeValue
+            val tileSetFile = File(ResourceLoader.get(tileSetPath!!))
+
+            return TileSet.createTileSet(tileSetFile)
+        }
+
+        private fun createTile(xmlTile: String) {
+
+        }
     }
 
     fun draw(gl: GL4, shader: Shader) {
@@ -67,13 +84,11 @@ class TileSet(private val tiles: ArrayList<Tile>,
     }
 
     companion object {
-        private const val TILE_SET = "tileset"
         private const val TILE_WIDTH = "width"
         private const val TILE_HEIGHT = "height"
         private const val TILE_COUNT = "tilecount"
         private const val COLUMN_COUNT = "columns"
         private const val IMAGE = "image"
-        private const val SOURCE = "source"
 
         fun createTileSet(xmlFile: File): TileSet {
             val document = XmlParser.getDocument(xmlFile)!!
