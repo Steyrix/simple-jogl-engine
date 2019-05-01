@@ -15,7 +15,7 @@ class Tile(private val width: Float,
            private val texture: Texture,
            private val posX: Float,
            private val posY: Float) {
-
+    
     private fun toOpenGlObject(gl: GL4): Rectangle {
 
         val out = Rectangle(gl, width, height, 0)
