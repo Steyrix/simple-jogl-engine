@@ -49,9 +49,9 @@ class TileMap(private val tiles: ArrayList<Tile>, private val tileSet: TileSet) 
         private fun retrieveTileSet(doc: Document) : TileSet {
 
             val tileSetNode = doc.getElementsByTagName(TILE_SET)
-            val tileSetAttribs = tileSetNode?.item(0)?.attributes
-            val tileSetPath = tileSetAttribs?.getNamedItem(SOURCE)?.nodeValue
-            val tileSetFile = File(ResourceLoader.get(tileSetPath!!))
+            val tileSetAttribs = tileSetNode!!.item(0).attributes
+            val tileSetPath = tileSetAttribs.getNamedItem(SOURCE).nodeValue
+            val tileSetFile = ResourceLoader.getFileFromRelativePath(tileSetPath)
 
             return TileSet.createTileSet(tileSetFile)
         }
