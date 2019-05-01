@@ -83,7 +83,7 @@ class TileMap(private val width: Int,
     }
 
     fun draw(gl: GL4, shader: Shader) = map.forEach { tileSet.getTileById(it).draw(gl, shader) }
-    
+
 }
 
 class TileSet(private val tileWidth: Int,

@@ -114,7 +114,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
     private void loadTextureArray(@NotNull final String... filePaths) {
         try {
             ArrayList<TextureData> images = new ArrayList<>();
-            var tl = new TextureLoader();
+            TextureLoader tl = new TextureLoader();
             int width, height;
 
             for (String path : filePaths) {
@@ -282,9 +282,9 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
                                 final float ySize,
                                 final float rotationAngle) {
 
-        var model = Mat4.MAT4_IDENTITY;
-        var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
-        var scale = getScaleMatrix(xSize, ySize);
+        Mat4 model = Mat4.MAT4_IDENTITY;
+        Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
+        Mat4 scale = getScaleMatrix(xSize, ySize);
 
         model = model.translate(new Vec3(this.posX, this.posY, 0.0f));
 
@@ -301,9 +301,9 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
                                 final float ySize,
                                 final float rotationAngle) {
 
-        var model = Mat4.MAT4_IDENTITY;
-        var rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
-        var scale = getScaleMatrix(xSize, ySize);
+        Mat4 model = Mat4.MAT4_IDENTITY;
+        Mat4 rotation = Matrices.rotate(rotationAngle, new Vec3(0.0f, 0.0f, 1.0f));
+        Mat4 scale = getScaleMatrix(xSize, ySize);
 
         model = model.translate(new Vec3(x, y, 0.0f));
 

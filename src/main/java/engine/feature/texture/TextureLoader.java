@@ -19,7 +19,7 @@ public class TextureLoader {
 
     @NotNull
     public static Texture loadTexture (@NotNull String filePath) throws GLException, IOException {
-        var outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(ImageIO.read(new File(filePath)), "png", outputStream);
         InputStream fileInputStream = new ByteArrayInputStream(outputStream.toByteArray());
         return TextureIO.newTexture(fileInputStream, true, TextureIO.PNG);
@@ -27,7 +27,7 @@ public class TextureLoader {
 
     @NotNull
     public TextureData loadTextureData (@NotNull String filePath, @NotNull GL4 gl) throws GLException, IOException {
-        var imageFile = new File(filePath);
+        File imageFile = new File(filePath);
         return TextureIO.newTextureData(gl.getGLProfile(), imageFile,true, TextureIO.PNG);
     }
 
@@ -42,7 +42,7 @@ public class TextureLoader {
                                                boolean repeatable,
                                                int id) {
 
-        var texture = IntBuffer.allocate(1);
+        IntBuffer texture = IntBuffer.allocate(1);
         gl.glGenTextures(1, texture);
         gl.glActiveTexture(GL4.GL_TEXTURE0 + id);
         gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, texture.get(0));
