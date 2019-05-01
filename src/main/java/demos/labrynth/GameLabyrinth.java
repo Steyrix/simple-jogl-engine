@@ -87,7 +87,7 @@ public class GameLabyrinth implements GameState {
                 0.1f, 0f,
                 0.1f, 0.333f};
 
-        animObj.initRenderData(new String[]{ResourceLoader.get("textures/labyrinth/base_dark.png")},
+        animObj.initRenderData(new String[]{ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")},
                 false, Rectangle.RECTANGLE_BUFFER, UV);
 
         this.controls.add(animObj);
@@ -113,7 +113,7 @@ public class GameLabyrinth implements GameState {
         myRenderer = TextRenderer.getRenderer(new Dimension(64, 64),
                 this.getClass().getClassLoader().getResource("textures/simpleFontAtlas.png").getPath(), chars);
 
-        Document doc = XmlParser.getDocument(new File(ResourceLoader.get("townRpg.xml")));
+        Document doc = XmlParser.getDocument(new File(ResourceLoader.getAbsolutePath("townRpg.xml")));
         var tilesetNodes = doc.getElementsByTagName("image");
         System.out.println(tilesetNodes.item(0).getAttributes().getNamedItem("source").getNodeValue());
     }
@@ -219,7 +219,7 @@ public class GameLabyrinth implements GameState {
     private void initLevelGeography(GL4 gl) {
 
         LabyrinthLevelCreator lc = new LabyrinthLevelCreator();
-        ArrayList<OpenGlObject> perimeter = lc.createLevelFromFile(gl,ResourceLoader.get("config/labyrinthlevels/defaultlevel/defaultlevel.ini"));
+        ArrayList<OpenGlObject> perimeter = lc.createLevelFromFile(gl,ResourceLoader.getAbsolutePath("config/labyrinthlevels/defaultlevel/defaultlevel.ini"));
 
         this.boundObjects.addAll(perimeter);
 
@@ -249,7 +249,7 @@ public class GameLabyrinth implements GameState {
                                                 0f, 0f,
                                                 0f, 10f};
 
-        background.initRenderData(new String[]{ResourceLoader.get("textures/labyrinth/abbey_base.jpg")},
+        background.initRenderData(new String[]{ResourceLoader.getAbsolutePath("textures/labyrinth/abbey_base.jpg")},
                 false, bgVertices, bgUVdata);
     }
 
