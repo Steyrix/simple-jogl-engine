@@ -1,10 +1,9 @@
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
-import demos.labrynth.GameLabyrinth;
+import demos.map.MapDemo;
 import engine.core.OpenGlContext;
 import engine.util.updater.ElapsedTimeUpdater;
-import engine.feature.shader.DefaultShaderCreator;
 
 import javax.swing.*;
 
@@ -19,7 +18,7 @@ public class Main {
         glCanvas.requestFocus();
 
         //Put your state here
-        OpenGlContext basicListener = new OpenGlContext(new GameLabyrinth(glCanvas.getSize(), new DefaultShaderCreator()),
+        OpenGlContext basicListener = new OpenGlContext(new MapDemo(glCanvas.getSize()),
                                                         new ElapsedTimeUpdater(60));
 
         glCanvas.addGLEventListener(basicListener);
