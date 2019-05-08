@@ -83,7 +83,7 @@ public class Rectangle extends OpenGlObject implements Primitive {
         if (!Arrays.equals(RECTANGLE_BUFFER, dataArrays[0]))
             throw new IllegalArgumentException(ERR_NOT_VALID_VERTEX_BUFFER);
 
-        if (isBufferValidForPrimitive(dataArrays[1]))
+        if (!isBufferValidForPrimitive(dataArrays[1]))
             throw new IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER);
     }
 
