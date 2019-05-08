@@ -162,7 +162,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
         genBoundingBoxVertexArray();
 
         if (texture != null) {
-            System.out.println("Loading only single texture");
+            //System.out.println("Loading only single texture");
             this.texture = texture;
             setTexParameters();
         }
