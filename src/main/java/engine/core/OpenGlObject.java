@@ -241,6 +241,20 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
 
         Mat4 model = getFinalMatrix(xSize, ySize, rotationAngle);
 
+        doDraw(shader, model);
+    }
+
+    public void draw(final float rotationAngle,
+                     @NotNull final Shader shader) {
+
+        shader.use();
+
+        Mat4 model = getFinalMatrix(this.width, this.height, rotationAngle);
+
+        doDraw(shader, model);
+    }
+
+    private void doDraw(@NotNull final Shader shader, @NotNull final Mat4 model) {
         defineTextureState(shader);
 
         shader.setMatrix4f("model", model, true);
@@ -259,7 +273,7 @@ public class OpenGlObject extends BoundingBox implements OpenGlBuffered {
             this.setUniformName("textureSample");
             defineSingleTextureState(shader);
         }
-        if (this.textureArray != null) {
+        else if (this.textureArray != null) {
             this.setUniformName("textureArray");
             defineArrayTextureState(shader);
         }

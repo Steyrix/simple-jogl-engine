@@ -2,6 +2,8 @@ package demos.map
 
 import com.hackoeur.jglm.Mat4
 import com.hackoeur.jglm.Matrices
+import com.jogamp.opengl.GL2
+import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import engine.core.state.GameState
 import engine.feature.ResourceLoader
@@ -22,13 +24,18 @@ class MapDemo(private val dim: Dimension) : GameState {
         val gl = glAutoDrawable.gl.gL4
         val shaderCreator = DefaultShaderCreator()
 
-        map = TileMap.createTileMap(ResourceLoader.getFileFromAbsolutePath("maps/map2.xml"))
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
+        gl.glClearColor(1f, 1f, 1f, 1.0f)
+
+        map = TileMap.createTileMap(ResourceLoader.getFileFromAbsolutePath("maps/test.xml"))
 
         texShader = shaderCreator.create("shaders/texturedVertexShader.glsl",
                 "shaders/texturedFragmentShader.glsl", gl)
 
         renderProjection = Matrices.ortho(0.0f, dim.width.toFloat(), dim.height.toFloat(),
                 0.0f, 0.0f, 1.0f)
+
+        System.out.println(map.toString())
     }
 
     override fun dispose(glAutoDrawable: GLAutoDrawable) {
@@ -36,6 +43,7 @@ class MapDemo(private val dim: Dimension) : GameState {
 
     override fun display(glAutoDrawable: GLAutoDrawable) {
         val gl = glAutoDrawable.gl.gL4
+        gl.glClear(GL4.GL_COLOR_BUFFER_BIT)
 
         texShader?.setMatrix4f("projection", renderProjection, false)
 
