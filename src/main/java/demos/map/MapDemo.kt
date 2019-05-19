@@ -45,7 +45,7 @@ class MapDemo(private val dim: Dimension,
 
         texShader?.setMatrix4f("projection", renderProjection, false)
 
-        map?.draw(gl, texShader!!)
+        map?.draw(gl, 500f, 500f, texShader!!)
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {

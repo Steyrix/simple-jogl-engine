@@ -82,6 +82,8 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
 
     fun draw(gl: GL4, shader: Shader) = tileLayers.forEach { it.draw(gl, shader) }
 
+    fun draw(gl: GL4, xSize: Float, ySize: Float, shader: Shader) = tileLayers.forEach { it.draw(gl, xSize, ySize, shader) }
+
     override fun toString(): String {
         return "Layers count: " + tileLayers.size
     }
@@ -133,12 +135,20 @@ internal class TileLayer(private val width: Int,
         return out
     }
 
-    fun draw(gl: GL4, shader: Shader) {
+    private fun checkObject(gl: GL4) {
         if (openGLObject == null) {
             openGLObject = toOpenGLObject(gl)
         }
+    }
 
+    fun draw(gl: GL4, shader: Shader) {
+        checkObject(gl)
         openGLObject!!.draw(0f, shader)
+    }
+
+    fun draw(gl: GL4, xSize: Float, ySize: Float, shader: Shader) {
+        checkObject(gl)
+        openGLObject!!.draw(xSize, ySize, 0f, shader)
     }
 }
 
