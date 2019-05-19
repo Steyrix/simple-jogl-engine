@@ -20,7 +20,7 @@ public class Main {
         glCanvas.requestFocus();
 
         //Put your state here
-        OpenGlContext basicListener = new OpenGlContext(new MapDemo(glCanvas.getSize()),
+        OpenGlContext basicListener = new OpenGlContext(new MapDemo(glCanvas.getSize(), new DefaultShaderCreator()),
                                                         new ElapsedTimeUpdater(60));
 
 //        OpenGlContext basicListener = new OpenGlContext(new GameLabyrinth(glCanvas.getSize(), new DefaultShaderCreator()),
