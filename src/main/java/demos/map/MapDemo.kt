@@ -7,13 +7,14 @@ import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import engine.core.state.GameState
 import engine.feature.ResourceLoader
-import engine.feature.shader.DefaultShaderCreator
 import engine.feature.shader.Shader
+import engine.feature.shader.ShaderCreator
 import engine.feature.tilemap.TileMap
 import java.awt.Dimension
 import java.awt.event.KeyEvent
 
-class MapDemo(private val dim: Dimension) : GameState {
+class MapDemo(private val dim: Dimension,
+              private val shaderCreator: ShaderCreator) : GameState {
 
     private var texShader: Shader? = null
     private var renderProjection: Mat4? = null
@@ -22,20 +23,17 @@ class MapDemo(private val dim: Dimension) : GameState {
     override fun init(glAutoDrawable: GLAutoDrawable) {
 
         val gl = glAutoDrawable.gl.gL4
-        val shaderCreator = DefaultShaderCreator()
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(1f, 1f, 1f, 1.0f)
 
-        map = TileMap.createTileMap(ResourceLoader.getFileFromAbsolutePath("maps/test.xml"))
+        map = TileMap.createTileMap(ResourceLoader.getFileFromAbsolutePath("maps/map_house.xml"))
 
         texShader = shaderCreator.create("shaders/texturedVertexShader.glsl",
                 "shaders/texturedFragmentShader.glsl", gl)
 
         renderProjection = Matrices.ortho(0.0f, dim.width.toFloat(), dim.height.toFloat(),
                 0.0f, 0.0f, 1.0f)
-
-        System.out.println(map.toString())
     }
 
     override fun dispose(glAutoDrawable: GLAutoDrawable) {

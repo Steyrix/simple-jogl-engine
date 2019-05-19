@@ -72,7 +72,7 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
             val nodes = node.childNodes
             for (i in 0 until nodes.length) {
                 if (nodes.item(i).nodeName == DATA) {
-                    out.addAll(nodes.item(i).textContent.replace("\n", "").split(",").map { it.toInt() })
+                    out.addAll(nodes.item(i).textContent.replace("\n", "").split(",").map { it.toInt() - 1 })
                 }
             }
 
@@ -96,8 +96,8 @@ internal class TileLayer(private val width: Int,
     private var openGLObject: OpenGlObject? = null
 
     private fun getPosition(num: Int): PointF {
-        val x: Int = num % (width - 1)
-        val y: Int = num / (width - 1)
+        val x: Int = num % width
+        val y: Int = num / width
 
         return PointF(x.toFloat(), y.toFloat())
     }
@@ -126,7 +126,7 @@ internal class TileLayer(private val width: Int,
         }
 
         val out = OpenGlObject(2, allVertices.size / 2, gl,
-                                Dimension(width * tileSet.tileWidth, height * tileSet.tileHeight), 0)
+                Dimension(width * tileSet.tileWidth, height * tileSet.tileHeight), 0)
 
         out.initRenderData(tileSet.texture, allVertices.toFloatArray(), allUV.toFloatArray())
 
@@ -157,7 +157,6 @@ internal class TileSet(internal val tileWidth: Int,
         val rowNumber = num / columnCount
         val columnNumber = num % columnCount
 
-        //TODO("Tile map is parsed upside down, rearrange coordinates or revert map")
         return floatArrayOf(
                 columnNumber.toFloat() * relativeTileWidth, rowNumber.toFloat() * relativeTileHeight,
                 (columnNumber + 1) * relativeTileWidth, (rowNumber + 1) * relativeTileHeight,
@@ -204,7 +203,22 @@ internal class TileSet(internal val tileWidth: Int,
                 out.add(Tile(uv))
             }
 
-            return out
+            return rotateTiles(out, tileSet)
+        }
+
+        private fun rotateTiles(tiles: ArrayList<Tile>, tileSet: TileSet): ArrayList<Tile> {
+
+            val result = ArrayList<Tile>(tiles.size)
+            for (i in 0 until tiles.size step tileSet.columnCount) {
+                val temporary = ArrayList<Tile>(tileSet.columnCount)
+                temporary.addAll(tiles.subList(i, i + tileSet.columnCount))
+                temporary.reverse()
+
+                result.addAll(temporary)
+            }
+
+            result.reverse()
+            return result
         }
     }
 
@@ -213,5 +227,9 @@ internal class TileSet(internal val tileWidth: Int,
 
         val arrayUV
             get() = tileUV
+
+        override fun toString(): String {
+            return ("Tile UV: " + tileUV.toList().toString())
+        }
     }
 }
