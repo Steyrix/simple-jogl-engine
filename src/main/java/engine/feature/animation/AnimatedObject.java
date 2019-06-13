@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
+//TODO: make implementation independent from texture/texture_array
 public class AnimatedObject extends OpenGlObject {
 
     @NotNull protected ArrayList<BasicAnimation> animations;
