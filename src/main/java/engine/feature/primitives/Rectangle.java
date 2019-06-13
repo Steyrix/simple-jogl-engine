@@ -21,6 +21,14 @@ public class Rectangle extends OpenGlObject implements Primitive {
             1f, 1f,
             1f, 0f};
 
+    public static float[] RECTANGLE_REVERSED_BUFFER = new float[]{
+            0f, 0f,
+            1f, 1f,
+            0f, 1f,
+            0f, 0f,
+            1f, 0f,
+            1f, 1f};
+
     private static int RECTANGLE_BUFFER_PARAMS_COUNT = 2;
     private static int RECTANGLE_VERTICES_COUNT = 6;
 
