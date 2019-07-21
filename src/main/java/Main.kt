@@ -22,7 +22,7 @@ object Main {
         glCanvas.requestFocus()
 
         //Put your state here
-        val basicListener = OpenGlContext(GameLabyrinth(glCanvas.size, DefaultShaderCreator()),
+        val basicListener = OpenGlContext(TextureArrayDemo(glCanvas.size, DefaultShaderCreator()),
                 ElapsedTimeUpdater(60))
 
         glCanvas.addGLEventListener(basicListener)
