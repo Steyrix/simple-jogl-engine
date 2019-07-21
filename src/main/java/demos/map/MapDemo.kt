@@ -21,7 +21,6 @@ class MapDemo(private val dim: Dimension,
     private var map: TileMap? = null
 
     override fun init(glAutoDrawable: GLAutoDrawable) {
-
         val gl = glAutoDrawable.gl.gL4
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
