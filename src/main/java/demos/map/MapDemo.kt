@@ -43,7 +43,7 @@ class MapDemo(private val dim: Dimension,
         val gl = glAutoDrawable.gl.gL4
         gl.glClear(GL4.GL_COLOR_BUFFER_BIT)
 
-        texShader?.setMatrix4f("projection", renderProjection, false)
+        texShader?.setMatrix4f("projection", renderProjection!!, false)
 
         map?.draw(gl, 500f, 500f, texShader!!)
     }
