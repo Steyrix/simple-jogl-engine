@@ -16,7 +16,6 @@ class PointF {
 
     override fun toString(): String = "(x: $x ; y: $y )"
 
-
     override fun equals(other: Any?): Boolean = if (other is PointF) {
         this.x == other.x && this.y == other.y
     } else false

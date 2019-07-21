@@ -28,7 +28,6 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         const val TILE_SET = "tileset"
 
         fun createTileMap(xmlFile: File): TileMap {
-
             val document = XmlParser.getDocument(xmlFile)
             val mapNode = document!!.getElementsByTagName(MAP)
             val mapNodeAttribs = mapNode.item(0).attributes
@@ -41,7 +40,6 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         }
 
         private fun retrieveTileSet(doc: Document): TileSet {
-
             val tileSetNode = doc.getElementsByTagName(TILE_SET)
             val tileSetAttribs = tileSetNode!!.item(0).attributes
             val tileSetPath = tileSetAttribs.getNamedItem(SOURCE).nodeValue
@@ -51,7 +49,6 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         }
 
         private fun retrieveLayers(width: Int, height: Int, doc: Document, tileSet: TileSet): ArrayList<TileLayer> {
-
             val out = ArrayList<TileLayer>()
             val layers = doc.getElementsByTagName(LAYER)
 
@@ -66,7 +63,6 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         }
 
         private fun retrieveData(node: Node): ArrayList<Int> {
-
             val out = ArrayList<Int>()
 
             val nodes = node.childNodes
@@ -217,7 +213,6 @@ internal class TileSet(internal val tileWidth: Int,
         }
 
         private fun rotateTiles(tiles: ArrayList<Tile>, tileSet: TileSet): ArrayList<Tile> {
-
             val result = ArrayList<Tile>(tiles.size)
             for (i in 0 until tiles.size step tileSet.columnCount) {
                 val temporary = ArrayList<Tile>(tileSet.columnCount)
@@ -231,10 +226,8 @@ internal class TileSet(internal val tileWidth: Int,
             return result
         }
     }
-
     //Tile is relative to its tileset
     internal class Tile(private val tileUV: FloatArray) {
-
         val arrayUV
             get() = tileUV
 

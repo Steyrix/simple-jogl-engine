@@ -23,7 +23,6 @@ class TextureLoader {
     }
 
     companion object {
-
         @Throws(GLException::class, IOException::class)
         fun loadTexture(filePath: String): Texture {
             val outputStream = ByteArrayOutputStream()
@@ -34,7 +33,6 @@ class TextureLoader {
 
         //TODO: implement check that textures are same size for avoiding exceptions
         //TODO: fix wrong colors
-
         fun loadTextureArrayTD(textures: ArrayList<TextureData>,
                                gl: GL4,
                                texLayerWidth: Int,

@@ -11,7 +11,6 @@ import engine.util.updater.ElapsedTimeUpdater
 import javax.swing.*
 
 object Main {
-    @JvmStatic
     fun main(args: Array<String>) {
         val glProfile = GLProfile.get(GLProfile.GL4)
         val glCapabilities = GLCapabilities(glProfile)

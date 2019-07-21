@@ -1,11 +1,7 @@
 package engine.util
 
 class DeltaTimeCalculator {
-    private var lastTime: Long
-
-    init {
-        lastTime = System.nanoTime()
-    }
+    private var lastTime = System.nanoTime()
 
     fun calcDeltaTime(): Float {
         val time = System.nanoTime()
