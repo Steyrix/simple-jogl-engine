@@ -1,3 +1,6 @@
-# simple-jogl-engine
+# Simple-JOGL-engine
+# Currently work on:
 
-My simple engine provides instruments for managing drawing, gamestates, collisions and simple controlling with keyboard.
+* tile maps' attribute system
+* texture arrays
+* 2D lightweight animation architecture
