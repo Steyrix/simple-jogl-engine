@@ -18,7 +18,6 @@ import java.io.File
 class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>) {
 
     companion object {
-
         private const val MAP = "map"
         private const val MAP_WIDTH = "width"
         private const val MAP_HEIGHT = "height"

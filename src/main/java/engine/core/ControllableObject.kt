@@ -15,7 +15,6 @@ abstract class ControllableObject : AnimatedObject, Controllable, SimpleCollider
     protected var velocityY: Float = 0.toFloat()
     protected var jumpState: Boolean = false
 
-    @Throws(Exception::class)
     protected constructor(bufferParamsCount: Int,
                           verticesCount: Int,
                           gl: GL4,
@@ -25,7 +24,8 @@ abstract class ControllableObject : AnimatedObject, Controllable, SimpleCollider
                           id: Int,
                           frameSizeX: Float,
                           frameSizeY: Float,
-                          vararg animationSet: BasicAnimation) : super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, *animationSet) {
+                          vararg animationSet: BasicAnimation) :
+            super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, *animationSet) {
 
         this.velocityX = 0.0f
         this.velocityY = 0.0f

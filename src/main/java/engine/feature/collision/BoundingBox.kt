@@ -79,12 +79,10 @@ open class BoundingBox {
     }
 
     fun containsEveryPointOf(vararg points: PointF): Boolean {
-        for (point in points) {
-            if (undefined || !(point.x < this.rightX && point.x > this.posX &&
-                            point.y < this.bottomY && point.y > this.posY))
+        points.forEach {
+            if (undefined || !(it.x < this.rightX && it.x > this.posX && it.y < this.bottomY && it.y > this.posY))
                 return false
         }
-
         return true
     }
 
@@ -93,14 +91,14 @@ open class BoundingBox {
             return true
 
         var cnt = 0
-        for (point in points) {
+        points.forEach {
             if (strict) {
-                if (!undefined && point.x < this.rightX && point.x > this.posX &&
-                        point.y < this.bottomY && point.y > this.posY)
+                if (!undefined && it.x < this.rightX && it.x > this.posX &&
+                        it.y < this.bottomY && it.y > this.posY)
                     cnt++
             } else {
-                if (!undefined && point.x <= this.rightX && point.x >= this.posX &&
-                        point.y <= this.bottomY && point.y >= this.posY)
+                if (!undefined && it.x <= this.rightX && it.x >= this.posX &&
+                        it.y <= this.bottomY && it.y >= this.posY)
                     cnt++
             }
 
@@ -110,14 +108,14 @@ open class BoundingBox {
     }
 
     fun containsAnyPointOf(strict: Boolean, vararg points: PointF): Boolean {
-        for (point in points) {
+        points.forEach {
             if (strict) {
-                if (!undefined && point.x < this.rightX && point.x > this.posX &&
-                        point.y < this.bottomY && point.y > this.posY)
+                if (!undefined && it.x < this.rightX && it.x > this.posX &&
+                        it.y < this.bottomY && it.y > this.posY)
                     return true
             } else {
-                if (!undefined && point.x <= this.rightX && point.x >= this.posX &&
-                        point.y <= this.bottomY && point.y >= this.posY)
+                if (!undefined && it.x <= this.rightX && it.x >= this.posX &&
+                        it.y <= this.bottomY && it.y >= this.posY)
                     return true
             }
         }
@@ -126,8 +124,8 @@ open class BoundingBox {
     }
 
     fun containsPoint(strict: Boolean, pointFS: ArrayList<PointF>): Boolean {
-        for (p in pointFS) {
-            if (containsAnyPointOf(strict, p))
+        pointFS.forEach {
+            if (containsAnyPointOf(strict, it))
                 return true
         }
 

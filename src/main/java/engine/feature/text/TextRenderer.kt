@@ -106,7 +106,10 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
             val yStep: Int
             val charsCount: Int
 
-            if (textureAtlas.width % charSize.getWidth() == 0.0 && textureAtlas.height % charSize.getHeight() == 0.0) {
+            val widthIsValid = textureAtlas.width % charSize.getWidth() == 0.0
+            val heightIsValid = textureAtlas.height % charSize.getHeight() == 0.0
+
+            if (widthIsValid && heightIsValid) {
                 xStep = (textureAtlas.width / charSize.getWidth()).toInt()
                 yStep = (textureAtlas.height / charSize.getHeight()).toInt()
                 charsCount = xStep * yStep

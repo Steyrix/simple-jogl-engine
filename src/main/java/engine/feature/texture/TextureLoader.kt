@@ -14,6 +14,7 @@ import java.nio.IntBuffer
 import java.util.ArrayList
 
 //TODO: implement texture arrays robust support
+//TODO: make object
 class TextureLoader {
 
     @Throws(GLException::class, IOException::class)

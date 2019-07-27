@@ -14,7 +14,6 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
     private var accumulatedTime: Float = 0.toFloat()
 
     init {
-
         this.currentFrameX = 1
         this.currentFrameY = 1
 

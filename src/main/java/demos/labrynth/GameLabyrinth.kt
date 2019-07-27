@@ -24,7 +24,6 @@ import java.util.ArrayList
 import java.util.Arrays
 
 //TODO: load every texture with its own unique id
-//TODO: DI
 class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : GameState {
 
     private val controls: ArrayList<ControllableObject> = ArrayList()
@@ -127,10 +126,8 @@ class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : 
 
     override fun update(deltaTime: Float) {
         for (c in controls) {
-
             for (o in boundObjects)
                 c.reactToCollision(o)
-
             c.update(deltaTime)
         }
     }
@@ -177,7 +174,8 @@ class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : 
 
     private fun initLevelGeography(gl: GL4) {
         val levelCreator = LabyrinthLevelCreator()
-        val perimeter = levelCreator.createLevelFromFile(gl, ResourceLoader.getAbsolutePath("config/labyrinthlevels/defaultlevel/defaultlevel.ini"))
+        val levelPath = "config/labyrinthlevels/defaultlevel/defaultlevel.ini"
+        val perimeter = levelCreator.createLevelFromFile(gl, ResourceLoader.getAbsolutePath(levelPath))
 
         this.boundObjects.addAll(perimeter)
 
@@ -194,11 +192,10 @@ class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : 
         }
 
         val bgVertices = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
-
         val bgUVdata = floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f)
 
-        background!!.initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/abbey_base.jpg")),
-                false, bgVertices, bgUVdata)
+        val texturePath = "textures/labyrinth/abbey_base.jpg"
+        background!!.initRenderData(arrayOf(ResourceLoader.getAbsolutePath(texturePath)), false, bgVertices, bgUVdata)
     }
 
     companion object {

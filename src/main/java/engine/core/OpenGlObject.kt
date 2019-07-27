@@ -38,7 +38,6 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
     private val isTextured: Boolean
         get() = this.texture != null || this.textureArray != null
 
-
     constructor(bufferParamsCount: Int,
                 verticesCount: Int,
                 gl: GL4,
@@ -176,12 +175,13 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
             throw IllegalArgumentException("Number of buffers supplied must be the number of buffers created for the object")
 
         gl.glGenBuffers(buffersCount, buffers)
-        for (fData in dataArrays) {
-            val floatBuffer = FloatBuffer.wrap(fData)
-            gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, this.buffers.get(buffersFilled++))
-            gl.glBufferData(GL4.GL_ARRAY_BUFFER, (4 * fData.size).toLong(), floatBuffer, GL4.GL_STATIC_DRAW)
 
-            paramsCount.add(fData.size / this.verticesCount)
+        dataArrays.forEach {
+            val floatBuffer = FloatBuffer.wrap(it)
+            gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, this.buffers.get(buffersFilled++))
+            gl.glBufferData(GL4.GL_ARRAY_BUFFER, (4 * it.size).toLong(), floatBuffer, GL4.GL_STATIC_DRAW)
+
+            paramsCount.add(it.size / this.verticesCount)
         }
     }
 
@@ -237,7 +237,7 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
                 println(td.buffer.toString())
             }
 
-            this.textureArray = TextureLoader.loadTextureArrayTD(images, gl, width, height, false, textureId)
+            textureArray = TextureLoader.loadTextureArrayTD(images, gl, width, height, false, textureId)
 
         } catch (e: Exception) {
             e.printStackTrace()
