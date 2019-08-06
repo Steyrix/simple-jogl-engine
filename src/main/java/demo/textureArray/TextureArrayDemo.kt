@@ -1,4 +1,4 @@
-package demos.textureArray
+package demo.textureArray
 
 import com.hackoeur.jglm.Mat4
 import com.hackoeur.jglm.Matrices
@@ -10,7 +10,7 @@ import engine.core.state.GameState
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
 import engine.feature.shader.ShaderCreator
-import engine.feature.primitives.Rectangle
+import engine.feature.primitive.Rectangle
 import engine.feature.texture.TextureLoader
 import java.awt.Dimension
 import java.awt.event.KeyEvent

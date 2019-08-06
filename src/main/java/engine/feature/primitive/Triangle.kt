@@ -1,10 +1,10 @@
-package engine.feature.primitives
+package engine.feature.primitive
 
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
 import engine.core.OpenGlObject
 import engine.util.color.ColorUtil
-import engine.util.utilgeometry.PointF
+import engine.util.geometry.PointF
 
 import java.awt.*
 

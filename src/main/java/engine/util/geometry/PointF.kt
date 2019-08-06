@@ -1,4 +1,4 @@
-package engine.util.utilgeometry
+package engine.util.geometry
 
 class PointF(val x: Float, val y: Float) {
 

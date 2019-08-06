@@ -1,8 +1,7 @@
 import com.jogamp.opengl.GLCapabilities
 import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLCanvas
-import demos.labrynth.GameLabyrinth
-import demos.textureArray.TextureArrayDemo
+import demo.textureArray.TextureArrayDemo
 import engine.core.OpenGlContext
 import engine.feature.shader.DefaultShaderCreator
 import engine.util.updater.ElapsedTimeUpdater

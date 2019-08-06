@@ -5,7 +5,7 @@ import com.jogamp.opengl.util.texture.Texture
 import engine.core.OpenGlObject
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
-import engine.util.utilgeometry.PointF
+import engine.util.geometry.PointF
 
 import java.awt.*
 import java.io.IOException

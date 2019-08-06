@@ -1,4 +1,4 @@
-package demos.labrynth
+package demo.labrynth
 
 import com.jogamp.opengl.GL4
 import engine.core.OpenGlObject

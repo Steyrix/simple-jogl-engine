@@ -1,4 +1,4 @@
-package demos.labrynth
+package demo.labrynth
 
 import com.hackoeur.jglm.Mat4
 import com.hackoeur.jglm.Matrices
@@ -10,12 +10,12 @@ import engine.feature.ResourceLoader
 import engine.feature.animation.BasicAnimation
 import engine.core.ControllableObject
 import engine.core.OpenGlObject
-import engine.feature.primitives.Rectangle
+import engine.feature.primitive.Rectangle
 import engine.feature.shader.Shader
 import engine.feature.shader.ShaderCreator
 import engine.feature.text.TextRenderer
 import engine.feature.texture.TextureLoader
-import engine.util.utilgeometry.PointF
+import engine.util.geometry.PointF
 import engine.core.state.GameState
 
 import java.awt.*

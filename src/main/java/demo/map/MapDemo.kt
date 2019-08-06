@@ -1,4 +1,4 @@
-package demos.map
+package demo.map
 
 import com.hackoeur.jglm.Mat4
 import com.hackoeur.jglm.Matrices

@@ -5,10 +5,9 @@ import com.jogamp.opengl.util.texture.Texture
 import engine.core.OpenGlObject
 import engine.feature.ResourceLoader
 import engine.util.xml.XmlParser
-import engine.feature.primitives.Rectangle
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
-import engine.util.utilgeometry.PointF
+import engine.util.geometry.PointF
 import org.w3c.dom.Document
 import org.w3c.dom.Node
 import java.awt.Dimension

@@ -1,4 +1,4 @@
-package engine.feature.primitives
+package engine.feature.primitive
 
 interface Primitive {
     fun isBufferValidForPrimitive(buffer: FloatArray): Boolean

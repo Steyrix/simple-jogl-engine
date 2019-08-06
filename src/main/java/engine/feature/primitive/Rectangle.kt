@@ -1,4 +1,4 @@
-package engine.feature.primitives
+package engine.feature.primitive
 
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
