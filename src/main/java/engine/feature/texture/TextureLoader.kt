@@ -19,8 +19,10 @@ class TextureLoader {
 
     @Throws(GLException::class, IOException::class)
     fun loadTextureData(filePath: String, gl: GL4): TextureData {
-        val imageFile = File(filePath)
-        return TextureIO.newTextureData(gl.glProfile, imageFile, true, TextureIO.PNG)
+        val outputStream = ByteArrayOutputStream()
+        ImageIO.write(ImageIO.read(File(filePath)), "png", outputStream)
+        val fileInputStream = ByteArrayInputStream(outputStream.toByteArray())
+        return TextureIO.newTextureData(gl.glProfile, fileInputStream, true, TextureIO.PNG)
     }
 
     companion object {
@@ -46,17 +48,12 @@ class TextureLoader {
             gl.glActiveTexture(GL4.GL_TEXTURE0 + id)
             gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, texture.get(0))
 
-            println("loadTextureArray func 0:" + gl.glGetError())
-
             gl.glTexStorage3D(GL4.GL_TEXTURE_2D_ARRAY, 1, GL4.GL_RGBA8, texLayerWidth, texLayerHeight, textures.size)
-            println("loadTextureArray func 1:" + gl.glGetError())
 
             for ((arraySpot, texData) in textures.withIndex()) {
-                println(texData.toString())
                 gl.glTexSubImage3D(GL4.GL_TEXTURE_2D_ARRAY, 0, 0, 0, arraySpot, texLayerWidth, texLayerHeight,
-                        1, GL4.GL_RGBA, GL4.GL_BYTE, texData.buffer)
+                        1, GL4.GL_RGBA, GL4.GL_UNSIGNED_BYTE, texData.buffer)
             }
-            println("loadTextureArray func 2:" + gl.glGetError())
 
             gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
             gl.glTexParameteri(GL4.GL_TEXTURE_2D_ARRAY, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_NEAREST_MIPMAP_LINEAR)
@@ -72,11 +69,6 @@ class TextureLoader {
             gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, 0)
 
             return texture
-        }
-
-        private fun getImageDataByte(texImg: BufferedImage): ByteBuffer {
-            val pixels = (texImg.raster.dataBuffer as DataBufferByte).data
-            return ByteBuffer.wrap(pixels)
         }
     }
 
