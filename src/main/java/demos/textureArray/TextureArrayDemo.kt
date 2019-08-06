@@ -40,24 +40,25 @@ class TextureArrayDemo(private val dim: Dimension,
         renderProjection = Matrices.ortho(0.0f, dim.width.toFloat(), dim.height.toFloat(),
                 0.0f, 0.0f, 1.0f)
 
+        // Define an object that uses array texture as render data
         textureArrayObject =
-                OpenGlObject(2, 6, gl, 0f, 0f, Dimension(100,100), 0)
+                OpenGlObject(2, 6, gl, 0f, 0f, Dimension(512,256), 0)
 
         textureArrayObject.initRenderData(
-                arrayOf(ResourceLoader.getAbsolutePath("textures/tex.png")),
+                arrayOf(ResourceLoader.getAbsolutePath("textures/idle2.png")),
                 true,
                 Rectangle.RECTANGLE_BUFFER, Rectangle.RECTANGLE_REVERSED_BUFFER)
 
+        // Define an object that uses single texture as render data for comparison
         texturedObject =
-                OpenGlObject(2, 6, gl, 100f, 0f, Dimension(100,100), 0)
+                OpenGlObject(2, 6, gl, 512f, 0f, Dimension(512,256), 0)
 
         texturedObject.initRenderData(
-                TextureLoader.loadTexture(ResourceLoader.getAbsolutePath("textures/tex.png")),
+                TextureLoader.loadTexture(ResourceLoader.getAbsolutePath("textures/idle2.png")),
                 Rectangle.RECTANGLE_BUFFER, Rectangle.RECTANGLE_REVERSED_BUFFER)
     }
 
-    override fun dispose(glAutoDrawable: GLAutoDrawable) {
-    }
+    override fun dispose(glAutoDrawable: GLAutoDrawable) = Unit
 
     override fun display(glAutoDrawable: GLAutoDrawable) {
         val gl = glAutoDrawable.gl.gL4
@@ -70,18 +71,13 @@ class TextureArrayDemo(private val dim: Dimension,
         texturedObject.draw(0f, textureShader)
     }
 
-    override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {
-    }
+    override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) = Unit
 
-    override fun update(deltaTime: Float) {
-    }
+    override fun update(deltaTime: Float) = Unit
 
-    override fun keyTyped(e: KeyEvent) {
-    }
+    override fun keyTyped(e: KeyEvent) = Unit
 
-    override fun keyPressed(e: KeyEvent) {
-    }
+    override fun keyPressed(e: KeyEvent) = Unit
 
-    override fun keyReleased(e: KeyEvent) {
-    }
+    override fun keyReleased(e: KeyEvent) = Unit
 }

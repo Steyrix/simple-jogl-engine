@@ -220,29 +220,7 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
     }
 
     private fun loadTextureArray(vararg filePaths: String) {
-        try {
-            val images = ArrayList<TextureData>()
-            val tl = TextureLoader()
-            val width: Int
-            val height: Int
-
-            for (path in filePaths) {
-                images.add(tl.loadTextureData(path, gl))
-            }
-
-            width = images[0].width
-            height = images[0].height
-
-            for (td in images) {
-                println(td.buffer.toString())
-            }
-
-            textureArray = TextureLoader.loadTextureArrayTD(images, gl, width, height, false, textureId)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
+        textureArray = TextureLoader.loadTextureArray(gl, textureId, *filePaths)
     }
 
     private fun doDraw(shader: Shader, model: Mat4) {
