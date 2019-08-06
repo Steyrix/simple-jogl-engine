@@ -14,8 +14,6 @@ import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import java.util.*
 
-//TODO: implement texture arrays robust support
-//TODO: make object
 object TextureLoader {
 
     private const val ILLEGAL_ARRAY_TEXTURE_SOURCE_EXCEPTION = "Illegal array texture source! Must be the same size for all layers."
