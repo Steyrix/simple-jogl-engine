@@ -9,7 +9,7 @@ import engine.core.OpenGlObject
 import engine.core.state.GameState
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
-import engine.feature.shader.ShaderCreator
+import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.primitive.Rectangle
 import engine.feature.texture.TextureLoader
 import java.awt.Dimension

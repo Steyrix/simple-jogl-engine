@@ -1,9 +1,9 @@
 package engine.feature.shader
 
 import com.jogamp.opengl.GL4
+import engine.feature.shader.`interface`.ShaderCreator
 
 import java.io.IOException
-import java.net.URL
 
 class DefaultShaderCreator : ShaderCreator {
 

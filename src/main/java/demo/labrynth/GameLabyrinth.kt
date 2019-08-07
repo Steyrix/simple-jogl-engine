@@ -11,32 +11,33 @@ import engine.feature.animation.BasicAnimation
 import engine.core.ControllableObject
 import engine.core.OpenGlObject
 import engine.feature.primitive.Rectangle
-import engine.feature.shader.Shader
-import engine.feature.shader.ShaderCreator
+import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.text.TextRenderer
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
 import engine.core.state.GameState
+import engine.feature.shader.`interface`.ShaderInteractor
 
 import java.awt.*
 import java.awt.event.*
 import java.util.ArrayList
-import java.util.Arrays
 
 //TODO: load every texture with its own unique id
-class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : GameState {
+class GameLabyrinth(dim: Dimension,
+                    private val shaderCreator: ShaderCreator,
+                    private val shaderInteractor: ShaderInteractor) : GameState {
 
     private val controls: ArrayList<ControllableObject> = ArrayList()
     private val boundObjects: ArrayList<OpenGlObject> = ArrayList()
 
+    private val textureShaderId = "TEXTURED"
+    private val animationShaderId = "ANIMATED"
+    private val boundShaderId = "BOUND"
+    private val textShaderId = "TEXT_SHADER"
+    private val colorShaderId = "COLORED"
+
     private var myRenderer: TextRenderer? = null
     private var animObj: LabyrinthCharacter? = null
-    private var texShader: Shader? = null
-    private var boundShader: Shader? = null
-    private var texArrayShader: Shader? = null
-    private var animShader: Shader? = null
-    private var textRenderShader: Shader? = null
-    private var colorShader: Shader? = null
 
     private var rect: Rectangle? = null
     private var background: OpenGlObject? = null
@@ -48,6 +49,7 @@ class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : 
         val gl = glAutoDrawable.gl.gL4
 
         loadShaders(gl)
+        initShaders()
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
@@ -79,7 +81,7 @@ class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : 
 
         val charArr = arrayOf('p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/')
         val chars = ArrayList<Char>()
-        chars.addAll(Arrays.asList(*charArr))
+        chars.addAll(charArr.asList())
 
         myRenderer = TextRenderer.getRenderer(Dimension(64, 64),
                 this.javaClass.classLoader.getResource("textures/simpleFontAtlas.png")!!.path, chars)
@@ -99,25 +101,28 @@ class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : 
         val gl = glAutoDrawable.gl.gL4
         gl.glClear(GL4.GL_COLOR_BUFFER_BIT)
 
-        texShader!!.setMatrix4f("projection", renderProjection!!, false)
-        background!!.draw(0f, 0f, 1280f, 720f, 0.0f, texShader!!)
+        var curr = shaderInteractor.getShader(textureShaderId)
 
-        boundShader!!.setMatrix4f("projection", renderProjection!!, false)
+        shaderInteractor.activateShader(textureShaderId)
+        background!!.draw(0f, 0f, 1280f, 720f, 0.0f, curr)
 
+        curr = shaderInteractor.getShader(boundShaderId)
+        shaderInteractor.activateShader(boundShaderId)
         for (o in boundObjects) {
-            o.draw(o.size.width.toFloat(), o.size.height.toFloat(), 0.0f, boundShader!!)
+            o.draw(o.size.width.toFloat(), o.size.height.toFloat(), 0.0f, curr)
         }
 
-        animShader!!.setMatrix4f("projection", renderProjection!!, false)
-        animObj!!.draw(animObj!!.size.width.toFloat(), animObj!!.size.height.toFloat(), 0.0f, animShader!!)
+        curr = shaderInteractor.getShader(animationShaderId)
+        shaderInteractor.activateShader(animationShaderId)
+        animObj!!.draw(animObj!!.size.width.toFloat(), animObj!!.size.height.toFloat(), 0.0f, curr)
 
-        textRenderShader!!.setMatrix4f("projection", renderProjection!!, false)
-        myRenderer!!.drawText("Hello \n World!", Dimension(50, 50), gl, PointF(600f, 200f), textRenderShader!!)
+        curr = shaderInteractor.getShader(textShaderId)
+        shaderInteractor.activateShader(textShaderId)
+        myRenderer!!.drawText("Hello \n World!", Dimension(50, 50), gl, PointF(600f, 200f), curr)
 
-        colorShader!!.setMatrix4f("projection", renderProjection!!, false)
-        rect!!.draw(50f, 100f, 0f, colorShader!!)
-        //texArrayShader.setMatrix4f("projection", renderProjection, false);
-        //texArrayObj.draw(texArrayObj.getSize().width, texArrayObj.getSize().height, 0.0f, texArrayShader);
+        curr = shaderInteractor.getShader(colorShaderId)
+        shaderInteractor.activateShader(colorShaderId)
+        rect!!.draw(50f, 100f, 0f, curr)
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {
@@ -148,29 +153,35 @@ class GameLabyrinth(dim: Dimension, private val shaderCreator: ShaderCreator) : 
     }
 
     private fun loadShaders(gl: GL4) {
-        //-----------------------SHADER TEST------------------------
-        texShader = shaderCreator.create("shaders/texturedVertexShader.glsl",
+        val textureShaderObject = shaderCreator.create("shaders/texturedVertexShader.glsl",
                 "shaders/texturedFragmentShader.glsl", gl)
 
-        textRenderShader = shaderCreator.create("shaders/textRenderVertexShader.glsl",
+        val textShaderObject = shaderCreator.create("shaders/textRenderVertexShader.glsl",
                 "shaders/textRenderFragmentShader.glsl", gl)
 
-
-        boundShader = shaderCreator.create("shaders/boundVertexShader.glsl",
+        val boundShaderObject = shaderCreator.create("shaders/boundVertexShader.glsl",
                 "shaders/boundFragmentShader.glsl", gl)
 
-
-        texArrayShader = shaderCreator.create("shaders/texArrayVertexShader.glsl",
-                "shaders/texArrayFragmentShader.glsl", gl)
-
-        animShader = shaderCreator.create("shaders/animVertexShader.glsl",
+        val animationShaderObject = shaderCreator.create("shaders/animVertexShader.glsl",
                 "shaders/animFragmentShader.glsl", gl)
 
-        colorShader = shaderCreator.create("shaders/coloredVertexShader.glsl",
+        val colorShaderObject = shaderCreator.create("shaders/coloredVertexShader.glsl",
                 "shaders/coloredFragmentShader.glsl", gl)
-        //--------------------------------------------------------
+
+        shaderInteractor.addShader(textureShaderId, textureShaderObject)
+        shaderInteractor.addShader(textShaderId, textShaderObject)
+        shaderInteractor.addShader(boundShaderId, boundShaderObject)
+        shaderInteractor.addShader(animationShaderId, animationShaderObject)
+        shaderInteractor.addShader(colorShaderId, colorShaderObject)
     }
 
+    private fun initShaders() {
+        shaderInteractor.setShaderActivateFunction(textureShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
+        shaderInteractor.setShaderActivateFunction(boundShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
+        shaderInteractor.setShaderActivateFunction(animationShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
+        shaderInteractor.setShaderActivateFunction(textShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
+        shaderInteractor.setShaderActivateFunction(colorShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
+    }
 
     private fun initLevelGeography(gl: GL4) {
         val levelCreator = LabyrinthLevelCreator()

@@ -8,7 +8,7 @@ import com.jogamp.opengl.GLAutoDrawable
 import engine.core.state.GameState
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
-import engine.feature.shader.ShaderCreator
+import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.tilemap.TileMap
 import java.awt.Dimension
 import java.awt.event.KeyEvent

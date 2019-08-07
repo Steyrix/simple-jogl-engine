@@ -1,9 +1,12 @@
 import com.jogamp.opengl.GLCapabilities
 import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLCanvas
+import demo.labrynth.GameLabyrinth
 import demo.textureArray.TextureArrayDemo
 import engine.core.OpenGlContext
 import engine.feature.shader.DefaultShaderCreator
+import engine.feature.shader.implementation.DefaultShaderInteractor
+import engine.feature.shader.implementation.DefaultShaderRepo
 import engine.util.updater.ElapsedTimeUpdater
 
 import javax.swing.*
@@ -21,7 +24,10 @@ object Main {
         glCanvas.requestFocus()
 
         //Put your state here
-        val listener = OpenGlContext(TextureArrayDemo(glCanvas.size, DefaultShaderCreator()),
+        val listener = OpenGlContext(
+                GameLabyrinth(glCanvas.size,
+                            DefaultShaderCreator(),
+                            DefaultShaderInteractor(DefaultShaderRepo())),
                 ElapsedTimeUpdater(60))
 
         glCanvas.addGLEventListener(listener)
