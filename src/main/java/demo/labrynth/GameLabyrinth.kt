@@ -179,8 +179,7 @@ class GameLabyrinth(dim: Dimension,
 
     private fun initShaders() {
         val defaultFunc: (Shader) -> Unit = {
-            it.setMatrix4f("projection", renderProjection!!, false)
-            it.use()
+            it.setMatrix4f("projection", renderProjection!!, true)
         }
 
         shaderInteractor.setShaderActivateFunction(textureShaderId, defaultFunc)
