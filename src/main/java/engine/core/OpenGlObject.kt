@@ -150,8 +150,6 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
     }
 
     open fun draw(xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) {
-        shader.use()
-
         this.width = xSize
         this.height = ySize
 
@@ -161,8 +159,6 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
     }
 
     open fun draw(rotationAngle: Float, shader: Shader) {
-        shader.use()
-
         val model = getFinalMatrix(this.width, this.height, rotationAngle)
 
         doDraw(shader, model)

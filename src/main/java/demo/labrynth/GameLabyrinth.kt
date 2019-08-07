@@ -16,6 +16,7 @@ import engine.feature.text.TextRenderer
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
 import engine.core.state.GameState
+import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderInteractor
 
 import java.awt.*
@@ -114,6 +115,7 @@ class GameLabyrinth(dim: Dimension,
 
         curr = shaderInteractor.getShader(animationShaderId)
         shaderInteractor.activateShader(animationShaderId)
+        shaderInteractor.updateShaders()
         animObj!!.draw(animObj!!.size.width.toFloat(), animObj!!.size.height.toFloat(), 0.0f, curr)
 
         curr = shaderInteractor.getShader(textShaderId)
@@ -176,11 +178,18 @@ class GameLabyrinth(dim: Dimension,
     }
 
     private fun initShaders() {
-        shaderInteractor.setShaderActivateFunction(textureShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
-        shaderInteractor.setShaderActivateFunction(boundShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
-        shaderInteractor.setShaderActivateFunction(animationShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
-        shaderInteractor.setShaderActivateFunction(textShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
-        shaderInteractor.setShaderActivateFunction(colorShaderId) {it.setMatrix4f("projection", renderProjection!!, false)}
+        val defaultFunc: (Shader) -> Unit = {
+            it.setMatrix4f("projection", renderProjection!!, false)
+            it.use()
+        }
+
+        shaderInteractor.setShaderActivateFunction(textureShaderId, defaultFunc)
+        shaderInteractor.setShaderActivateFunction(boundShaderId, defaultFunc)
+        shaderInteractor.setShaderActivateFunction(animationShaderId, defaultFunc)
+        shaderInteractor.setShaderActivateFunction(textShaderId, defaultFunc)
+        shaderInteractor.setShaderActivateFunction(colorShaderId, defaultFunc)
+
+        shaderInteractor.setShaderUpdateFunction(animationShaderId) { animObj!!.defineAnimationVariables(it) }
     }
 
     private fun initLevelGeography(gl: GL4) {

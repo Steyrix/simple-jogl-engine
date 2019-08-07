@@ -53,27 +53,7 @@ open class AnimatedObject : OpenGlObject {
         this.currentAnim = this.animations[0]
     }
 
-    override fun draw(x: Float,
-                      y: Float,
-                      xSize: Float,
-                      ySize: Float,
-                      rotationAngle: Float,
-                      shader: Shader) {
-        shader.use()
-        defineAnimationVariables(shader)
-        super.draw(x, y, xSize, ySize, rotationAngle, shader)
-    }
-
-    override fun draw(xSize: Float,
-                      ySize: Float,
-                      rotationAngle: Float,
-                      shader: Shader) {
-        shader.use()
-        defineAnimationVariables(shader)
-        super.draw(xSize, ySize, rotationAngle, shader)
-    }
-
-    private fun defineAnimationVariables(shader: Shader) {
+    fun defineAnimationVariables(shader: Shader) {
         if (texture != null || textureArray != null) {
             shader.setFloat("xChanging", currentAnim.currentFrameX * frameSizeX, false)
             shader.setInteger("frameNumberX", currentAnim.currentFrameX + 1, false)
