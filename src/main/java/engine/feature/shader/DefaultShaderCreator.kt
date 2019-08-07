@@ -6,6 +6,7 @@ import engine.feature.shader.`interface`.ShaderCreator
 import java.io.IOException
 
 class DefaultShaderCreator : ShaderCreator {
+
     private fun getShaderSource(resourceName: String): String {
         val fileURL = javaClass.classLoader.getResource(resourceName)
         var out = ""

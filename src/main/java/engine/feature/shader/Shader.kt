@@ -13,6 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class Shader internal constructor(private val gl: GL4) {
+
     var id: Int = 0
         private set
 
