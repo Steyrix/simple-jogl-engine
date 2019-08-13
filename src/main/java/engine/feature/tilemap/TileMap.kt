@@ -2,7 +2,7 @@ package engine.feature.tilemap
 
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.feature.ResourceLoader
 import engine.util.xml.XmlParser
 import engine.feature.shader.Shader
@@ -23,7 +23,7 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
     override fun toString(): String {
         return "Layers count: " + tileLayers.size
     }
-    
+
     companion object {
         private const val MAP = "map"
         private const val MAP_WIDTH = "width"
@@ -89,7 +89,7 @@ internal class TileLayer(private val width: Int,
                          private val tileData: ArrayList<Int>,
                          private val tileSet: TileSet) {
 
-    private var openGLObject: OpenGlObject? = null
+    private var openGLObject: OpenGlObject2D? = null
 
     private fun getPosition(num: Int): PointF {
         val x: Int = num % width
@@ -108,7 +108,7 @@ internal class TileLayer(private val width: Int,
                 tileSet.relativeTileWidth * (pos.x + 1), tileSet.relativeTileHeight * pos.y)
     }
 
-    private fun toOpenGLObject(gl: GL4): OpenGlObject {
+    private fun toOpenGLObject(gl: GL4): OpenGlObject2D {
         val allVertices: ArrayList<Float> = ArrayList()
         val allUV: ArrayList<Float> = ArrayList()
 
@@ -121,7 +121,7 @@ internal class TileLayer(private val width: Int,
             allUV.addAll(uvArray.toList())
         }
 
-        val out = OpenGlObject(2, allVertices.size / 2, gl,
+        val out = OpenGlObject2D(2, allVertices.size / 2, gl,
                 Dimension(width * tileSet.tileWidth, height * tileSet.tileHeight), 0)
 
         out.initRenderData(tileSet.texture, allVertices.toFloatArray(), allUV.toFloatArray())

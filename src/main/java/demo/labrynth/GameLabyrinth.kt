@@ -9,7 +9,7 @@ import com.jogamp.opengl.util.texture.Texture
 import engine.feature.ResourceLoader
 import engine.feature.animation.BasicAnimation
 import engine.core.ControllableObject
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.feature.primitive.Rectangle
 import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.text.TextRenderer
@@ -29,7 +29,7 @@ class GameLabyrinth(dim: Dimension,
                     private val shaderInteractor: ShaderInteractor) : GameState {
 
     private val controls: ArrayList<ControllableObject> = ArrayList()
-    private val boundObjects: ArrayList<OpenGlObject> = ArrayList()
+    private val boundObjects: ArrayList<OpenGlObject2D> = ArrayList()
 
     private val textureShaderId = "TEXTURED"
     private val animationShaderId = "ANIMATED"
@@ -41,7 +41,7 @@ class GameLabyrinth(dim: Dimension,
     private var animObj: LabyrinthCharacter? = null
 
     private var rect: Rectangle? = null
-    private var background: OpenGlObject? = null
+    private var background: OpenGlObject2D? = null
     private val screenWidth: Int = dim.width
     private val screenHeight: Int = dim.height
     private var renderProjection: Mat4? = null
@@ -203,7 +203,7 @@ class GameLabyrinth(dim: Dimension,
 
         this.boundObjects.addAll(perimeter)
 
-        background = object : OpenGlObject(2, 6, gl, 0f, 0f, Dimension(1280, 720), 0) {
+        background = object : OpenGlObject2D(2, 6, gl, 0f, 0f, Dimension(1280, 720), 0) {
             public override fun loadTexture(filePath: String) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath)

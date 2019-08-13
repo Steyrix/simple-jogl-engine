@@ -2,14 +2,14 @@ package engine.feature.primitive
 
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.util.color.ColorUtil
 
 import java.awt.*
 import java.util.Arrays
 
 
-class Rectangle : OpenGlObject, Primitive {
+class Rectangle : OpenGlObject2D, Primitive {
 
     constructor(gl: GL4, width: Float, height: Float, textureId: Int) :
             super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, Dimension(width.toInt(), height.toInt()), textureId)

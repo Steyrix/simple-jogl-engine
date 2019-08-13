@@ -2,7 +2,7 @@ package engine.feature.text
 
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
@@ -16,16 +16,16 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
                                        private val characterCoordinates: HashMap<Char, PointF>?,
                                        private val charSize: Dimension) {
 
-    private val cache: HashMap<Char, OpenGlObject> = HashMap()
+    private val cache: HashMap<Char, OpenGlObject2D> = HashMap()
 
     val isValid: Boolean
         get() = this.textureAtlas != null && this.characterCoordinates != null
 
     private fun drawCharacter(c: Char, fontSize: Dimension, gl: GL4, pos: PointF, shader: Shader) {
-        val glObject: OpenGlObject
+        val glObject: OpenGlObject2D
 
         if (!cache.containsKey(c)) {
-            glObject = OpenGlObject(2, 6, gl, pos.x, pos.y, fontSize, 100)
+            glObject = OpenGlObject2D(2, 6, gl, pos.x, pos.y, fontSize, 100)
             val uvCoordinates = getUV(c)
             val bufferData = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
             glObject.initRenderData(this.textureAtlas, bufferData, uvCoordinates)

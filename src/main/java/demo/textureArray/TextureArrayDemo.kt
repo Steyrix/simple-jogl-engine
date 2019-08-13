@@ -5,7 +5,7 @@ import com.hackoeur.jglm.Matrices
 import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.core.state.GameState
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
@@ -21,8 +21,8 @@ class TextureArrayDemo(private val dim: Dimension,
     private lateinit var textureArrayShader: Shader
     private lateinit var textureShader: Shader
     private lateinit var renderProjection: Mat4
-    private lateinit var textureArrayObject: OpenGlObject
-    private lateinit var texturedObject: OpenGlObject
+    private lateinit var textureArrayObject: OpenGlObject2D
+    private lateinit var texturedObject: OpenGlObject2D
 
     override fun init(glAutoDrawable: GLAutoDrawable) {
 
@@ -42,7 +42,7 @@ class TextureArrayDemo(private val dim: Dimension,
 
         // Define an object that uses array texture as render data
         textureArrayObject =
-                OpenGlObject(2, 6, gl, 0f, 0f, Dimension(512,256), 0)
+                OpenGlObject2D(2, 6, gl, 0f, 0f, Dimension(512,256), 0)
 
         textureArrayObject.initRenderData(
                 arrayOf(ResourceLoader.getAbsolutePath("textures/idle2.png")),
@@ -51,7 +51,7 @@ class TextureArrayDemo(private val dim: Dimension,
 
         // Define an object that uses single texture as render data for comparison
         texturedObject =
-                OpenGlObject(2, 6, gl, 512f, 0f, Dimension(512,256), 0)
+                OpenGlObject2D(2, 6, gl, 512f, 0f, Dimension(512,256), 0)
 
         texturedObject.initRenderData(
                 TextureLoader.loadTexture(ResourceLoader.getAbsolutePath("textures/idle2.png")),

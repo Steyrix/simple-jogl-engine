@@ -1,7 +1,7 @@
 package engine.feature.animation
 
 import com.jogamp.opengl.GL4
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.feature.shader.Shader
 
 import java.awt.*
@@ -9,7 +9,7 @@ import java.util.ArrayList
 import java.util.Collections
 
 //TODO: make implementation independent from texture/texture_array
-open class AnimatedObject : OpenGlObject {
+open class AnimatedObject : OpenGlObject2D {
 
     protected var animations: ArrayList<BasicAnimation>
     protected var currentAnim: BasicAnimation

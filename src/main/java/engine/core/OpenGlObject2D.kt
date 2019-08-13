@@ -16,7 +16,7 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.util.ArrayList
 
-open class OpenGlObject : BoundingBox, OpenGlBuffered {
+open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
     protected val gl: GL4
     protected var texture: Texture? = null
@@ -191,8 +191,8 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
     }
 
     override fun toString(): String {
-        return "OpenGlObject: \n Number of vertices: " + verticesCount +
-                "\n Number of buffers: " + buffersCount + "\n" +
+        return "OpenGlObject: \n Number of vertices: $verticesCount" +
+                "\n Number of buffers: $buffersCount \n" +
                 if (isTextured) " Texture id: $textureId" else " Not textured"
     }
 

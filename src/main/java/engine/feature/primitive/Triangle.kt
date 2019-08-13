@@ -2,13 +2,13 @@ package engine.feature.primitive
 
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.util.color.ColorUtil
 import engine.util.geometry.PointF
 
 import java.awt.*
 
-class Triangle : OpenGlObject, Primitive {
+class Triangle : OpenGlObject2D, Primitive {
 
     constructor(gl: GL4, boxDim: Dimension, textureId: Int) :
             super(TRIANGLE_BUFFER_PARAMS_COUNT, TRIANGLE_VERTICES_COUNT, gl, boxDim, textureId)

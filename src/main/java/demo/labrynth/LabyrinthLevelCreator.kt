@@ -1,7 +1,7 @@
 package demo.labrynth
 
 import com.jogamp.opengl.GL4
-import engine.core.OpenGlObject
+import engine.core.OpenGlObject2D
 import engine.feature.texture.TextureLoader
 
 import java.awt.*
@@ -12,12 +12,12 @@ import java.util.Scanner
 import java.util.stream.Collectors
 
 internal class LabyrinthLevelCreator {
-    fun createLevelFromFile(gl: GL4, filePath: String): ArrayList<OpenGlObject> {
+    fun createLevelFromFile(gl: GL4, filePath: String): ArrayList<OpenGlObject2D> {
         val defaultSize = 25
         var vertSize: Int
         var horSize: Int
         var lines: List<String> = ArrayList()
-        val outList = ArrayList<OpenGlObject>()
+        val outList = ArrayList<OpenGlObject2D>()
 
         try {
             val path = Paths.get(filePath)
@@ -56,7 +56,7 @@ internal class LabyrinthLevelCreator {
         return l.replace("[\\[,\\];]".toRegex(), " ")
     }
 
-    private fun createNewRectObject(startX: Int, startY: Int, horSize: Int, vertSize: Int, gl: GL4): OpenGlObject {
+    private fun createNewRectObject(startX: Int, startY: Int, horSize: Int, vertSize: Int, gl: GL4): OpenGlObject2D {
         val out = getLevelObject(gl, startX, startY, horSize, vertSize, 6)
 
         out.initRenderData(arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
@@ -67,8 +67,8 @@ internal class LabyrinthLevelCreator {
         return out
     }
 
-    private fun getLevelObject(gl: GL4, startX: Int, startY: Int, horSize: Int, vertSize: Int, verticesCount: Int): OpenGlObject
-            = object : OpenGlObject(2, verticesCount, gl, startX.toFloat(), startY.toFloat(), Dimension(horSize, vertSize), 0)
+    private fun getLevelObject(gl: GL4, startX: Int, startY: Int, horSize: Int, vertSize: Int, verticesCount: Int): OpenGlObject2D
+            = object : OpenGlObject2D(2, verticesCount, gl, startX.toFloat(), startY.toFloat(), Dimension(horSize, vertSize), 0)
                 {
                     public override fun loadTexture(filePath: String) {
                         try {
