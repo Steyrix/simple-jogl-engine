@@ -16,6 +16,14 @@ import java.io.File
 //width and height are measured in tiles
 class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>) {
 
+    fun draw(gl: GL4, shader: Shader) = tileLayers.forEach { it.draw(gl, shader) }
+
+    fun draw(gl: GL4, xSize: Float, ySize: Float, shader: Shader) = tileLayers.forEach { it.draw(gl, xSize, ySize, shader) }
+
+    override fun toString(): String {
+        return "Layers count: " + tileLayers.size
+    }
+    
     companion object {
         private const val MAP = "map"
         private const val MAP_WIDTH = "width"
@@ -72,14 +80,6 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
 
             return out
         }
-    }
-
-    fun draw(gl: GL4, shader: Shader) = tileLayers.forEach { it.draw(gl, shader) }
-
-    fun draw(gl: GL4, xSize: Float, ySize: Float, shader: Shader) = tileLayers.forEach { it.draw(gl, xSize, ySize, shader) }
-
-    override fun toString(): String {
-        return "Layers count: " + tileLayers.size
     }
 }
 

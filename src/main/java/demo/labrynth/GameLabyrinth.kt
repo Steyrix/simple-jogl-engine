@@ -66,10 +66,10 @@ class GameLabyrinth(dim: Dimension,
             e.printStackTrace()
         }
 
-        val UV = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
+        val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
 
         animObj!!.initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
-                false, Rectangle.RECTANGLE_BUFFER, UV)
+                false, Rectangle.RECTANGLE_BUFFER, uvCoords)
 
         this.controls.add(animObj!!)
 
@@ -80,7 +80,12 @@ class GameLabyrinth(dim: Dimension,
         rect = Rectangle(gl, 200f, 200f, 100f, 50f, 0)
         rect!!.init(Color.WHITE)
 
-        val charArr = arrayOf('p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/')
+        val charArr = arrayOf('p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±', '`',
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'P', 'Q', 'R', 'S', 'T',
+                'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+                'I', 'J', 'K', 'L', 'M', 'N', 'O', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<',
+                '=', '>', '?', ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/')
+
         val chars = ArrayList<Char>()
         chars.addAll(charArr.asList())
 

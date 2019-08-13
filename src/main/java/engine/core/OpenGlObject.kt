@@ -124,7 +124,6 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
         genBoundingBoxVertexArray()
 
         if (texture != null) {
-            //System.out.println("Loading only single texture");
             this.texture = texture
             setTexParameters()
         }
@@ -144,7 +143,6 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
 
         gl.glBindVertexArray(this.vertexArray.get(0))
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount)
-        //System.out.println(gl.glGetError() + " draw1");
 
         drawBoundingBox()
     }
@@ -168,7 +166,7 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
 
     override fun addBuffers(vararg dataArrays: FloatArray) {
         if (dataArrays.size != buffersCount)
-            throw IllegalArgumentException("Number of buffers supplied must be the number of buffers created for the object")
+            throw IllegalArgumentException(BUFFER_ILLEGAL_ARG_MSG)
 
         gl.glGenBuffers(buffersCount, buffers)
 
@@ -326,5 +324,9 @@ open class OpenGlObject : BoundingBox, OpenGlBuffered {
 
     private fun setUniformName(newName: String) {
         this.uniformName = newName
+    }
+
+    companion object {
+        private const val BUFFER_ILLEGAL_ARG_MSG = "Number of buffers supplied must be the number of buffers created for the object"
     }
 }

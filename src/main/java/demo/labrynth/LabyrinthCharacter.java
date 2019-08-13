@@ -30,7 +30,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.keys = new boolean[1000000];
 
         this.collisionPoints = new ArrayList<>();
-        initPoints(collisionPoints);
+        initCollisionPoints(collisionPoints);
 
         this.nextBox = new BoundingBox(posX, posY, getWidth(), getHeight());
 
@@ -40,7 +40,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
         this.jumpTime = 0f;
     }
 
-    private void initPoints(ArrayList<PointF> target){
+    private void initCollisionPoints(ArrayList<PointF> target){
         target.add(new PointF(getPosX(), getPosY()));
         target.add(new PointF(getPosX(), getBottomY()));
         target.add(new PointF(getRightX(), getBottomY()));
