@@ -6,7 +6,6 @@ import com.hackoeur.jglm.Vec3
 import com.jogamp.opengl.GL
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
-import com.jogamp.opengl.util.texture.TextureData
 import engine.feature.collision.BoundingBox
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
@@ -37,6 +36,8 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
     private val isTextured: Boolean
         get() = this.texture != null || this.textureArray != null
+
+    private val boxVerticesCount = 8
 
     constructor(bufferParamsCount: Int,
                 verticesCount: Int,
@@ -143,8 +144,6 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
         gl.glBindVertexArray(this.vertexArray.get(0))
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount)
-
-        drawBoundingBox()
     }
 
     open fun draw(xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) {
@@ -163,6 +162,12 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     }
 
     open fun update(deltaTime: Float) {}
+
+    fun drawBox(shader: Shader) {
+        shader.setMatrix4f("model", getFinalMatrix(posX, posY, width, height, 0f), true)
+        gl.glBindVertexArray(this.bbVertexArray.get(0))
+        gl.glDrawArrays(GL4.GL_LINES, 0, boxVerticesCount)
+    }
 
     override fun addBuffers(vararg dataArrays: FloatArray) {
         if (dataArrays.size != buffersCount)
@@ -224,8 +229,6 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
         gl.glBindVertexArray(this.vertexArray.get(0))
         gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount)
-
-        drawBoundingBox()
     }
 
     private fun defineTextureState(shader: Shader) {
@@ -286,7 +289,6 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
                     0.0f, 0.0f, 0.0f, 1.0f)
 
 
-
     //TODO: move to separate class
     private fun applyRotation(xSize: Float,
                               ySize: Float,
@@ -301,11 +303,11 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     //TODO: add ability to debug bounding boxes
     private fun initBoundingBoxBuffer() {
         gl.glGenBuffers(1, bbBuffer)
-        val bbVerticesBuffer = FloatBuffer.wrap(
-                floatArrayOf(0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f))
+        val bbVerticesArray = floatArrayOf(0f, 0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 0f, 1f, 0f, 1f, 0f, 0f)
+        val bbVerticesBuffer = FloatBuffer.wrap(bbVerticesArray)
 
         gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
-        gl.glBufferData(GL4.GL_ARRAY_BUFFER, 32, bbVerticesBuffer, GL4.GL_STATIC_DRAW)
+        gl.glBufferData(GL4.GL_ARRAY_BUFFER, 4 * (bbVerticesArray.size).toLong(), bbVerticesBuffer, GL4.GL_STATIC_DRAW)
     }
 
     private fun genBoundingBoxVertexArray() {
@@ -315,11 +317,6 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
         gl.glEnableVertexAttribArray(0)
         gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
         gl.glVertexAttribPointer(0, 2, GL4.GL_FLOAT, false, 0, 0)
-    }
-
-    private fun drawBoundingBox() {
-        gl.glBindVertexArray(this.bbVertexArray.get(0))
-        gl.glDrawArrays(GL4.GL_LINES, 0, 4)
     }
 
     private fun setUniformName(newName: String) {

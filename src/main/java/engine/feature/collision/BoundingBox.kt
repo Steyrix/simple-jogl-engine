@@ -32,6 +32,7 @@ open class BoundingBox {
         this.height = 0.0f
 
         this.undefined = true
+
     }
 
     constructor(posX: Float, posY: Float, width: Float, height: Float) {

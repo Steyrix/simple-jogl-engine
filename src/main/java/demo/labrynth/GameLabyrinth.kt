@@ -36,6 +36,7 @@ class GameLabyrinth(dim: Dimension,
     private val boundShaderId = "BOUND"
     private val textShaderId = "TEXT_SHADER"
     private val colorShaderId = "COLORED"
+    private val boxShaderId = "BOX"
 
     private var myRenderer: TextRenderer? = null
     private var animObj: LabyrinthCharacter? = null
@@ -123,6 +124,10 @@ class GameLabyrinth(dim: Dimension,
         shaderInteractor.updateShaders()
         animObj!!.draw(animObj!!.size.width.toFloat(), animObj!!.size.height.toFloat(), 0.0f, curr)
 
+        curr = shaderInteractor.getShader(boxShaderId)
+        shaderInteractor.activateShader(boxShaderId)
+        animObj!!.drawBox(curr)
+
         curr = shaderInteractor.getShader(textShaderId)
         shaderInteractor.activateShader(textShaderId)
         myRenderer!!.drawText("Hello \n World!", Dimension(50, 50), gl, PointF(600f, 200f), curr)
@@ -175,11 +180,15 @@ class GameLabyrinth(dim: Dimension,
         val colorShaderObject = shaderCreator.create("shaders/coloredVertexShader.glsl",
                 "shaders/coloredFragmentShader.glsl", gl)
 
+        val boxShaderObject = shaderCreator.create("shaders/boxVertexShader.glsl",
+                "shaders/boxFragmentShader.glsl", gl)
+
         shaderInteractor.addShader(textureShaderId, textureShaderObject)
         shaderInteractor.addShader(textShaderId, textShaderObject)
         shaderInteractor.addShader(boundShaderId, boundShaderObject)
         shaderInteractor.addShader(animationShaderId, animationShaderObject)
         shaderInteractor.addShader(colorShaderId, colorShaderObject)
+        shaderInteractor.addShader(boxShaderId, boxShaderObject)
     }
 
     private fun initShaders() {
@@ -192,6 +201,7 @@ class GameLabyrinth(dim: Dimension,
         shaderInteractor.setShaderActivateFunction(animationShaderId, defaultFunc)
         shaderInteractor.setShaderActivateFunction(textShaderId, defaultFunc)
         shaderInteractor.setShaderActivateFunction(colorShaderId, defaultFunc)
+        shaderInteractor.setShaderActivateFunction(boxShaderId, defaultFunc)
 
         shaderInteractor.setShaderUpdateFunction(animationShaderId) { animObj!!.defineAnimationVariables(it) }
     }
