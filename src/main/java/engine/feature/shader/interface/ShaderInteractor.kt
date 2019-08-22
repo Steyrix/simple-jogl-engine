@@ -13,6 +13,4 @@ interface ShaderInteractor {
     fun addShader(shaderId: String, shader: Shader)
     fun removeShader(shaderId: String)
     fun getShader(shaderId: String): Shader
-
-    fun forEach(action: (Shader) -> Unit)
 }
