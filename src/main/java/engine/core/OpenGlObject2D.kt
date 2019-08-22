@@ -124,8 +124,8 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
         initBoundingBoxBuffer()
         genBoundingBoxVertexArray()
 
-        if (texture != null) {
-            this.texture = texture
+        texture?.let {
+            this.texture = it
             setTexParameters()
         }
     }
@@ -211,12 +211,16 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
     }
 
-    private fun setTexParameters() {
-        texture!!.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
-        texture!!.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
-        texture!!.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE)
-        texture!!.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE)
-    }
+    private fun setTexParameters() =
+        with(texture) {
+            this?.let {
+                setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
+                setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
+                setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE)
+                setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE)
+            }
+        }
+
 
     private fun loadTextureArray(vararg filePaths: String) {
         textureArray = TextureLoader.loadTextureArray(gl, textureId, *filePaths)
@@ -243,8 +247,12 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
     private fun defineSingleTextureState(shader: Shader) {
         gl.glActiveTexture(GL4.GL_TEXTURE0)
-        this.texture!!.enable(gl)
-        this.texture!!.bind(gl)
+
+        this.texture?.let {
+            it.enable(gl)
+            it.bind(gl)
+        }
+
         gl.glUniform1i(gl.glGetUniformLocation(shader.id, uniformName), 0)
     }
 

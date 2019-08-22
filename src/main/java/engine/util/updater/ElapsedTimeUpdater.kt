@@ -4,7 +4,7 @@ class ElapsedTimeUpdater(private val updatePeriod: Long) : Updater {
     private var updateFunc: () -> Unit = {}
     private var timeAccumulator: Long = 0
 
-    override fun setUpdateFunc(func: ()->Unit) {
+    override fun setUpdateFunc(func: () -> Unit) {
         updateFunc = func
     }
 

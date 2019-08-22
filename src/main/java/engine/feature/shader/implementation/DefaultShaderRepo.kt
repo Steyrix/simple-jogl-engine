@@ -16,4 +16,6 @@ class DefaultShaderRepo : ShaderRepository {
     override fun removeShader(shaderId: String) {
         map.remove(shaderId)
     }
+
+    override fun forEach(action: (String) -> Unit) = map.keys.forEach(action)
 }

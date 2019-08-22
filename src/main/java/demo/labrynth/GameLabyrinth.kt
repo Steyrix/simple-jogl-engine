@@ -56,30 +56,25 @@ class GameLabyrinth(dim: Dimension,
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
-        try {
-            animObj = LabyrinthCharacter(2, 6, gl, 25f, 25f,
-                    Dimension(50, 70), 0,
-                    0.1f, 0.333f,
-                    BasicAnimation("WALK", 1, 0, 6, 1, 100f),
-                    BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
-                    BasicAnimation("IDLE", 3, 0, 1, 1, 100f))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
-
-        animObj!!.initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
-                false, Rectangle.RECTANGLE_BUFFER, uvCoords)
-
-        this.controls.add(animObj!!)
+        animObj = LabyrinthCharacter(2, 6, gl, 25f, 25f,
+                Dimension(50, 70), 0,
+                0.1f, 0.333f,
+                BasicAnimation("WALK", 1, 0, 6, 1, 100f),
+                BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
+                BasicAnimation("IDLE", 3, 0, 1, 1, 100f)).
+                apply {
+                    val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
+                    initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
+                            false, Rectangle.RECTANGLE_BUFFER, uvCoords)
+                }.also { controls.add(it) }
 
         initLevelGeography(gl)
         this.renderProjection = Matrices.ortho(0.0f, screenWidth.toFloat(), screenHeight.toFloat(),
                 0.0f, 0.0f, 1.0f)
 
-        rect = Rectangle(gl, 200f, 200f, 100f, 50f, 0)
-        rect!!.init(Color.WHITE)
+        rect = Rectangle(gl, 200f, 200f, 100f, 50f, 0).apply {
+            init(Color.WHITE)
+        }
 
         val charArr = arrayOf('p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±', '`',
                 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'P', 'Q', 'R', 'S', 'T',
@@ -183,12 +178,14 @@ class GameLabyrinth(dim: Dimension,
         val boxShaderObject = shaderCreator.create("shaders/boxVertexShader.glsl",
                 "shaders/boxFragmentShader.glsl", gl)
 
-        shaderInteractor.addShader(textureShaderId, textureShaderObject)
-        shaderInteractor.addShader(textShaderId, textShaderObject)
-        shaderInteractor.addShader(boundShaderId, boundShaderObject)
-        shaderInteractor.addShader(animationShaderId, animationShaderObject)
-        shaderInteractor.addShader(colorShaderId, colorShaderObject)
-        shaderInteractor.addShader(boxShaderId, boxShaderObject)
+        shaderInteractor.apply {
+            addShader(textureShaderId, textureShaderObject)
+            addShader(textShaderId, textShaderObject)
+            addShader(boundShaderId, boundShaderObject)
+            addShader(animationShaderId, animationShaderObject)
+            addShader(colorShaderId, colorShaderObject)
+            addShader(boxShaderId, boxShaderObject)
+        }
     }
 
     private fun initShaders() {
@@ -196,14 +193,10 @@ class GameLabyrinth(dim: Dimension,
             it.setMatrix4f("projection", renderProjection!!, true)
         }
 
-        shaderInteractor.setShaderActivateFunction(textureShaderId, defaultFunc)
-        shaderInteractor.setShaderActivateFunction(boundShaderId, defaultFunc)
-        shaderInteractor.setShaderActivateFunction(animationShaderId, defaultFunc)
-        shaderInteractor.setShaderActivateFunction(textShaderId, defaultFunc)
-        shaderInteractor.setShaderActivateFunction(colorShaderId, defaultFunc)
-        shaderInteractor.setShaderActivateFunction(boxShaderId, defaultFunc)
-
-        shaderInteractor.setShaderUpdateFunction(animationShaderId) { animObj!!.defineAnimationVariables(it) }
+        shaderInteractor.apply {
+            forEach { shaderInteractor.setShaderActivateFunction(it, defaultFunc) }
+            setShaderUpdateFunction(animationShaderId) { animObj!!.defineAnimationVariables(it) }
+        }
     }
 
     private fun initLevelGeography(gl: GL4) {
@@ -223,21 +216,22 @@ class GameLabyrinth(dim: Dimension,
                 }
 
             }
+        }. apply {
+            val bgVertices = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
+            val bgUVdata = floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f)
+            val texturePath = "textures/labyrinth/abbey_base.jpg"
+            initRenderData(arrayOf(ResourceLoader.getAbsolutePath(texturePath)), false, bgVertices, bgUVdata)
         }
-
-        val bgVertices = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
-        val bgUVdata = floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f)
-
-        val texturePath = "textures/labyrinth/abbey_base.jpg"
-        background!!.initRenderData(arrayOf(ResourceLoader.getAbsolutePath(texturePath)), false, bgVertices, bgUVdata)
     }
 
     companion object {
-        internal fun initRepeatableTexParameters(texture: Texture, gl: GL4) {
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT)
-            texture.setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT)
-        }
+        internal fun initRepeatableTexParameters(texture: Texture, gl: GL4) =
+                texture.apply {
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT)
+                }
+
     }
 }

@@ -23,9 +23,9 @@ internal class LabyrinthLevelCreator {
             val path = Paths.get(filePath)
             val regex = "\\[[0-9]+,[0-9]+,[HV],[0-9]+];".toRegex()
 
-            Files.lines(path).use{ lines = it.
-                    filter { line -> line.matches(regex) }.
-                    collect(Collectors.toList()) }
+            Files.lines(path).use {
+                lines = it.filter { line -> line.matches(regex) }.collect(Collectors.toList())
+            }
         } catch (e: Exception) {
             println(e.message)
         }
@@ -52,33 +52,27 @@ internal class LabyrinthLevelCreator {
         return outList
     }
 
-    private fun replaceBrackets(l: String): String {
-        return l.replace("[\\[,\\];]".toRegex(), " ")
-    }
+    private fun replaceBrackets(l: String) = l.replace("[\\[,\\];]".toRegex(), " ")
 
-    private fun createNewRectObject(startX: Int, startY: Int, horSize: Int, vertSize: Int, gl: GL4): OpenGlObject2D {
-        val out = getLevelObject(gl, startX, startY, horSize, vertSize, 6)
+    private fun createNewRectObject(startX: Int, startY: Int, horSize: Int, vertSize: Int, gl: GL4) =
+            getLevelObject(gl, startX, startY, horSize, vertSize, 6).apply {
+                initRenderData(arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
+                        false,
+                        floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f),
+                        floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f))
+            }
 
-        out.initRenderData(arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
-                false,
-                floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f),
-                floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f))
 
-        return out
-    }
-
-    private fun getLevelObject(gl: GL4, startX: Int, startY: Int, horSize: Int, vertSize: Int, verticesCount: Int): OpenGlObject2D
-            = object : OpenGlObject2D(2, verticesCount, gl, startX.toFloat(), startY.toFloat(), Dimension(horSize, vertSize), 0)
-                {
-                    public override fun loadTexture(filePath: String) {
-                        try {
-                            this.texture = TextureLoader.loadTexture(filePath)
-                            GameLabyrinth.initRepeatableTexParameters(this.texture!!, this.gl)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
+    private fun getLevelObject(gl: GL4, startX: Int, startY: Int, horSize: Int, vertSize: Int, verticesCount: Int) =
+            object : OpenGlObject2D(2, verticesCount, gl, startX.toFloat(), startY.toFloat(), Dimension(horSize, vertSize), 0) {
+                public override fun loadTexture(filePath: String) {
+                    try {
+                        this.texture = TextureLoader.loadTexture(filePath)
+                        GameLabyrinth.initRepeatableTexParameters(this.texture!!, this.gl)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
+            }
 
 }

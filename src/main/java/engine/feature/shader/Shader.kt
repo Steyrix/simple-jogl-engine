@@ -62,50 +62,42 @@ class Shader internal constructor(private val gl: GL4) {
     }
 
     fun setFloat(name: String, value: Float, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniform1f(gl.glGetUniformLocation(this.id, name), value)
     }
 
     fun setInteger(name: String, value: Int, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniform1i(gl.glGetUniformLocation(this.id, name), value)
     }
 
     fun setVector2f(name: String, x: Float, y: Float, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniform2f(gl.glGetUniformLocation(this.id, name), x, y)
     }
 
     fun setVector3f(name: String, x: Float, y: Float, z: Float, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniform3f(gl.glGetUniformLocation(this.id, name), x, y, z)
     }
 
     fun setVector3f(name: String, value: Vec3, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniform3f(gl.glGetUniformLocation(this.id, name), value.x, value.y, value.z)
     }
 
     fun setVector4f(name: String, x: Float, y: Float, z: Float, w: Float, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniform4f(gl.glGetUniformLocation(this.id, name), x, y, z, w)
     }
 
     fun setVector4f(name: String, value: Vec4, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniform4f(gl.glGetUniformLocation(this.id, name), value.x, value.y, value.z, value.w)
     }
 
     fun setMatrix4f(name: String, value: Mat4, useShader: Boolean) {
-        if (useShader)
-            this.use()
+        if (useShader) use()
         gl.glUniformMatrix4fv(gl.glGetUniformLocation(this.id, name), 1, false, value.buffer)
     }
 

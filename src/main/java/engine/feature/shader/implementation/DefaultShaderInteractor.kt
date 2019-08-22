@@ -29,4 +29,6 @@ class DefaultShaderInteractor(private val repo: ShaderRepository) : ShaderIntera
     override fun removeShader(shaderId: String) = repo.removeShader(shaderId)
 
     override fun getShader(shaderId: String): Shader = repo.getShader(shaderId)
+
+    override fun forEach(action: (String) -> Unit) = repo.forEach(action)
 }
