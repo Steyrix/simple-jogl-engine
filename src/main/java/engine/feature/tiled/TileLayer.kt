@@ -6,7 +6,6 @@ import engine.feature.shader.Shader
 import engine.util.geometry.PointF
 import java.awt.Dimension
 
-//TODO(count relative coordinates of vertices for tiles to create a single unite VBO)
 internal class TileLayer(private val width: Int,
                          private val height: Int,
                          private val tileData: ArrayList<Int>,
