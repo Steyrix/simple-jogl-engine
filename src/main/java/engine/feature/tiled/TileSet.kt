@@ -3,14 +3,16 @@ package engine.feature.tiled
 import com.jogamp.opengl.util.texture.Texture
 import engine.feature.ResourceLoader
 import engine.feature.texture.TextureLoader
+import engine.feature.tiled.TileMapParser.SOURCE
+import engine.feature.tiled.TileMapParser.TILE_SET
 import engine.util.xml.XmlParser
 import java.io.File
 
 internal class TileSet(internal val tileWidth: Int,
                        internal val tileHeight: Int,
+                       internal val texture: Texture,
                        private val tileCount: Int,
-                       private val columnCount: Int,
-                       internal val texture: Texture) {
+                       private val columnCount: Int) {
 
     internal val relativeTileWidth: Float = tileWidth.toFloat() / texture.width.toFloat()
     internal val relativeTileHeight: Float = tileHeight.toFloat() / texture.height.toFloat()
@@ -44,7 +46,7 @@ internal class TileSet(internal val tileWidth: Int,
         fun createTileSet(xmlFile: File): TileSet {
             val document = XmlParser.getDocument(xmlFile)!!
 
-            val tileSetNode = document.getElementsByTagName(TileMap.TILE_SET)
+            val tileSetNode = document.getElementsByTagName(TILE_SET)
             val tileSetAttribs = tileSetNode.item(0).attributes
 
             val tileWidth = tileSetAttribs.getNamedItem(TILE_WIDTH).nodeValue
@@ -53,10 +55,10 @@ internal class TileSet(internal val tileWidth: Int,
             val columnCount = tileSetAttribs.getNamedItem(COLUMN_COUNT).nodeValue
 
             val imageNode = document.getElementsByTagName(IMAGE)
-            val sourcePath = imageNode.item(0).attributes.getNamedItem(TileMap.SOURCE).nodeValue
+            val sourcePath = imageNode.item(0).attributes.getNamedItem(SOURCE).nodeValue
             val texture = TextureLoader.loadTexture(ResourceLoader.getAbsolutePath(sourcePath))
 
-            return TileSet(tileWidth.toInt(), tileHeight.toInt(), tileCount.toInt(), columnCount.toInt(), texture)
+            return TileSet(tileWidth.toInt(), tileHeight.toInt(), texture, tileCount.toInt(), columnCount.toInt())
         }
 
         fun generateTiles(tileSet: TileSet): ArrayList<Tile> {

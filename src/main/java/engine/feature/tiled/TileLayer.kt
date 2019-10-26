@@ -3,12 +3,14 @@ package engine.feature.tiled
 import com.jogamp.opengl.GL4
 import engine.core.OpenGlObject2D
 import engine.feature.shader.Shader
+import engine.feature.tiled.property.LayerProperty
 import engine.util.geometry.PointF
 import java.awt.Dimension
 
-internal class TileLayer(private val width: Int,
-                         private val height: Int,
-                         private val tileData: ArrayList<Int>,
+internal class TileLayer(internal val width: Int,
+                         internal val height: Int,
+                         internal val tileData: ArrayList<Int>,
+                         internal val properties: ArrayList<LayerProperty<out Any>>,
                          private val tileSet: TileSet) {
 
     private var openGLObject: OpenGlObject2D? = null
