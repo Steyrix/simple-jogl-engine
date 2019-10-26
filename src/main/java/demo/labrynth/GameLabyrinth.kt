@@ -61,12 +61,11 @@ class GameLabyrinth(dim: Dimension,
                 0.1f, 0.333f,
                 BasicAnimation("WALK", 1, 0, 6, 1, 100f),
                 BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
-                BasicAnimation("IDLE", 3, 0, 1, 1, 100f)).
-                apply {
-                    val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
-                    initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
-                            false, Rectangle.RECTANGLE_BUFFER, uvCoords)
-                }.also { controls.add(it) }
+                BasicAnimation("IDLE", 3, 0, 1, 1, 100f)).apply {
+            val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
+            initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
+                    false, Rectangle.RECTANGLE_BUFFER, uvCoords)
+        }.also { controls.add(it) }
 
         initLevelGeography(gl)
         this.renderProjection = Matrices.ortho(0.0f, screenWidth.toFloat(), screenHeight.toFloat(),
@@ -216,7 +215,7 @@ class GameLabyrinth(dim: Dimension,
                 }
 
             }
-        }. apply {
+        }.apply {
             val bgVertices = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
             val bgUVdata = floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f)
             val texturePath = "textures/labyrinth/abbey_base.jpg"

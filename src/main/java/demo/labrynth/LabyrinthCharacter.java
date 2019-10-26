@@ -295,7 +295,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     }
 
     private void jump() {
-        setVelocityY(getVelocityY() - 25f);
+        setVelocityY(getVelocityY() - 20f);
         setAirFloating();
     }
 

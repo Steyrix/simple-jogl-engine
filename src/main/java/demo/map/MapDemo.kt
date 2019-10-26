@@ -26,7 +26,7 @@ class MapDemo(private val dim: Dimension,
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(1f, 1f, 1f, 1.0f)
 
-        map = TileMap.createTileMap(ResourceLoader.getFileFromAbsolutePath("maps/map_house.xml"))
+        map = TileMap.createInstance(ResourceLoader.getFileFromAbsolutePath("maps/map_house.xml"))
 
         texShader = shaderCreator.create("shaders/texturedVertexShader.glsl",
                 "shaders/texturedFragmentShader.glsl", gl)
