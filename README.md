@@ -1,6 +1,6 @@
 # Simple-JOGL-engine
 # Currently work on:
 
-* tile maps' attribute system
-* texture arrays
+* Tile maps' attribute system
+* Texture arrays' system improvement
 * 2D lightweight animation architecture
