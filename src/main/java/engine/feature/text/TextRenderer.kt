@@ -26,7 +26,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
 
         if (!cache.containsKey(c)) {
             glObject = OpenGlObject2D(2, 6, gl, pos.x, pos.y, fontSize, 100)
-            val uvCoordinates = getUV(c)
+            val uvCoordinates = getCharUV(c)
             val bufferData = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
             glObject.initRenderData(this.textureAtlas, bufferData, uvCoordinates)
             cache[c] = glObject
@@ -52,7 +52,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
         }
     }
 
-    private fun getUV(c: Char): FloatArray {
+    private fun getCharUV(c: Char): FloatArray {
         //TODO: wtf refactor this
         val curr = characterCoordinates!![c]!!
         val width = (charSize.getWidth() / textureAtlas!!.width).toFloat()
