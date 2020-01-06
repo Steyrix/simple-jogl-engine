@@ -4,7 +4,8 @@ import java.io.File
 
 object ResourceLoader {
     fun getAbsolutePath(relativePath: String): String {
-        return javaClass.classLoader.getResource(relativePath).path
+        val out = javaClass.classLoader.getResource(relativePath)
+        return out?.path ?: throw Exception()
     }
 
     fun getFileFromRelativePath(relativePath: String): File {

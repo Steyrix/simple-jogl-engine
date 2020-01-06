@@ -1,12 +1,11 @@
 package engine.core
 
 import com.hackoeur.jglm.Mat4
-import com.hackoeur.jglm.Matrices
-import com.hackoeur.jglm.Vec3
 import com.jogamp.opengl.GL
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
 import engine.feature.collision.BoundingBox
+import engine.feature.matrix.MatrixInteractor
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
 
@@ -136,7 +135,8 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
         this.width = xSize
         this.height = ySize
 
-        val model = getFinalMatrix(x, y, xSize, ySize, rotationAngle)
+        //val model = getFinalMatrix(x, y, xSize, ySize, rotationAngle)
+        val model = MatrixInteractor.getFinalMatrix(x, y, xSize, ySize, rotationAngle)
 
         defineTextureState(shader)
 
@@ -150,13 +150,15 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
         this.width = xSize
         this.height = ySize
 
-        val model = getFinalMatrix(xSize, ySize, rotationAngle)
+        //val model = getFinalMatrix(xSize, ySize, rotationAngle)
+        val model = MatrixInteractor.getFinalMatrix(this.posX, this.posY, xSize, ySize, rotationAngle)
 
         doDraw(shader, model)
     }
 
     open fun draw(rotationAngle: Float, shader: Shader) {
-        val model = getFinalMatrix(this.width, this.height, rotationAngle)
+        //val model = getFinalMatrix(this.width, this.height, rotationAngle)
+        val model = MatrixInteractor.getFinalMatrix(this.posX, this.posY, this.width, this.height, rotationAngle)
 
         doDraw(shader, model)
     }
@@ -164,7 +166,7 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     open fun update(deltaTime: Float) {}
 
     fun drawBox(shader: Shader) {
-        shader.setMatrix4f("model", getFinalMatrix(posX, posY, width, height, 0f), true)
+        shader.setMatrix4f("model", MatrixInteractor.getFinalMatrix(posX, posY, width, height, 0f), true)
         gl.glBindVertexArray(this.bbVertexArray.get(0))
         gl.glDrawArrays(GL4.GL_LINES, 0, boxVerticesCount)
     }
@@ -262,53 +264,6 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
         gl.glUniform1i(gl.glGetUniformLocation(shader.id, uniformName), 0)
     }
 
-    private fun getFinalMatrix(xSize: Float, ySize: Float, rotationAngle: Float): Mat4 {
-        var model = Mat4.MAT4_IDENTITY
-        val rotation = Matrices.rotate(rotationAngle, Vec3(0.0f, 0.0f, 1.0f))
-        val scale = getScaleMatrix(xSize, ySize)
-
-        model = model.translate(Vec3(this.posX, this.posY, 0.0f))
-
-        applyRotation(xSize, ySize, rotation, model)
-
-        model = model.multiply(scale)
-
-        return model
-    }
-
-    private fun getFinalMatrix(x: Float, y: Float, xSize: Float, ySize: Float, rotationAngle: Float): Mat4 {
-        var model = Mat4.MAT4_IDENTITY
-        val rotation = Matrices.rotate(rotationAngle, Vec3(0.0f, 0.0f, 1.0f))
-        val scale = getScaleMatrix(xSize, ySize)
-
-        model = model.translate(Vec3(x, y, 0.0f))
-
-        applyRotation(xSize, ySize, rotation, model)
-
-        model = model.multiply(scale)
-
-        return model
-    }
-
-    private fun getScaleMatrix(xSize: Float, ySize: Float): Mat4 =
-            Mat4(xSize, 0.0f, 0.0f, 0.0f,
-                    0.0f, ySize, 0.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f, 0.0f,
-                    0.0f, 0.0f, 0.0f, 1.0f)
-
-
-    //TODO: move to separate class
-    private fun applyRotation(xSize: Float,
-                              ySize: Float,
-                              rotation: Mat4,
-                              model: Mat4) {
-        var model = model
-        model = model.translate(Vec3(0.5f * xSize, 0.5f * ySize, 0.0f))
-        model = model.multiply(rotation)
-        model = model.translate(Vec3(-0.5f * xSize, -0.5f * ySize, 0.0f))
-    }
-
-    //TODO: add ability to debug bounding boxes
     private fun initBoundingBoxBuffer() {
         gl.glGenBuffers(1, bbBuffer)
         val bbVerticesArray = floatArrayOf(0f, 0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 0f, 1f, 0f, 1f, 0f, 0f)
