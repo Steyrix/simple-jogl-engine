@@ -94,7 +94,7 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
             glDeleteBuffers(buffersCount, buffers)
             glDeleteVertexArrays(1, vertexArray)
         }
-        texture?.let { it.destroy(gl) }
+        texture?.destroy(gl)
     }
 
     open fun initRenderData(textureFilePaths: Array<String>,
