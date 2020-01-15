@@ -90,11 +90,11 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     }
 
     fun dispose() {
-        gl.glDeleteBuffers(buffersCount, buffers)
-        gl.glDeleteVertexArrays(1, this.vertexArray)
-        if (this.texture != null) {
-            this.texture!!.destroy(gl)
+        with(gl) {
+            glDeleteBuffers(buffersCount, buffers)
+            glDeleteVertexArrays(1, vertexArray)
         }
+        texture?.let { it.destroy(gl) }
     }
 
     open fun initRenderData(textureFilePaths: Array<String>,
@@ -142,8 +142,10 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
         shader.setMatrix4f("model", model, true)
 
-        gl.glBindVertexArray(this.vertexArray.get(0))
-        gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.verticesCount)
+        with(gl) {
+            glBindVertexArray(vertexArray.get(0))
+            glDrawArrays(GL.GL_TRIANGLES, 0, verticesCount)
+        }
     }
 
     open fun draw(xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) {
@@ -167,33 +169,40 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
     fun drawBox(shader: Shader) {
         shader.setMatrix4f("model", MatrixInteractor.getFinalMatrix(posX, posY, width, height, 0f), true)
-        gl.glBindVertexArray(this.bbVertexArray.get(0))
-        gl.glDrawArrays(GL4.GL_LINES, 0, boxVerticesCount)
+
+        with(gl) {
+            glBindVertexArray(bbVertexArray.get(0))
+            glDrawArrays(GL4.GL_LINES, 0, boxVerticesCount)
+        }
     }
 
     override fun addBuffers(vararg dataArrays: FloatArray) {
-        if (dataArrays.size != buffersCount)
-            throw IllegalArgumentException(BUFFER_ILLEGAL_ARG_MSG)
+        require(dataArrays.size == buffersCount) { BUFFER_ILLEGAL_ARG_MSG }
 
         gl.glGenBuffers(buffersCount, buffers)
 
         dataArrays.forEach {
             val floatBuffer = FloatBuffer.wrap(it)
-            gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, this.buffers.get(buffersFilled++))
-            gl.glBufferData(GL4.GL_ARRAY_BUFFER, (4 * it.size).toLong(), floatBuffer, GL4.GL_STATIC_DRAW)
+
+            with(gl) {
+                glBindBuffer(GL4.GL_ARRAY_BUFFER, buffers.get(buffersFilled++))
+                glBufferData(GL4.GL_ARRAY_BUFFER, (4 * it.size).toLong(), floatBuffer, GL4.GL_STATIC_DRAW)
+            }
 
             paramsCount.add(it.size / this.verticesCount)
         }
     }
 
     override fun genVertexArray() {
-        gl.glGenVertexArrays(1, this.vertexArray)
-        gl.glBindVertexArray(this.vertexArray.get(0))
+        with(gl) {
+            glGenVertexArrays(1, vertexArray)
+            glBindVertexArray(vertexArray.get(0))
 
-        for (i in 0 until this.buffersFilled) {
-            gl.glEnableVertexAttribArray(i)
-            gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, buffers.get(i))
-            gl.glVertexAttribPointer(i, this.paramsCount[i], GL4.GL_FLOAT, false, 0, 0)
+            for (i in 0 until buffersFilled) {
+                glEnableVertexAttribArray(i)
+                glBindBuffer(GL4.GL_ARRAY_BUFFER, buffers.get(i))
+                glVertexAttribPointer(i, paramsCount[i], GL4.GL_FLOAT, false, 0, 0)
+            }
         }
     }
 
@@ -205,7 +214,7 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
     protected open fun loadTexture(filePath: String) {
         try {
-            this.texture = TextureLoader.loadTexture(filePath)
+            texture = TextureLoader.loadTexture(filePath)
             setTexParameters()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -233,8 +242,10 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
         shader.setMatrix4f("model", model, true)
 
-        gl.glBindVertexArray(this.vertexArray.get(0))
-        gl.glDrawArrays(GL4.GL_TRIANGLES, 0, this.verticesCount)
+        with(gl) {
+            glBindVertexArray(vertexArray.get(0))
+            glDrawArrays(GL4.GL_TRIANGLES, 0, verticesCount)
+        }
     }
 
     private fun defineTextureState(shader: Shader) {
@@ -248,38 +259,47 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     }
 
     private fun defineSingleTextureState(shader: Shader) {
-        gl.glActiveTexture(GL4.GL_TEXTURE0)
+        with(gl) {
+            glActiveTexture(GL4.GL_TEXTURE0)
 
-        this.texture?.let {
-            it.enable(gl)
-            it.bind(gl)
+            texture?.let {
+                it.enable(this)
+                it.bind(this)
+            }
+
+            glUniform1i(this.glGetUniformLocation(shader.id, uniformName), 0)
         }
-
-        gl.glUniform1i(gl.glGetUniformLocation(shader.id, uniformName), 0)
     }
 
     private fun defineArrayTextureState(shader: Shader) {
-        gl.glActiveTexture(GL4.GL_TEXTURE0)
-        gl.glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray!!.get(0))
-        gl.glUniform1i(gl.glGetUniformLocation(shader.id, uniformName), 0)
+        with(gl) {
+            glActiveTexture(GL4.GL_TEXTURE0)
+            glBindTexture(GL4.GL_TEXTURE_2D_ARRAY, textureArray!!.get(0))
+            glUniform1i(this.glGetUniformLocation(shader.id, uniformName), 0)
+        }
     }
 
     private fun initBoundingBoxBuffer() {
-        gl.glGenBuffers(1, bbBuffer)
-        val bbVerticesArray = floatArrayOf(0f, 0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 0f, 1f, 0f, 1f, 0f, 0f)
-        val bbVerticesBuffer = FloatBuffer.wrap(bbVerticesArray)
+        with(gl) {
+            glGenBuffers(1, bbBuffer)
 
-        gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
-        gl.glBufferData(GL4.GL_ARRAY_BUFFER, 4 * (bbVerticesArray.size).toLong(), bbVerticesBuffer, GL4.GL_STATIC_DRAW)
+            val bbVerticesArray = floatArrayOf(0f, 0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 0f, 1f, 0f, 1f, 0f, 0f)
+            val bbVerticesBuffer = FloatBuffer.wrap(bbVerticesArray)
+
+            glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
+            glBufferData(GL4.GL_ARRAY_BUFFER, 4 * (bbVerticesArray.size).toLong(), bbVerticesBuffer, GL4.GL_STATIC_DRAW)
+        }
     }
 
     private fun genBoundingBoxVertexArray() {
-        gl.glGenVertexArrays(1, this.bbVertexArray)
-        gl.glBindVertexArray(this.bbVertexArray.get(0))
+        with(gl) {
+            glGenVertexArrays(1, bbVertexArray)
+            glBindVertexArray(bbVertexArray.get(0))
 
-        gl.glEnableVertexAttribArray(0)
-        gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
-        gl.glVertexAttribPointer(0, 2, GL4.GL_FLOAT, false, 0, 0)
+            glEnableVertexAttribArray(0)
+            glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
+            glVertexAttribPointer(0, 2, GL4.GL_FLOAT, false, 0, 0)
+        }
     }
 
     private fun setUniformName(newName: String) {
