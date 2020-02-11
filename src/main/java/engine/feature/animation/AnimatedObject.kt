@@ -3,6 +3,7 @@ package engine.feature.animation
 import com.jogamp.opengl.GL4
 import engine.core.OpenGlObject2D
 import engine.feature.shader.Shader
+import engine.feature.shader.ShaderVariableKey
 
 import java.awt.*
 import java.util.ArrayList
@@ -55,10 +56,10 @@ open class AnimatedObject : OpenGlObject2D {
 
     fun defineAnimationVariables(shader: Shader) {
         if (texture != null || textureArray != null) {
-            shader.setFloat("xChanging", currentAnim.currentFrameX * frameSizeX, false)
-            shader.setInteger("frameNumberX", currentAnim.currentFrameX + 1, false)
-            shader.setFloat("yChanging", currentAnim.currentFrameY * frameSizeY, false)
-            shader.setInteger("frameY", currentAnim.currentFrameY + 1, false)
+            shader.setFloat(ShaderVariableKey.Anim.xOffset, currentAnim.currentFrameX * frameSizeX, false)
+            shader.setInteger(ShaderVariableKey.Anim.xNumber, currentAnim.currentFrameX + 1, false)
+            shader.setFloat(ShaderVariableKey.Anim.yOffset, currentAnim.currentFrameY * frameSizeY, false)
+            shader.setInteger(ShaderVariableKey.Anim.yNumber, currentAnim.currentFrameY + 1, false)
         }
     }
 

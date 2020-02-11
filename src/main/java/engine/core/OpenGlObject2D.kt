@@ -7,6 +7,7 @@ import com.jogamp.opengl.util.texture.Texture
 import engine.feature.collision.BoundingBox
 import engine.feature.matrix.MatrixInteractor
 import engine.feature.shader.Shader
+import engine.feature.shader.ShaderVariableKey
 import engine.feature.texture.TextureLoader
 
 import java.awt.*
@@ -140,7 +141,7 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
         defineTextureState(shader)
 
-        shader.setMatrix4f("model", model, true)
+        shader.setMatrix4f(ShaderVariableKey.Mat.model, model, true)
 
         with(gl) {
             glBindVertexArray(vertexArray.get(0))
@@ -168,7 +169,7 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     open fun update(deltaTime: Float) {}
 
     fun drawBox(shader: Shader) {
-        shader.setMatrix4f("model", MatrixInteractor.getFinalMatrix(posX, posY, width, height, 0f), true)
+        shader.setMatrix4f(ShaderVariableKey.Mat.model, MatrixInteractor.getFinalMatrix(posX, posY, width, height, 0f), true)
 
         with(gl) {
             glBindVertexArray(bbVertexArray.get(0))
@@ -240,7 +241,7 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     private fun doDraw(shader: Shader, model: Mat4) {
         defineTextureState(shader)
 
-        shader.setMatrix4f("model", model, true)
+        shader.setMatrix4f(ShaderVariableKey.Mat.model, model, true)
 
         with(gl) {
             glBindVertexArray(vertexArray.get(0))
@@ -249,11 +250,11 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     }
 
     private fun defineTextureState(shader: Shader) {
-        if (this.texture != null) {
-            this.setUniformName("textureSample")
+        if (texture != null) {
+            setUniformName(ShaderVariableKey.Uni.textureSample)
             defineSingleTextureState(shader)
-        } else if (this.textureArray != null) {
-            this.setUniformName("textureArray")
+        } else if (textureArray != null) {
+            setUniformName(ShaderVariableKey.Uni.textureArray)
             defineArrayTextureState(shader)
         }
     }
@@ -302,6 +303,7 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
         }
     }
 
+    // TODO figure out if it is really needed
     private fun setUniformName(newName: String) {
         this.uniformName = newName
     }

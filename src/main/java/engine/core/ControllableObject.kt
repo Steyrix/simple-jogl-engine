@@ -27,9 +27,9 @@ abstract class ControllableObject : AnimatedObject, Controllable, SimpleCollider
                           vararg animationSet: BasicAnimation) :
             super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, *animationSet) {
 
-        this.velocityX = 0.0f
-        this.velocityY = 0.0f
-        this.jumpState = false
+        velocityX = 0.0f
+        velocityY = 0.0f
+        jumpState = false
     }
 
     abstract override fun reactToCollision(anotherBox: BoundingBox)

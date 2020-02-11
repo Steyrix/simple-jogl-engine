@@ -5,22 +5,22 @@ out vec2 fragmentUV;
 uniform mat4 model;
 uniform mat4 projection;
 uniform int frameNumberX;
-uniform int frameY;
-uniform float xChanging;
-uniform float yChanging;
+uniform int frameNumberY;
+uniform float xOffset;
+uniform float yOffset;
 void main(void)
 {
    gl_Position = projection * model * vec4(position, 0.0, 1.0);
 
-   fragmentUV = vec2(vertexUV.x * frameNumberX, vertexUV.y * frameY);
+   fragmentUV = vec2(vertexUV.x * frameNumberX, vertexUV.y * frameNumberY);
 
    if(fragmentUV.x <= 0)
    {
-   fragmentUV.x = vertexUV.x + xChanging;
+   fragmentUV.x = vertexUV.x + xOffset;
    }
 
    if(fragmentUV.y <= 0)
    {
-   fragmentUV.y = vertexUV.y + yChanging;
+   fragmentUV.y = vertexUV.y + yOffset;
    }
 }

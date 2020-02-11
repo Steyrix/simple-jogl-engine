@@ -11,6 +11,7 @@ import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.primitive.Rectangle
+import engine.feature.shader.ShaderVariableKey
 import engine.feature.texture.TextureLoader
 import java.awt.Dimension
 import java.awt.event.KeyEvent
@@ -64,10 +65,10 @@ class TextureArrayDemo(private val dim: Dimension,
         val gl = glAutoDrawable.gl.gL4
         gl.glClear(GL4.GL_COLOR_BUFFER_BIT)
 
-        textureArrayShader.setMatrix4f("projection", renderProjection, false)
+        textureArrayShader.setMatrix4f(ShaderVariableKey.Mat.projection, renderProjection, false)
         textureArrayObject.draw(0f, textureArrayShader)
 
-        textureShader.setMatrix4f("projection", renderProjection, false)
+        textureShader.setMatrix4f(ShaderVariableKey.Mat.projection, renderProjection, false)
         texturedObject.draw(0f, textureShader)
     }
 
