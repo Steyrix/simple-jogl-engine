@@ -14,16 +14,16 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
     private var accumulatedTime: Float = 0.toFloat()
 
     init {
-        this.currentFrameX = 1
-        this.currentFrameY = 1
+        currentFrameX = 1
+        currentFrameY = 1
 
-        this.firstPosX = 1
-        this.firstPosY = 1
-        this.lastPosX = framesCountX
-        this.lastPosY = framesCountY
-        this.accumulatedTime = 0f
+        firstPosX = 1
+        firstPosY = 1
+        lastPosX = framesCountX
+        lastPosY = framesCountY
+        accumulatedTime = 0f
 
-        addNewAnim(this)
+        addNewAnimToMap(this)
     }
 
     fun changeFrame(deltaTime: Float) {
@@ -32,12 +32,12 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
             accumulatedTime = 0f
 
             //System.out.println("X1: " + currentFrameX + " Y1: " + currentFrameY);
-            if (framesCountX != 1) {
-                if (currentFrameX + 1 > lastPosX) {
+            if (isMultiframedByX()) {
+                if (isLastFrameX()) {
                     currentFrameX = firstPosX
 
-                    if (framesCountY != 1) {
-                        if (currentFrameY + 1 > lastPosY)
+                    if (isMultiframedByY()) {
+                        if (isLastFrameY())
                             currentFrameY = firstPosY
                         else
                             currentFrameY++
@@ -48,6 +48,14 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
         }
         //System.out.println("X2: " + currentFrameX + " Y2:" + currentFrameY);
     }
+
+    private inline fun isLastFrameX() : Boolean = currentFrameX + 1 > lastPosX
+
+    private inline fun isLastFrameY() : Boolean = currentFrameY + 1 > lastPosY
+
+    private inline fun isMultiframedByX() : Boolean = framesCountX != 1
+
+    private inline fun isMultiframedByY() : Boolean = framesCountY != 1
 
     fun animForName(animName: String): BasicAnimation? {
         return map[animName]
@@ -70,9 +78,9 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
     }
 
     companion object {
-        private val map = TreeMap<String, BasicAnimation>()
+        private val map = HashMap<String, BasicAnimation>()
 
-        fun addNewAnim(a: BasicAnimation) {
+        fun addNewAnimToMap(a: BasicAnimation) {
             map[a.name] = a
         }
     }
