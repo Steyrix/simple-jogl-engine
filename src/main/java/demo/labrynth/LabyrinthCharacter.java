@@ -12,11 +12,11 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-//TODO: manage collisions with multiple objects at the same time
-//TODO: cleanup code
+// TODO: manage collisions with multiple objects at the same time
+// TODO: cleanup code
 public class LabyrinthCharacter extends ControllableObject implements SpeculativeCollider {
 
-    private boolean[] keys;
+    private boolean[] keyboardItems;
     private ArrayList<PointF> collisionPoints;
     private BoundingBox nextBox;
     private BoundingBox currentBottomPlatform;
@@ -27,7 +27,7 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
 
     LabyrinthCharacter(int bufferParamsCount, int verticesCount, GL4 gl, float posX, float posY, Dimension boxDim, int id, float frameSizeX, float frameSizeY, BasicAnimation... animationSet) throws Exception {
         super(bufferParamsCount, verticesCount, gl, posX, posY, boxDim, id, frameSizeX, frameSizeY, animationSet);
-        this.keys = new boolean[1000000];
+        this.keyboardItems = new boolean[1000000];
 
         this.collisionPoints = new ArrayList<>();
         initCollisionPoints(collisionPoints);
@@ -155,10 +155,10 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     }
 
     private void applyVelocityX() {
-        if (keys[KeyEvent.VK_D]) {
+        if (keyboardItems[KeyEvent.VK_D]) {
             isWalking = true;
             this.setVelocityX(3.5f);
-        } else if (keys[KeyEvent.VK_A]) {
+        } else if (keyboardItems[KeyEvent.VK_A]) {
             isWalking = true;
             this.setVelocityX(-3.5f);
         } else
@@ -166,11 +166,11 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     }
 
     private void applyVelocityY() {
-        if (keys[KeyEvent.VK_S]) {
+        if (keyboardItems[KeyEvent.VK_S]) {
             this.setVelocityY(5.0f);
             this.setJumpState(true);
             this.canJump = false;
-        } else if (keys[KeyEvent.VK_W] && canJump)
+        } else if (keyboardItems[KeyEvent.VK_W] && canJump)
             jump();
         else if (!getJumpState())
             this.setVelocityY(0.0f);
@@ -236,10 +236,10 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     public void preventCollision() {
         this.setVelocityY(0.0f);
         this.setVelocityX(0.0f);
-        keys[KeyEvent.VK_W] = false;
-        keys[KeyEvent.VK_S] = false;
-        keys[KeyEvent.VK_A] = false;
-        keys[KeyEvent.VK_D] = false;
+        keyboardItems[KeyEvent.VK_W] = false;
+        keyboardItems[KeyEvent.VK_S] = false;
+        keyboardItems[KeyEvent.VK_A] = false;
+        keyboardItems[KeyEvent.VK_D] = false;
         isWalking = false;
     }
 
@@ -260,8 +260,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     @Override
     public void keyPressed(@NotNull KeyEvent e) {
 
-        if (!this.keys[e.getKeyCode()])
-            this.keys[e.getKeyCode()] = true;
+        if (!this.keyboardItems[e.getKeyCode()])
+            this.keyboardItems[e.getKeyCode()] = true;
 
         if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_A) {
             if (!isWalking && !getJumpState()) {
@@ -276,8 +276,8 @@ public class LabyrinthCharacter extends ControllableObject implements Speculativ
     @Override
     public void keyReleased(@NotNull KeyEvent e) {
 
-        if (this.keys[e.getKeyCode()])
-            this.keys[e.getKeyCode()] = false;
+        if (this.keyboardItems[e.getKeyCode()])
+            this.keyboardItems[e.getKeyCode()] = false;
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_D:
