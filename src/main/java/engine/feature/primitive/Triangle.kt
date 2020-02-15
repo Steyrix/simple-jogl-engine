@@ -17,7 +17,7 @@ class Triangle : OpenGlObject2D, Primitive {
             super(TRIANGLE_BUFFER_PARAMS_COUNT, TRIANGLE_VERTICES_COUNT, gl, posX, posY, boxDim, textureId)
 
     fun init(color: Color, vertices: FloatArray) {
-        if (isBufferValidForPrimitive(vertices) && isValidVerticesForTriangle(vertices)) {
+        if (isBufferValid(vertices) && isValidVerticesForTriangle(vertices)) {
             super.initRenderData(null, vertices, ColorUtil.getBufferForColor(TRIANGLE_VERTICES_COUNT, color))
         } else {
             throw IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER_MSG)
@@ -25,8 +25,8 @@ class Triangle : OpenGlObject2D, Primitive {
     }
 
     fun init(textureFilePaths: Array<String>, texArray: Boolean, vertices: FloatArray, attribDataArray: FloatArray) {
-        if (isBufferValidForPrimitive(vertices) && isValidVerticesForTriangle(vertices)
-                && isBufferValidForPrimitive(attribDataArray)) {
+        if (isBufferValid(vertices) && isValidVerticesForTriangle(vertices)
+                && isBufferValid(attribDataArray)) {
             super.initRenderData(textureFilePaths, texArray, vertices, attribDataArray)
         } else {
             throw IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER_MSG)
@@ -34,8 +34,8 @@ class Triangle : OpenGlObject2D, Primitive {
     }
 
     fun init(texture: Texture?, vertices: FloatArray, attribDataArray: FloatArray) {
-        if (isBufferValidForPrimitive(vertices) && isValidVerticesForTriangle(vertices)
-                && isBufferValidForPrimitive(attribDataArray)) {
+        if (isBufferValid(vertices) && isValidVerticesForTriangle(vertices)
+                && isBufferValid(attribDataArray)) {
             super.initRenderData(texture, vertices, attribDataArray)
         } else {
             throw IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER_MSG)
@@ -44,17 +44,17 @@ class Triangle : OpenGlObject2D, Primitive {
     }
 
     override fun initRenderData(textureFilePaths: Array<String>, texArray: Boolean, vararg dataArrays: FloatArray) {
-        validateSuppliedData(*dataArrays)
+        validatedData(*dataArrays)
         super.initRenderData(textureFilePaths, texArray, *dataArrays)
     }
 
     override fun initRenderData(texture: Texture?,
                                 vararg dataArrays: FloatArray) {
-        validateSuppliedData(*dataArrays)
+        validatedData(*dataArrays)
         super.initRenderData(texture, *dataArrays)
     }
 
-    override fun validateSuppliedData(vararg dataArrays: FloatArray) {
+    override fun validatedData(vararg dataArrays: FloatArray) {
 
         var errMsg = "Triangle primitive can only have 2 buffers (vertex and attrib)."
         if (dataArrays.size != TRIANGLE_BUFFER_PARAMS_COUNT) {
@@ -62,14 +62,14 @@ class Triangle : OpenGlObject2D, Primitive {
         }
 
         errMsg = "Triangular vertex data should be supplied as the first argument for triangle primitive. \n" + "You can use Rectangle.init() instead"
-        if (!isBufferValidForPrimitive(dataArrays[0]) || !isValidVerticesForTriangle(dataArrays[0]))
+        if (!isBufferValid(dataArrays[0]) || !isValidVerticesForTriangle(dataArrays[0]))
             throw IllegalArgumentException(errMsg)
 
-        if (isBufferValidForPrimitive(dataArrays[1]))
+        if (isBufferValid(dataArrays[1]))
             throw IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER_MSG)
     }
 
-    override fun isBufferValidForPrimitive(buffer: FloatArray): Boolean {
+    override fun isBufferValid(buffer: FloatArray): Boolean {
         return buffer.size % TRIANGLE_BUFFER_LENGTH == 0
     }
 
