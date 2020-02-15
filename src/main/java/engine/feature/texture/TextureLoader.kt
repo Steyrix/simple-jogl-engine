@@ -6,11 +6,7 @@ import com.jogamp.opengl.util.texture.TextureData
 import com.jogamp.opengl.util.texture.TextureIO
 
 import javax.imageio.ImageIO
-import java.awt.image.BufferedImage
-import java.awt.image.DataBufferByte
 import java.io.*
-import java.lang.IllegalArgumentException
-import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import java.util.*
 
