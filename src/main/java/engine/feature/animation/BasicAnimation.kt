@@ -56,10 +56,6 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
 
     private inline fun isMultiFramedByY() : Boolean = framesCountY != 1
 
-    fun animForName(animName: String): BasicAnimation? {
-        return map[animName]
-    }
-
     fun setFirstPosX(firstPosX: Int) {
         this.firstPosX = firstPosX
     }
@@ -85,6 +81,10 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
 
         fun addNewAnimToMap(a: BasicAnimation) {
             map[a.name] = a
+        }
+
+        fun animForName(animName: String): BasicAnimation? {
+            return map[animName]
         }
     }
 }
