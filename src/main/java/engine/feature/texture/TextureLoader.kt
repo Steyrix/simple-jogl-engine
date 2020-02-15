@@ -48,9 +48,8 @@ object TextureLoader {
                 height = textureData.height
             }
 
-            if (textureData.width != width || textureData.height != height) {
-                throw IllegalArgumentException(ILLEGAL_ARRAY_TEXTURE_SOURCE_EXCEPTION)
-            }
+            val isValidData = textureData.width == width || textureData.height == height
+            require(isValidData) { ILLEGAL_ARRAY_TEXTURE_SOURCE_EXCEPTION }
 
             images.add(textureData)
         }
