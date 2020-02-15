@@ -64,7 +64,7 @@ open class AnimatedObject : OpenGlObject2D {
     }
 
     protected fun playAnimation(deltaTime: Float) {
-        currentAnim.changeFrame(deltaTime)
+        currentAnim.play(deltaTime)
     }
 
     protected fun setAnimation(a: BasicAnimation) {
