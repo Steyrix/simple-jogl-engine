@@ -9,12 +9,14 @@ import engine.core.state.GameState
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderCreator
+import engine.feature.shader.`interface`.ShaderInteractor
 import engine.feature.tiled.TileMap
 import java.awt.Dimension
 import java.awt.event.KeyEvent
 
 class MapDemo(private val dim: Dimension,
-              private val shaderCreator: ShaderCreator) : GameState {
+              private val shaderCreator: ShaderCreator,
+              private val shaderInteractor: ShaderInteractor) : GameState {
 
     private var texShader: Shader? = null
     private var renderProjection: Mat4? = null
@@ -26,7 +28,7 @@ class MapDemo(private val dim: Dimension,
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(1f, 1f, 1f, 1.0f)
 
-        map = TileMap.createInstance(ResourceLoader.getFileFromAbsolutePath("maps/map_house.xml"))
+        map = TileMap.createInstance(ResourceLoader.getFileFromAbsolutePath("maps/cave/cave_level.xml"))
 
         texShader = shaderCreator.create("shaders/texturedVertexShader.glsl",
                 "shaders/texturedFragmentShader.glsl", gl)
