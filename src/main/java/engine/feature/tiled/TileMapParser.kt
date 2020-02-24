@@ -7,8 +7,6 @@ import org.w3c.dom.Document
 import org.w3c.dom.Node
 import java.io.File
 import java.lang.Exception
-import java.util.stream.Collectors
-import java.util.stream.IntStream
 
 internal object TileMapParser {
 
@@ -18,6 +16,7 @@ internal object TileMapParser {
     private const val DATA = "data"
 
     private const val PROPERTIES = "properties"
+    private const val PROPERTY = "property"
     private const val PROPERTY_TYPE = "type"
     private const val PROPERTY_VALUE = "value"
     private const val PROPERTY_NAME = "name"
@@ -86,10 +85,14 @@ internal object TileMapParser {
         val nodes = node.childNodes
         for (i in 0 until nodes.length) {
             if (nodes.item(i).nodeName == PROPERTIES) {
-                val list = nodes.item(i).childNodes
-                out.addAll(IntStream.range(0, list.length)
-                        .mapToObj(list::item)
-                        .collect(Collectors.toList()))
+                val properties = nodes.item(i).childNodes
+
+                for(j in 0 until properties.length) {
+                    if (properties.item(j).nodeName == PROPERTY)
+                        out.add(properties.item(j))
+                }
+
+                break
             }
         }
 
