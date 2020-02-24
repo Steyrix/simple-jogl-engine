@@ -6,9 +6,10 @@ import engine.feature.tiled.property.LayerProperty
 import java.io.File
 import kotlin.math.roundToInt
 
-// width and height are measured in tiles
+
 class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>) {
 
+    // width and height are measured in tiles multiplied by their size
     private var currentWidth = 0f
     private var currentHeight = 0f
 
