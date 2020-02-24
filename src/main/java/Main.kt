@@ -2,6 +2,7 @@ import com.jogamp.opengl.GLCapabilities
 import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLCanvas
 import demo.labrynth.GameLabyrinth
+import demo.map.MapDemo
 import demo.textureArray.TextureArrayDemo
 import engine.core.OpenGlContext
 import engine.feature.shader.DefaultShaderCreator
@@ -25,9 +26,7 @@ object Main {
 
         //Put your state here
         val listener = OpenGlContext(
-                GameLabyrinth(glCanvas.size,
-                            DefaultShaderCreator(),
-                            DefaultShaderInteractor(DefaultShaderRepo())),
+                MapDemo(glCanvas.size, DefaultShaderCreator(), DefaultShaderInteractor(DefaultShaderRepo())),
                 ElapsedTimeUpdater(60))
 
         glCanvas.addGLEventListener(listener)
