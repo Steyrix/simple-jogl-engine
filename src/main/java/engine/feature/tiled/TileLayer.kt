@@ -40,21 +40,13 @@ internal class TileLayer(internal val width: Int,
             val pos = getPosition(num)
             val verticesArray = genVertices(pos)
 
-            // current problem is with tile ordering in tilesets (In some tilesets order is incorrect)
-            // E.g. there are empty spaces between different tiles which make parsing incorrect
-            // Also, empty (transparent) tiles are indexed as -1, therefore
-            // It should be transparent rectangle for those tiles
-            // if id (tileData[num]) == -1 should be transparent
+            val tileId = tileData[num]
 
-            // temporary solution - to set empty uv for empty tiles
-            val uvArray =
-                if (tileData[num] == -1) {
-                    floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-                }
-                else tileSet.getTileById(tileData[num]).arrayUV
-
-            allVertices.addAll(verticesArray.toList())
-            allUV.addAll(uvArray.toList())
+            if (tileId != TileMap.EMPTY_TILE_ID) {
+                val uvArray = tileSet.getTileById(tileId).arrayUV
+                allVertices.addAll(verticesArray.toList())
+                allUV.addAll(uvArray.toList())
+            }
         }
 
         val out = OpenGlObject2D(2, allVertices.size / 2, gl,
