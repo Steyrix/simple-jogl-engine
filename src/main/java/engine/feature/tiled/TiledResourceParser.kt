@@ -1,6 +1,7 @@
 package engine.feature.tiled
 
 import engine.feature.ResourceLoader
+import engine.feature.texture.TextureLoader
 import engine.feature.tiled.property.*
 import engine.util.xml.XmlParser
 import org.w3c.dom.Document
@@ -8,7 +9,7 @@ import org.w3c.dom.Node
 import java.io.File
 import java.lang.Exception
 
-internal object TileMapParser {
+internal object TiledResourceParser {
 
     private const val MAP = "map"
     private const val MAP_WIDTH = "width"
@@ -29,6 +30,11 @@ internal object TileMapParser {
 
     internal const val SOURCE = "source"
     internal const val TILE_SET = "tileset"
+    internal const val TILE_WIDTH = "tilewidth"
+    internal const val TILE_HEIGHT = "tileheight"
+    internal const val TILE_COUNT = "tilecount"
+    internal const val COLUMN_COUNT = "columns"
+    internal const val IMAGE = "image"
 
     internal fun createTileMapFromXml(xmlFile: File): TileMap {
         val document = XmlParser.getDocument(xmlFile)
@@ -43,12 +49,26 @@ internal object TileMapParser {
     }
 
     private fun retrieveTileSet(doc: Document): TileSet {
-        val tileSetNode = doc.getElementsByTagName(TILE_SET)
-        val tileSetAttribs = tileSetNode!!.item(0).attributes
-        val tileSetPath = tileSetAttribs.getNamedItem(SOURCE).nodeValue
+        val mapTileSetNode = doc.getElementsByTagName(TILE_SET)
+        val mapTileSetAttribs = mapTileSetNode!!.item(0).attributes
+        val tileSetPath = mapTileSetAttribs.getNamedItem(SOURCE).nodeValue
         val tileSetFile = ResourceLoader.getFileFromRelativePath(tileSetPath)
 
-        return TileSet.createTileSet(tileSetFile)
+        val document = XmlParser.getDocument(tileSetFile)!!
+
+        val tileSetNode = document.getElementsByTagName(TILE_SET)
+        val tileSetAttribs = tileSetNode.item(0).attributes
+
+        val tileWidth = tileSetAttribs.getNamedItem(TILE_WIDTH).nodeValue
+        val tileHeight = tileSetAttribs.getNamedItem(TILE_HEIGHT).nodeValue
+        val tileCount = tileSetAttribs.getNamedItem(TILE_COUNT).nodeValue
+        val columnCount = tileSetAttribs.getNamedItem(COLUMN_COUNT).nodeValue
+
+        val imageNode = document.getElementsByTagName(IMAGE)
+        val sourcePath = imageNode.item(0).attributes.getNamedItem(SOURCE).nodeValue
+        val texture = TextureLoader.loadTexture(ResourceLoader.getAbsolutePath(sourcePath))
+
+        return TileSet(tileWidth.toInt(), tileHeight.toInt(), texture, tileCount.toInt(), columnCount.toInt())
     }
 
     private fun retrieveLayers(width: Int, height: Int, doc: Document, tileSet: TileSet): ArrayList<TileLayer> {

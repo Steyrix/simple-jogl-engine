@@ -3,8 +3,8 @@ package engine.feature.tiled
 import com.jogamp.opengl.util.texture.Texture
 import engine.feature.ResourceLoader
 import engine.feature.texture.TextureLoader
-import engine.feature.tiled.TileMapParser.SOURCE
-import engine.feature.tiled.TileMapParser.TILE_SET
+import engine.feature.tiled.TiledResourceParser.SOURCE
+import engine.feature.tiled.TiledResourceParser.TILE_SET
 import engine.util.xml.XmlParser
 import java.io.File
 
@@ -37,30 +37,6 @@ internal class TileSet(internal val tileWidth: Int,
     }
 
     companion object {
-        private const val TILE_WIDTH = "tilewidth"
-        private const val TILE_HEIGHT = "tileheight"
-        private const val TILE_COUNT = "tilecount"
-        private const val COLUMN_COUNT = "columns"
-        private const val IMAGE = "image"
-
-        fun createTileSet(xmlFile: File): TileSet {
-            val document = XmlParser.getDocument(xmlFile)!!
-
-            val tileSetNode = document.getElementsByTagName(TILE_SET)
-            val tileSetAttribs = tileSetNode.item(0).attributes
-
-            val tileWidth = tileSetAttribs.getNamedItem(TILE_WIDTH).nodeValue
-            val tileHeight = tileSetAttribs.getNamedItem(TILE_HEIGHT).nodeValue
-            val tileCount = tileSetAttribs.getNamedItem(TILE_COUNT).nodeValue
-            val columnCount = tileSetAttribs.getNamedItem(COLUMN_COUNT).nodeValue
-
-            val imageNode = document.getElementsByTagName(IMAGE)
-            val sourcePath = imageNode.item(0).attributes.getNamedItem(SOURCE).nodeValue
-            val texture = TextureLoader.loadTexture(ResourceLoader.getAbsolutePath(sourcePath))
-
-            return TileSet(tileWidth.toInt(), tileHeight.toInt(), texture, tileCount.toInt(), columnCount.toInt())
-        }
-
         fun generateTiles(tileSet: TileSet): ArrayList<Tile> {
             val out: ArrayList<Tile> = ArrayList()
 

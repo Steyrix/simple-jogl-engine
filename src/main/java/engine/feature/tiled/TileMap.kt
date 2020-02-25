@@ -82,7 +82,7 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
     }
 
     companion object {
-        fun createInstance(xmlFile: File): TileMap = TileMapParser.createTileMapFromXml(xmlFile)
+        fun createInstance(xmlFile: File): TileMap = TiledResourceParser.createTileMapFromXml(xmlFile)
 
         const val EMPTY_TILE_ID = -1
     }
