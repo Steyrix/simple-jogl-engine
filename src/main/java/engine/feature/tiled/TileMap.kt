@@ -33,21 +33,21 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         return yTileNumber * widthInTiles + xTileNumber
     }
 
-    fun getPropertyValueForTile(tileIndex: Int, layerIndex: Int = 0, propertyName: String): Any? {
-        if (!arePropertiesActiveForTile(tileIndex, layerIndex)) return null
+    fun getPropertyValueForTile(tileNumber: Int, layerNumber: Int = 0, propertyName: String): Any? {
+        if (!arePropertiesActiveForTile(tileNumber, layerNumber)) return null
 
-        val property = getLayerProperty(layerIndex, propertyName)
+        val property = getLayerProperty(layerNumber, propertyName)
         return property.value
     }
 
-    fun getLayerProperty(layerIndex: Int = 0, propertyName: String): LayerProperty<out Any> {
-        val layer = getLayer(layerIndex)
+    fun getLayerProperty(layerNumber: Int = 0, propertyName: String): LayerProperty<out Any> {
+        val layer = getLayer(layerNumber)
         return layer.properties.find { it.getName() == propertyName } ?: throw Exception("Property with name $propertyName does not exist")
     }
 
-    fun arePropertiesActiveForTile(tileIndex: Int, layerIndex: Int = 0): Boolean {
-        val layer = getLayer(layerIndex)
-        return getTile(tileIndex, layer) != 0
+    fun arePropertiesActiveForTile(tileNumber: Int, layerNumber: Int = 0): Boolean {
+        val layer = getLayer(layerNumber)
+        return getTile(tileNumber, layer) != EMPTY_TILE_ID
     }
 
     override fun toString(): String {
@@ -59,9 +59,9 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         return tileLayers[layerIndex]
     }
 
-    private fun getTile(tileIndex: Int, layer: TileLayer): Int {
-        checkTileExistence(tileIndex, layer)
-        return layer.tileData[tileIndex]
+    private fun getTile(tileNumber: Int, layer: TileLayer): Int {
+        checkTileExistence(tileNumber, layer)
+        return layer.tileData[tileNumber]
     }
 
     private fun checkLayerExistence(layerIndex: Int) {
@@ -83,5 +83,7 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
 
     companion object {
         fun createInstance(xmlFile: File): TileMap = TileMapParser.createTileMapFromXml(xmlFile)
+
+        const val EMPTY_TILE_ID = -1
     }
 }
