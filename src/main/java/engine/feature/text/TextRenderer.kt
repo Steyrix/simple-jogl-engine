@@ -25,7 +25,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
         val glObject: OpenGlObject2D
 
         if (!cache.containsKey(c)) {
-            glObject = OpenGlObject2D(2, 6, gl, pos.x, pos.y, fontSize, 100)
+            glObject = OpenGlObject2D(2, 6, gl, 100)
             val uvCoordinates = getCharUV(c)
             val bufferData = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
             glObject.initRenderData(this.textureAtlas, bufferData, uvCoordinates)
