@@ -5,7 +5,6 @@ import engine.core.OpenGlObject2D
 import engine.feature.shader.Shader
 import engine.feature.tiled.property.LayerProperty
 import engine.util.geometry.PointF
-import java.awt.Dimension
 
 internal class TileLayer(internal val width: Int,
                          internal val height: Int,
@@ -14,6 +13,10 @@ internal class TileLayer(internal val width: Int,
                          private val tileSet: TileSet) {
 
     private var openGLObject: OpenGlObject2D? = null
+
+    private var glWidth = 0f
+
+    private var glHeight = 0f
 
     private fun getPosition(num: Int): PointF {
         val x: Int = num % width
@@ -49,8 +52,10 @@ internal class TileLayer(internal val width: Int,
             }
         }
 
-        val out = OpenGlObject2D(2, allVertices.size / 2, gl,
-                Dimension(width * tileSet.tileWidth, height * tileSet.tileHeight), 0)
+        glWidth = (width * tileSet.tileWidth).toFloat()
+        glHeight = (height * tileSet.tileHeight).toFloat()
+
+        val out = OpenGlObject2D(2, allVertices.size / 2, gl,0)
 
         out.initRenderData(tileSet.texture, allVertices.toFloatArray(), allUV.toFloatArray())
 
@@ -65,11 +70,11 @@ internal class TileLayer(internal val width: Int,
 
     fun draw(gl: GL4, shader: Shader) {
         checkObject(gl)
-        openGLObject!!.draw(0f, shader)
+        openGLObject!!.draw(0f, 0f, glWidth, glHeight, 0f, shader)
     }
 
     fun draw(gl: GL4, xSize: Float, ySize: Float, shader: Shader) {
         checkObject(gl)
-        openGLObject!!.draw(xSize, ySize, 0f, shader)
+        openGLObject!!.draw(0f, 0f, xSize, ySize, 0f, shader)
     }
 }
