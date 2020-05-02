@@ -9,13 +9,8 @@ import java.awt.*
 import java.util.Arrays
 
 
-class Rectangle : OpenGlObject2D, Primitive {
-
-    constructor(gl: GL4, width: Float, height: Float, textureId: Int) :
-            super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, Dimension(width.toInt(), height.toInt()), textureId)
-
-    constructor(gl: GL4, posX: Float, posY: Float, width: Float, height: Float, textureId: Int) :
-            super(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, posX, posY, Dimension(width.toInt(), height.toInt()), textureId)
+class Rectangle(gl: GL4, textureId: Int) :
+        OpenGlObject2D(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, textureId), Primitive {
 
     fun init(textureFilePaths: Array<String>, texArray: Boolean, attribDataArray: FloatArray) {
         if (isBufferValid(attribDataArray)) {
