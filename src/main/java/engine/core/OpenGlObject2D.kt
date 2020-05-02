@@ -10,92 +10,51 @@ import engine.feature.shader.Shader
 import engine.feature.shader.ShaderVariableKey
 import engine.feature.texture.TextureLoader
 
-import java.awt.*
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.util.ArrayList
 
-open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
+open class OpenGlObject2D(bufferParamsCount: Int,
+                          private val verticesCount: Int,
+                          protected val gl: GL4,
+                          private val textureId: Int) : OpenGlBuffered, Entity {
 
-    protected val gl: GL4
     protected var texture: Texture? = null
     protected var textureArray: IntBuffer? = null
 
+    val isTextured: Boolean
+        get() = this.texture != null || this.textureArray != null
+
     private val buffers: IntBuffer
-    private val bbBuffer: IntBuffer
+    private val boxBuffer: IntBuffer
     private val paramsCount: ArrayList<Int>
     private var buffersFilled: Int = 0
-    private val buffersCount: Int
+    private val buffersCount: Int = bufferParamsCount
 
-    private val verticesCount: Int
     private val vertexArray: IntBuffer
-    private val bbVertexArray: IntBuffer
-
-    private val textureId: Int
-    private var uniformName: String? = null
-
-    private val isTextured: Boolean
-        get() = this.texture != null || this.textureArray != null
+    private val boxVertexArray: IntBuffer
 
     private val boxVerticesCount = 8
 
-    constructor(bufferParamsCount: Int,
-                verticesCount: Int,
-                gl: GL4,
-                boxDim: Dimension,
-                textureId: Int) : super(0.0f, 0.0f, boxDim.width.toFloat(), boxDim.height.toFloat()) {
-        this.gl = gl
+    private var boundingBox: BoundingBox? = null
+    private var uniformName: String? = null
 
-        this.buffersFilled = 0
-        this.buffersCount = bufferParamsCount
-        this.verticesCount = verticesCount
-        this.buffers = IntBuffer.allocate(buffersCount)
-        this.bbBuffer = IntBuffer.allocate(1)
-        this.vertexArray = IntBuffer.allocate(1)
-        this.bbVertexArray = IntBuffer.allocate(1)
-
-        this.paramsCount = ArrayList()
-
-        this.uniformName = null
-        this.texture = null
-        this.textureArray = null
-        this.textureId = textureId
-    }
-
-    constructor(bufferParamsCount: Int,
-                verticesCount: Int,
-                gl: GL4,
-                posX: Float,
-                posY: Float,
-                boxDim: Dimension,
-                textureId: Int) : super(posX, posY, boxDim.width.toFloat(), boxDim.height.toFloat()) {
-        this.gl = gl
-
-        this.buffersFilled = 0
-        this.buffersCount = bufferParamsCount
-        this.verticesCount = verticesCount
-        this.buffers = IntBuffer.allocate(buffersCount)
-        this.bbBuffer = IntBuffer.allocate(1)
-        this.vertexArray = IntBuffer.allocate(1)
-        this.bbVertexArray = IntBuffer.allocate(1)
-
-        this.paramsCount = ArrayList()
-
-        this.posX = posX
-        this.posY = posY
-
-        this.uniformName = null
-        this.texture = null
-        this.textureArray = null
-        this.textureId = textureId
-    }
-
-    fun dispose() {
-        with(gl) {
-            glDeleteBuffers(buffersCount, buffers)
-            glDeleteVertexArrays(1, vertexArray)
+    var box: BoundingBox?
+        get() = boundingBox
+        set(value) {
+            boundingBox = value
         }
-        texture?.destroy(gl)
+
+    init {
+        this.buffersFilled = 0
+        this.buffers = IntBuffer.allocate(buffersCount)
+        this.boxBuffer = IntBuffer.allocate(1)
+        this.vertexArray = IntBuffer.allocate(1)
+        this.boxVertexArray = IntBuffer.allocate(1)
+        this.paramsCount = ArrayList()
+        this.uniformName = null
+        this.texture = null
+        this.textureArray = null
     }
 
     open fun initRenderData(textureFilePaths: Array<String>,
@@ -133,10 +92,6 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
     open fun draw(x: Float, y: Float, xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) {
         shader.use()
 
-        this.width = xSize
-        this.height = ySize
-
-        //val model = getFinalMatrix(x, y, xSize, ySize, rotationAngle)
         val model = MatrixInteractor.getFinalMatrix(x, y, xSize, ySize, rotationAngle)
 
         defineTextureState(shader)
@@ -149,32 +104,25 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
         }
     }
 
-    open fun draw(xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) {
-        this.width = xSize
-        this.height = ySize
-
-        //val model = getFinalMatrix(xSize, ySize, rotationAngle)
-        val model = MatrixInteractor.getFinalMatrix(this.posX, this.posY, xSize, ySize, rotationAngle)
-
-        doDraw(shader, model)
-    }
-
-    open fun draw(rotationAngle: Float, shader: Shader) {
-        //val model = getFinalMatrix(this.width, this.height, rotationAngle)
-        val model = MatrixInteractor.getFinalMatrix(this.posX, this.posY, this.width, this.height, rotationAngle)
-
-        doDraw(shader, model)
-    }
-
-    open fun update(deltaTime: Float) {}
-
     fun drawBox(shader: Shader) {
-        shader.setMatrix4f(ShaderVariableKey.Mat.model, MatrixInteractor.getFinalMatrix(posX, posY, width, height, 0f), true)
+        boundingBox?.let {
+            shader.setMatrix4f(ShaderVariableKey.Mat.model,
+                               MatrixInteractor.getFinalMatrix(it.posX, it.posY, it.width, it.height, 0f),
+                     true)
 
-        with(gl) {
-            glBindVertexArray(bbVertexArray.get(0))
-            glDrawArrays(GL4.GL_LINES, 0, boxVerticesCount)
+            with(gl) {
+                glBindVertexArray(boxVertexArray.get(0))
+                glDrawArrays(GL4.GL_LINES, 0, boxVerticesCount)
+            }
         }
+    }
+
+    fun dispose() {
+        with(gl) {
+            glDeleteBuffers(buffersCount, buffers)
+            glDeleteVertexArrays(1, vertexArray)
+        }
+        texture?.destroy(gl)
     }
 
     override fun addBuffers(vararg dataArrays: FloatArray) {
@@ -282,23 +230,23 @@ open class OpenGlObject2D : BoundingBox, OpenGlBuffered {
 
     private fun initBoundingBoxBuffer() {
         with(gl) {
-            glGenBuffers(1, bbBuffer)
+            glGenBuffers(1, boxBuffer)
 
             val bbVerticesArray = floatArrayOf(0f, 0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 0f, 1f, 0f, 1f, 0f, 0f)
             val bbVerticesBuffer = FloatBuffer.wrap(bbVerticesArray)
 
-            glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
+            glBindBuffer(GL4.GL_ARRAY_BUFFER, boxBuffer.get(0))
             glBufferData(GL4.GL_ARRAY_BUFFER, 4 * (bbVerticesArray.size).toLong(), bbVerticesBuffer, GL4.GL_STATIC_DRAW)
         }
     }
 
     private fun genBoundingBoxVertexArray() {
         with(gl) {
-            glGenVertexArrays(1, bbVertexArray)
-            glBindVertexArray(bbVertexArray.get(0))
+            glGenVertexArrays(1, boxVertexArray)
+            glBindVertexArray(boxVertexArray.get(0))
 
             glEnableVertexAttribArray(0)
-            glBindBuffer(GL4.GL_ARRAY_BUFFER, bbBuffer.get(0))
+            glBindBuffer(GL4.GL_ARRAY_BUFFER, boxBuffer.get(0))
             glVertexAttribPointer(0, 2, GL4.GL_FLOAT, false, 0, 0)
         }
     }
