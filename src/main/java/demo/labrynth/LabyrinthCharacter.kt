@@ -98,7 +98,6 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
         }
     }
 
-    //TODO: FIX bug (collision is fucked up after new architecture)
     private fun processCollision(anotherBox: BoundingBox) {
 
         var moveX: Float = graphicalComponent.box!!.getIntersectionWidth(anotherBox)
@@ -108,28 +107,17 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
 
         if (horizontalContact) moveY = 0f else moveX = 0f
 
-        val changePos = { b: BoundingBox ->
-            {
-                b.posX += moveX
-                b.posY += moveY
-            }
+        if (velocityX != 0f && velocityY != 0f) {
+            velocityX = 0f
+            if (fallingState) velocityY = 0f
+        } else if (velocityX != 0f) {
+            velocityX = 0f
+        } else if (velocityY != 0f) {
+            velocityY = 0f
         }
 
-        graphicalComponent.box!!.let {
-            if (velocityX != 0f && velocityY != 0f) {
-                velocityX = 0f
-                if (fallingState) velocityY = 0f
-                changePos(it)
-            } else if (velocityX != 0f) {
-                changePos(it)
-                velocityX = 0f
-            } else if (velocityY != 0f) {
-                changePos(it)
-                velocityY = 0f
-            } else {
-                // do nothing
-            }
-        }
+        graphicalComponent.box!!.posX += moveX
+        graphicalComponent.box!!.posY += moveY
     }
 
     private fun detectBottomContact(anotherBox: BoundingBox): Boolean {
@@ -169,7 +157,7 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     override fun react(entity: Entity) {
         if (entity is OpenGlObject2D) {
             val box = entity.box
-            if (box != null) controllableComponent?.reactToCollision(box)
+            box?.let { controllableComponent?.reactToCollision(it) }
         }
     }
 
