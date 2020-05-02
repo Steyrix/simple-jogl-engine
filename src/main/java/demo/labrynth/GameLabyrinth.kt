@@ -6,9 +6,9 @@ import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import com.jogamp.opengl.util.texture.Texture
+import engine.core.AnimatedObject
 import engine.feature.ResourceLoader
 import engine.feature.animation.BasicAnimation
-import engine.core.ControllableObject
 import engine.core.OpenGlObject2D
 import engine.feature.primitive.Rectangle
 import engine.feature.shader.`interface`.ShaderCreator
@@ -16,6 +16,7 @@ import engine.feature.text.TextRenderer
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
 import engine.core.state.GameState
+import engine.feature.collision.BoundingBox
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderInteractor
 
@@ -28,7 +29,6 @@ class GameLabyrinth(dim: Dimension,
                     private val shaderCreator: ShaderCreator,
                     private val shaderInteractor: ShaderInteractor) : GameState {
 
-    private val controls: ArrayList<ControllableObject> = ArrayList()
     private val boundObjects: ArrayList<OpenGlObject2D> = ArrayList()
 
     private val textureShaderId = "TEXTURED"
@@ -39,7 +39,9 @@ class GameLabyrinth(dim: Dimension,
     private val boxShaderId = "BOX"
 
     private var myRenderer: TextRenderer? = null
-    private var animObj: LabyrinthCharacter? = null
+    private var labyrinthCharacter: LabyrinthCharacter? = null
+    private var animationComponent: AnimatedObject? = null
+    private var graphicalComponent: OpenGlObject2D? = null
 
     private var rect: Rectangle? = null
     private var background: OpenGlObject2D? = null
@@ -56,22 +58,25 @@ class GameLabyrinth(dim: Dimension,
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
-        animObj = LabyrinthCharacter(2, 6, gl, 25f, 25f,
-                Dimension(50, 70), 0,
-                0.1f, 0.333f,
+        animationComponent = AnimatedObject(0.1f, 0.333f,
                 BasicAnimation("WALK", 1, 0, 6, 1, 100f),
                 BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
-                BasicAnimation("IDLE", 3, 0, 1, 1, 100f)).apply {
+                BasicAnimation("IDLE", 3, 0, 1, 1, 100f))
+
+        graphicalComponent = OpenGlObject2D(2, 6, gl, 0).apply {
+            box = BoundingBox(25f, 25f, 50f, 70f)
             val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
             initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
                     false, Rectangle.RECTANGLE_BUFFER, uvCoords)
-        }.also { controls.add(it) }
+        }
+
+        labyrinthCharacter = LabyrinthCharacter(25f, 25f, 50f, 70f, animationComponent!!, graphicalComponent!!)
 
         initLevelGeography(gl)
         this.renderProjection = Matrices.ortho(0.0f, screenWidth.toFloat(), screenHeight.toFloat(),
                 0.0f, 0.0f, 1.0f)
 
-        rect = Rectangle(gl, 200f, 200f, 100f, 50f, 0).apply {
+        rect = Rectangle(gl, 0).apply {
             init(Color.WHITE)
         }
 
@@ -92,10 +97,6 @@ class GameLabyrinth(dim: Dimension,
         for (o in this.boundObjects) {
             o.dispose()
         }
-
-        for (c in this.controls) {
-            c.dispose()
-        }
     }
 
     override fun display(glAutoDrawable: GLAutoDrawable) {
@@ -109,26 +110,29 @@ class GameLabyrinth(dim: Dimension,
 
         curr = shaderInteractor.getShader(boundShaderId)
         shaderInteractor.activateShader(boundShaderId)
+
         for (o in boundObjects) {
-            o.draw(o.size.width.toFloat(), o.size.height.toFloat(), 0.0f, curr)
+            o.box?.let {
+                o.draw(it.posX, it.posY, it.width, it.height, 0f, curr)
+            }
         }
 
         curr = shaderInteractor.getShader(animationShaderId)
         shaderInteractor.activateShader(animationShaderId)
         shaderInteractor.updateShaders()
-        animObj!!.draw(animObj!!.size.width.toFloat(), animObj!!.size.height.toFloat(), 0.0f, curr)
+        labyrinthCharacter!!.draw(curr)
 
         curr = shaderInteractor.getShader(boxShaderId)
         shaderInteractor.activateShader(boxShaderId)
-        animObj!!.drawBox(curr)
+        labyrinthCharacter!!.drawBoundingBox(curr)
 
         curr = shaderInteractor.getShader(textShaderId)
         shaderInteractor.activateShader(textShaderId)
-        myRenderer!!.drawText("Hello \n World!", Dimension(50, 50), gl, PointF(600f, 200f), curr)
+        myRenderer!!.drawText("Sample \n TextYo", Dimension(50, 50), gl, PointF(600f, 200f), curr)
 
         curr = shaderInteractor.getShader(colorShaderId)
         shaderInteractor.activateShader(colorShaderId)
-        rect!!.draw(50f, 100f, 0f, curr)
+        rect!!.draw(600f, 100f, 50f, 100f, 0f, curr)
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {
@@ -136,26 +140,21 @@ class GameLabyrinth(dim: Dimension,
     }
 
     override fun update(deltaTime: Float) {
-        for (c in controls) {
-            for (o in boundObjects)
-                c.reactToCollision(o)
-            c.update(deltaTime)
-        }
+        for (o in boundObjects)
+            labyrinthCharacter?.react(o)
+        labyrinthCharacter?.update(deltaTime)
     }
 
     override fun keyTyped(e: KeyEvent) {
-        for (c in controls)
-            c.keyTyped(e)
+        labyrinthCharacter?.keyTyped(e)
     }
 
     override fun keyPressed(e: KeyEvent) {
-        for (c in controls)
-            c.keyPressed(e)
+        labyrinthCharacter?.keyPressed(e)
     }
 
     override fun keyReleased(e: KeyEvent) {
-        for (c in controls)
-            c.keyReleased(e)
+        labyrinthCharacter?.keyReleased(e)
     }
 
     private fun loadShaders(gl: GL4) {
@@ -193,8 +192,13 @@ class GameLabyrinth(dim: Dimension,
         }
 
         shaderInteractor.apply {
-            forEach { shaderInteractor.setShaderActivateFunction(it, defaultFunc) }
-            setShaderUpdateFunction(animationShaderId) { animObj!!.defineAnimationVariables(it) }
+            forEach {
+                shaderInteractor.setShaderActivateFunction(it, defaultFunc)
+            }
+
+            setShaderUpdateFunction(animationShaderId) {
+                animationComponent!!.defineAnimationVariables(graphicalComponent!!, it)
+            }
         }
     }
 
@@ -205,7 +209,7 @@ class GameLabyrinth(dim: Dimension,
 
         this.boundObjects.addAll(perimeter)
 
-        background = object : OpenGlObject2D(2, 6, gl, 0f, 0f, Dimension(1280, 720), 0) {
+        background = object : OpenGlObject2D(2,6, gl,0) {
             public override fun loadTexture(filePath: String) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath)

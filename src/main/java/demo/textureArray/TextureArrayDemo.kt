@@ -43,7 +43,7 @@ class TextureArrayDemo(private val dim: Dimension,
 
         // Define an object that uses array texture as render data
         textureArrayObject =
-                OpenGlObject2D(2, 6, gl, 0f, 0f, Dimension(512,256), 0)
+                OpenGlObject2D(2,6, gl,1)
 
         textureArrayObject.initRenderData(
                 arrayOf(ResourceLoader.getAbsolutePath("textures/idle2.png")),
@@ -52,7 +52,7 @@ class TextureArrayDemo(private val dim: Dimension,
 
         // Define an object that uses single texture as render data for comparison
         texturedObject =
-                OpenGlObject2D(2, 6, gl, 512f, 0f, Dimension(512,256), 0)
+                OpenGlObject2D(2,6, gl,2)
 
         texturedObject.initRenderData(
                 TextureLoader.loadTexture(ResourceLoader.getAbsolutePath("textures/idle2.png")),
@@ -66,10 +66,10 @@ class TextureArrayDemo(private val dim: Dimension,
         gl.glClear(GL4.GL_COLOR_BUFFER_BIT)
 
         textureArrayShader.setMatrix4f(ShaderVariableKey.Mat.projection, renderProjection, false)
-        textureArrayObject.draw(0f, textureArrayShader)
+        textureArrayObject.draw(0f, 0f, 100f, 100f, 0f, textureArrayShader)
 
         textureShader.setMatrix4f(ShaderVariableKey.Mat.projection, renderProjection, false)
-        texturedObject.draw(0f, textureShader)
+        texturedObject.draw(100f, 100f, 100f, 100f, 0f, textureShader)
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) = Unit

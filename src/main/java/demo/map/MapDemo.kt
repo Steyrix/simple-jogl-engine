@@ -5,6 +5,7 @@ import com.hackoeur.jglm.Matrices
 import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
+import engine.core.ControllableObject
 import engine.core.state.GameState
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
@@ -21,6 +22,8 @@ class MapDemo(private val dim: Dimension,
     private var texShader: Shader? = null
     private var renderProjection: Mat4? = null
     private var map: TileMap? = null
+
+    private var controllable: ControllableObject? = null
 
     override fun init(glAutoDrawable: GLAutoDrawable) {
         val gl = glAutoDrawable.gl.gL4
@@ -46,7 +49,7 @@ class MapDemo(private val dim: Dimension,
 
         texShader?.setMatrix4f("projection", renderProjection!!, false)
 
-        map?.draw(gl, 500f, 500f, texShader!!)
+        map?.draw(gl, 300f, 300f, texShader!!)
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {

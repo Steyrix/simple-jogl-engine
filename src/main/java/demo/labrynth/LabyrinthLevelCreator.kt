@@ -2,6 +2,7 @@ package demo.labrynth
 
 import com.jogamp.opengl.GL4
 import engine.core.OpenGlObject2D
+import engine.feature.collision.BoundingBox
 import engine.feature.texture.TextureLoader
 
 import java.awt.*
@@ -64,7 +65,8 @@ internal class LabyrinthLevelCreator {
             floatArrayOf(1f, 0f, 0f, ratio, 1f, ratio, 1f, 0f, 0f, 0f, 0f, ratio)
         }
 
-        return getLevelObject(gl, startX, startY, horSize, vertSize, 6).apply {
+        return getLevelObject(gl, 6).apply {
+                box = BoundingBox(startX.toFloat(), startY.toFloat(), horSize.toFloat(), vertSize.toFloat())
                 initRenderData(arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
                         false,
                         floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f),
@@ -73,16 +75,16 @@ internal class LabyrinthLevelCreator {
     }
 
 
-    private fun getLevelObject(gl: GL4, startX: Int, startY: Int, horSize: Int, vertSize: Int, verticesCount: Int) =
-            object : OpenGlObject2D(2, verticesCount, gl, startX.toFloat(), startY.toFloat(), Dimension(horSize, vertSize), 0) {
-                public override fun loadTexture(filePath: String) {
-                    try {
-                        this.texture = TextureLoader.loadTexture(filePath)
-                        GameLabyrinth.initRepeatableTexParameters(this.texture!!, this.gl)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+    private fun getLevelObject(gl: GL4, verticesCount: Int) =
+        object : OpenGlObject2D(2, verticesCount, gl,0) {
+            public override fun loadTexture(filePath: String) {
+                try {
+                    this.texture = TextureLoader.loadTexture(filePath)
+                    GameLabyrinth.initRepeatableTexParameters(this.texture!!, this.gl)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
+        }
 
 }
