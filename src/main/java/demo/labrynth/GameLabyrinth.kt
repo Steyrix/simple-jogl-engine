@@ -2,10 +2,12 @@ package demo.labrynth
 
 import com.hackoeur.jglm.Mat4
 import com.hackoeur.jglm.Matrices
+
 import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import com.jogamp.opengl.util.texture.Texture
+
 import engine.core.AnimatedObject
 import engine.feature.ResourceLoader
 import engine.feature.animation.BasicAnimation

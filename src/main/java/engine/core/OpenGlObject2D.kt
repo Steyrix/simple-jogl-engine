@@ -186,17 +186,6 @@ open class OpenGlObject2D(bufferParamsCount: Int,
         textureArray = TextureLoader.loadTextureArray(gl, textureId, *filePaths)
     }
 
-    private fun doDraw(shader: Shader, model: Mat4) {
-        defineTextureState(shader)
-
-        shader.setMatrix4f(ShaderVariableKey.Mat.model, model, true)
-
-        with(gl) {
-            glBindVertexArray(vertexArray.get(0))
-            glDrawArrays(GL4.GL_TRIANGLES, 0, verticesCount)
-        }
-    }
-
     private fun defineTextureState(shader: Shader) {
         if (texture != null) {
             setUniformName(ShaderVariableKey.Uni.textureSample)

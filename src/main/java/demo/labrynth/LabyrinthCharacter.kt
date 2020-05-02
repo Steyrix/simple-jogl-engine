@@ -82,34 +82,43 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     private fun initCollisionPoints(target: ArrayList<PointF>) {
         with(graphicalComponent.box) {
             this?.let {
-                target.add(PointF(posX, posY))
-                target.add(PointF(posX, bottomY))
-                target.add(PointF(rightX, bottomY))
-                target.add(PointF(rightX, posY))
-                target.add(PointF(posX + width / 2, posY))
-                target.add(PointF(posX + width / 2, bottomY))
-                target.add(PointF(posX, posY + height / 2))
-                target.add(PointF(rightX, posY + height / 2))
+                target.add(PointF(posX, posY)) // 0
+                target.add(PointF(posX, bottomY)) // 1
+                target.add(PointF(rightX, bottomY)) // 2
+                target.add(PointF(rightX, posY)) // 3
+                target.add(PointF(posX + width / 2, posY)) // 4
+                target.add(PointF(posX + width / 2, bottomY)) // 5
+                target.add(PointF(posX, posY + height / 2)) // 6
+                target.add(PointF(rightX, posY + height / 2)) // 7
                 target.add(PointF(posX, posY + height / 4)) // 8
                 target.add(PointF(posX, bottomY - height / 4)) // 9
                 target.add(PointF(rightX, posY + height / 4)) // 10
                 target.add(PointF(rightX, bottomY - height / 5)) // 11
+                target.add(PointF(posX, posY + height / 3)) // 12
+                target.add(PointF(rightX, posY + height / 3)) // 13
+                target.add(PointF(posX, bottomY - height / 3)) // 14
+                target.add(PointF(rightX, bottomY - height / 3)) // 15
             }
         }
     }
 
     private fun processCollision(anotherBox: BoundingBox) {
-
         var moveX: Float = graphicalComponent.box!!.getIntersectionWidth(anotherBox)
         var moveY: Float = graphicalComponent.box!!.getIntersectionHeight(anotherBox)
         val horizontalContact = detectHorizontalContact(anotherBox)
         val fallingState = !jumpState && velocityY < 0f
 
-        if (horizontalContact) moveY = 0f else moveX = 0f
+        if (horizontalContact) {
+            moveY = 0f
+        } else {
+            moveX = 0f
+        }
 
         if (velocityX != 0f && velocityY != 0f) {
             velocityX = 0f
-            if (fallingState) velocityY = 0f
+            if (fallingState) {
+                velocityY = 0f
+            }
         } else if (velocityX != 0f) {
             velocityX = 0f
         } else if (velocityY != 0f) {
@@ -140,7 +149,9 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
                         collisionPoints[8],
                         collisionPoints[9],
                         collisionPoints[10],
-                        collisionPoints[11])
+                        collisionPoints[11],
+                        collisionPoints[12],
+                        collisionPoints[13])
     }
 
     override fun update(deltaTime: Float) {
@@ -249,6 +260,10 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
             collisionPoints[9] = PointF(posX, bottomY - height / 4)
             collisionPoints[10] = PointF(rightX, posY + height / 4)
             collisionPoints[11] = PointF(rightX, bottomY - height / 5)
+            collisionPoints[12] = PointF(posX, posY + height / 3)
+            collisionPoints[13] = PointF(rightX, posY + height / 3)
+            collisionPoints[14] = PointF(rightX, bottomY - height / 3)
+            collisionPoints[15] = PointF(rightX, bottomY - height / 3)
         }
     }
 
