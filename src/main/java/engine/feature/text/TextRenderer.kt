@@ -35,6 +35,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
         glObject.draw(pos.x, pos.y, fontSize.getWidth().toFloat(), fontSize.getHeight().toFloat(), 0f, shader)
     }
 
+    // TODO: implement modifiable horizontal and vertical gaps
     fun drawText(text: String, fontSize: Dimension, gl: GL4, pos: PointF, shader: Shader) {
         var x = 0
         var y = 0

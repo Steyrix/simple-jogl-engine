@@ -130,7 +130,7 @@ class GameLabyrinth(dim: Dimension,
 
         curr = shaderInteractor.getShader(textShaderId)
         shaderInteractor.activateShader(textShaderId)
-        myRenderer!!.drawText("Sample \n TextYo", Dimension(50, 50), gl, PointF(600f, 200f), curr)
+        myRenderer!!.drawText("Sample \n Text", Dimension(50, 50), gl, PointF(600f, 200f), curr)
 
         curr = shaderInteractor.getShader(colorShaderId)
         shaderInteractor.activateShader(colorShaderId)
