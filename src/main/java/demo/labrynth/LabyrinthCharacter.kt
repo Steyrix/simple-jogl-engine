@@ -22,14 +22,20 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     private var canJump: Boolean = true
     private var jumpTime: Float = 0f
 
+    private val xVelocityModifier = 3.5f
+    private val yVelocityModifier = 5f
+    private val jumpTimeLimit = 600f
+    private val deltaGravityModifier = 10
+    private val deltaModifier = 20
+
     private val controllableObject: ControllableObject = object : ControllableObject() {
 
         override fun reactToCollision(anotherBox: BoundingBox) {
-            if (detectBottomContact(anotherBox)) {
+            if (isBottomContact(anotherBox)) {
                 jumpState = false
                 currentBottomPlatform = anotherBox
             }
-            if (currentBottomPlatform != null && !detectBottomContact(currentBottomPlatform!!)) {
+            if (currentBottomPlatform != null && !isBottomContact(currentBottomPlatform!!)) {
                 currentBottomPlatform = null
                 jumpState = true
             }
@@ -46,23 +52,11 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
                 if (!isWalking && !jumpState) {
                     setWalkAnim()
                 }
-            } else if (e.keyCode == KeyEvent.VK_W) if (!jumpState) setJumpAnimation()
+            } else if (e.keyCode == KeyEvent.VK_W) if (!jumpState) setJumpAnim()
         }
 
         override fun keyReleased(e: KeyEvent) {
             if (keyboardItems[e.keyCode]) keyboardItems[e.keyCode] = false
-            when (e.keyCode) {
-                KeyEvent.VK_D -> {
-                }
-                KeyEvent.VK_A -> {
-                }
-                KeyEvent.VK_W -> {
-                }
-                KeyEvent.VK_S -> {
-                }
-                else -> {
-                }
-            }
         }
     }
 
@@ -82,22 +76,22 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     private fun initCollisionPoints(target: ArrayList<PointF>) {
         with(graphicalComponent.box) {
             this?.let {
-                target.add(PointF(posX, posY)) // 0
-                target.add(PointF(posX, bottomY)) // 1
-                target.add(PointF(rightX, bottomY)) // 2
-                target.add(PointF(rightX, posY)) // 3
-                target.add(PointF(posX + width / 2, posY)) // 4
-                target.add(PointF(posX + width / 2, bottomY)) // 5
-                target.add(PointF(posX, posY + height / 2)) // 6
-                target.add(PointF(rightX, posY + height / 2)) // 7
-                target.add(PointF(posX, posY + height / 4)) // 8
-                target.add(PointF(posX, bottomY - height / 4)) // 9
-                target.add(PointF(rightX, posY + height / 4)) // 10
-                target.add(PointF(rightX, bottomY - height / 5)) // 11
-                target.add(PointF(posX, posY + height / 3)) // 12
-                target.add(PointF(rightX, posY + height / 3)) // 13
-                target.add(PointF(posX, bottomY - height / 3)) // 14
-                target.add(PointF(rightX, bottomY - height / 3)) // 15
+                target.add(PointF(it.posX, it.posY)) // 0
+                target.add(PointF(it.posX, it.bottomY)) // 1
+                target.add(PointF(it.rightX, it.bottomY)) // 2
+                target.add(PointF(it.rightX, it.posY)) // 3
+                target.add(PointF(it.posX + it.width / 2, it.posY)) // 4
+                target.add(PointF(it.posX + it.width / 2, it.bottomY)) // 5
+                target.add(PointF(it.posX, it.posY + it.height / 2)) // 6
+                target.add(PointF(it.rightX, it.posY + it.height / 2)) // 7
+                target.add(PointF(it.posX, it.posY + it.height / 4)) // 8
+                target.add(PointF(it.posX, it.bottomY - it.height / 4)) // 9
+                target.add(PointF(it.rightX, it.posY + it.height / 4)) // 10
+                target.add(PointF(it.rightX, it.bottomY - it.height / 5)) // 11
+                target.add(PointF(it.posX, it.posY + it.height / 3)) // 12
+                target.add(PointF(it.rightX, it.posY + it.height / 3)) // 13
+                target.add(PointF(it.posX, it.bottomY - it.height / 3)) // 14
+                target.add(PointF(it.rightX, it.bottomY - it.height / 3)) // 15
             }
         }
     }
@@ -129,18 +123,18 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
         graphicalComponent.box!!.posY += moveY
     }
 
-    private fun detectBottomContact(anotherBox: BoundingBox): Boolean {
+    private fun isBottomContact(anotherBox: BoundingBox): Boolean {
         return anotherBox.containsNumberOfPoints(2, false,
-                collisionPoints[1],
-                collisionPoints[2],
-                collisionPoints[5])
+                        collisionPoints[1],
+                        collisionPoints[2],
+                        collisionPoints[5])
     }
 
     private fun detectHorizontalContact(anotherBox: BoundingBox): Boolean {
         return anotherBox.containsNumberOfPoints(2, true,
-                collisionPoints[0],
-                collisionPoints[1],
-                collisionPoints[6]) ||
+                        collisionPoints[0],
+                        collisionPoints[1],
+                        collisionPoints[6]) ||
                 anotherBox.containsNumberOfPoints(2, true,
                         collisionPoints[2],
                         collisionPoints[3],
@@ -176,11 +170,11 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
         when {
             keyboardItems[KeyEvent.VK_D] -> {
                 isWalking = true
-                velocityX = 3.5f
+                velocityX = xVelocityModifier
             }
             keyboardItems[KeyEvent.VK_A] -> {
                 isWalking = true
-                velocityX = -3.5f
+                velocityX = -xVelocityModifier
             }
             else -> velocityX = 0f
         }
@@ -188,7 +182,7 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
 
     private fun applyVelocityY() {
         if (keyboardItems[KeyEvent.VK_S]) {
-            velocityY = 5.0f
+            velocityY = yVelocityModifier
             jumpState = true
             canJump = false
         } else if (keyboardItems[KeyEvent.VK_W] && canJump) {
@@ -201,8 +195,8 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     private fun processJumpTime(deltaTime: Float) {
         if (!canJump) {
             jumpTime += deltaTime
-            val jumpTimeLimit = 600f
-            if (jumpTime >= jumpTimeLimit) {
+            val limit = jumpTimeLimit
+            if (jumpTime >= limit) {
                 jumpTime = 0f
                 canJump = true
             }
@@ -212,69 +206,55 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     private fun processGravityEffect(deltaTime: Float) {
         val gravity = 1f
         if (jumpState && currentBottomPlatform == null) { //System.out.println("Applying gravity");
-            velocityY += gravity * deltaTime / 10
+            velocityY += gravity * deltaTime / deltaGravityModifier
         }
     }
 
     private fun processAnimation() = with(animationComponent) {
         this?.let {
-            if (velocityX == 0f && velocityY == 0f) {
-                setAnimation(animations[2])
-                currentAnim.setCurrentFrameX(0)
-                currentAnim.setCurrentFrameY(2)
-                isWalking = false
-            } else if (velocityY != 0f && velocityX != 0f) {
-                // TODO wtf
-            } else if (velocityX != 0f && !jumpState && currentAnim != animations[0]) {
-                setWalkAnim()
-            } else if (velocityX != 0f && jumpState) {
-                setJumpAnimation()
-            } else if (velocityY > 0f && velocityY <= 0.2f) {
-                setAnimation(animations[2])
-                currentAnim.setCurrentFrameX(0)
-                currentAnim.setCurrentFrameY(2)
-            } else {
-                // do nothing
+            val isIdleAnim = velocityX == 0f && velocityY == 0f
+            val isWalkAnim = velocityX != 0f && !jumpState && it.currentAnim != it.animations[0]
+            val isJumpAnim = velocityX != 0f && jumpState
+            val isInsignificantJump = velocityY > 0f && velocityY <= 0.2f
+            val isDiagonalMove = velocityX != 0f && velocityY != 0f
+
+            when {
+                isIdleAnim -> setIdleAnim()
+                isDiagonalMove -> Unit
+                isWalkAnim -> setWalkAnim()
+                isJumpAnim -> setJumpAnim()
+                isInsignificantJump -> setWalkAnim()
+                else -> Unit
             }
         }
     }
 
     private fun changePosition(deltaTime: Float) = with(graphicalComponent.box) {
         this?.let {
-            posY += velocityY * deltaTime / 20
-            posX += velocityX * deltaTime / 20
+            it.posY += velocityY * deltaTime / deltaModifier
+            it.posX += velocityX * deltaTime / deltaModifier
         }
     }
 
     private fun updateCollisionPoints() = with(graphicalComponent.box) {
         this?.let {
-            collisionPoints[0] = PointF(posX, posY)
-            collisionPoints[1] = PointF(posX, bottomY)
-            collisionPoints[2] = PointF(rightX, bottomY)
-            collisionPoints[3] = PointF(rightX, posY)
-            collisionPoints[4] = PointF(posX + width / 2, posY)
-            collisionPoints[5] = PointF(posX + width / 2, bottomY)
-            collisionPoints[6] = PointF(posX, posY + height / 2)
-            collisionPoints[7] = PointF(rightX, posY + height / 2)
-            collisionPoints[8] = PointF(posX, posY + height / 4)
-            collisionPoints[9] = PointF(posX, bottomY - height / 4)
-            collisionPoints[10] = PointF(rightX, posY + height / 4)
-            collisionPoints[11] = PointF(rightX, bottomY - height / 5)
-            collisionPoints[12] = PointF(posX, posY + height / 3)
-            collisionPoints[13] = PointF(rightX, posY + height / 3)
-            collisionPoints[14] = PointF(rightX, bottomY - height / 3)
-            collisionPoints[15] = PointF(rightX, bottomY - height / 3)
+            collisionPoints[0] = PointF(it.posX, it.posY)
+            collisionPoints[1] = PointF(it.posX, it.bottomY)
+            collisionPoints[2] = PointF(it.rightX, it.bottomY)
+            collisionPoints[3] = PointF(it.rightX, it.posY)
+            collisionPoints[4] = PointF(it.posX + it.width / 2, it.posY)
+            collisionPoints[5] = PointF(it.posX + it.width / 2, it.bottomY)
+            collisionPoints[6] = PointF(it.posX, it.posY + it.height / 2)
+            collisionPoints[7] = PointF(it.rightX, it.posY + it.height / 2)
+            collisionPoints[8] = PointF(it.posX, it.posY + it.height / 4)
+            collisionPoints[9] = PointF(it.posX, it.bottomY - it.height / 4)
+            collisionPoints[10] = PointF(it.rightX, it.posY + it.height / 4)
+            collisionPoints[11] = PointF(it.rightX, it.bottomY - it.height / 5)
+            collisionPoints[12] = PointF(it.posX, it.posY + it.height / 3)
+            collisionPoints[13] = PointF(it.rightX, it.posY + it.height / 3)
+            collisionPoints[14] = PointF(it.rightX, it.bottomY - it.height / 3)
+            collisionPoints[15] = PointF(it.rightX, it.bottomY - it.height / 3)
         }
-    }
-
-    fun preventCollision() {
-        velocityY = 0.0f
-        velocityX = 0.0f
-        keyboardItems[KeyEvent.VK_W] = false
-        keyboardItems[KeyEvent.VK_S] = false
-        keyboardItems[KeyEvent.VK_A] = false
-        keyboardItems[KeyEvent.VK_D] = false
-        isWalking = false
     }
 
     private fun jump() {
@@ -287,7 +267,14 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
         canJump = false
     }
 
-    private fun setJumpAnimation() = animationComponent?.let {
+    private fun setIdleAnim() = animationComponent?.let {
+        it.setAnimation(it.animations[2])
+        it.currentAnim.setCurrentFrameX(0)
+        it.currentAnim.setCurrentFrameY(2)
+        isWalking = false
+    }
+
+    private fun setJumpAnim() = animationComponent?.let {
         it.currentAnim = it.animations[1]
         it.currentAnim.currentFrameY = 1
         it.currentAnim.currentFrameX = 7
