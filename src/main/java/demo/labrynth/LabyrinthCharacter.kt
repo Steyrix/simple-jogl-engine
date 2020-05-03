@@ -6,8 +6,6 @@ import engine.util.geometry.PointF
 import java.awt.event.KeyEvent
 import java.util.*
 
-// TODO: manage collisions with multiple objects at the same time
-// TODO: cleanup code
 class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
                                               width: Float, height: Float,
                                               animatedObject: AnimatedObject,
