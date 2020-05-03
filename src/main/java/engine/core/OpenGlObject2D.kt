@@ -1,6 +1,5 @@
 package engine.core
 
-import com.hackoeur.jglm.Mat4
 import com.jogamp.opengl.GL
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
@@ -67,11 +66,9 @@ open class OpenGlObject2D(bufferParamsCount: Int,
         genBoundingBoxVertexArray()
 
         if (textureFilePaths.size == 1 && !texArray) {
-            println("Loading only single texture")
             loadTexture(textureFilePaths[0])
         }
         if (textureFilePaths.size > 1 || texArray) {
-            println("Loading texture array")
             loadTextureArray(*textureFilePaths)
         }
     }
