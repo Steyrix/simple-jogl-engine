@@ -28,9 +28,8 @@ abstract class CompositeObject(protected var animationComponent: AnimatedObject?
         graphicalComponent.box = box
     }
 
-    fun draw(x: Float, y: Float, xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) {
+    fun draw(x: Float, y: Float, xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) =
         graphicalComponent.draw(x, y, xSize, ySize, rotationAngle, shader)
-    }
 
     fun draw(shader: Shader) = with(graphicalComponent) {
         box?.let {
@@ -39,12 +38,12 @@ abstract class CompositeObject(protected var animationComponent: AnimatedObject?
     }
 
     fun drawBoundingBox(shader: Shader) {
-        if (graphicalComponent.box != null) graphicalComponent.drawBox(shader)
+        if (graphicalComponent.box != null) {
+            graphicalComponent.drawBox(shader)
+        }
     }
 
-    fun dispose() {
-        graphicalComponent.dispose()
-    }
+    fun dispose() = graphicalComponent.dispose()
 
     fun keyTyped(e: KeyEvent) = controllableComponent?.keyTyped(e)
 

@@ -13,11 +13,11 @@ class ElapsedTimeUpdater(private val updatePeriod: Long) : Updater {
         execUpdateFuncOnCondition()
     }
 
-    private fun condition(): Boolean {
-        return timeAccumulator >= updatePeriod
-    }
+    private fun condition() = timeAccumulator >= updatePeriod
 
     private fun execUpdateFuncOnCondition() {
-        if (condition()) updateFunc.invoke()
+        if (condition()) {
+            updateFunc.invoke()
+        }
     }
 }

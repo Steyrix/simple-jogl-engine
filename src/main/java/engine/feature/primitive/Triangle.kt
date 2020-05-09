@@ -39,17 +39,17 @@ class Triangle(gl: GL4, boxDim: Dimension, textureId: Int) :
     }
 
     override fun initRenderData(textureFilePaths: Array<String>, texArray: Boolean, vararg dataArrays: FloatArray) {
-        validatedData(*dataArrays)
+        validateData(*dataArrays)
         super.initRenderData(textureFilePaths, texArray, *dataArrays)
     }
 
-    override fun initRenderData(texture: Texture?,
+    override fun initRenderData(itTexture: Texture?,
                                 vararg dataArrays: FloatArray) {
-        validatedData(*dataArrays)
-        super.initRenderData(texture, *dataArrays)
+        validateData(*dataArrays)
+        super.initRenderData(itTexture, *dataArrays)
     }
 
-    override fun validatedData(vararg dataArrays: FloatArray) {
+    override fun validateData(vararg dataArrays: FloatArray) {
 
         var errMsg = "Triangle primitive can only have 2 buffers (vertex and attrib)."
         if (dataArrays.size != TRIANGLE_BUFFER_PARAMS_COUNT) {

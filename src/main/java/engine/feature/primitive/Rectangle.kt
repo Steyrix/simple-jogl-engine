@@ -28,26 +28,29 @@ class Rectangle(gl: GL4, textureId: Int) :
         }
     }
 
-    fun init(color: Color) {
-        super.initRenderData(null, RECTANGLE_BUFFER, ColorUtil.getBufferForColor(RECTANGLE_VERTICES_COUNT, color))
-    }
+    fun init(color: Color) = super.initRenderData(null,
+                                                         RECTANGLE_BUFFER,
+                                                         ColorUtil.getBufferForColor(RECTANGLE_VERTICES_COUNT, color))
+
 
     override fun initRenderData(textureFilePaths: Array<String>, texArray: Boolean, vararg dataArrays: FloatArray) {
-        validatedData(*dataArrays)
+        validateData(*dataArrays)
         super.initRenderData(textureFilePaths, texArray, *dataArrays)
     }
 
-    override fun initRenderData(texture: Texture?, vararg dataArrays: FloatArray) {
-        validatedData(*dataArrays)
-        super.initRenderData(texture, *dataArrays)
+    override fun initRenderData(itTexture: Texture?, vararg dataArrays: FloatArray) {
+        validateData(*dataArrays)
+        super.initRenderData(itTexture, *dataArrays)
     }
 
-    override fun validatedData(vararg dataArrays: FloatArray) {
+    override fun validateData(vararg dataArrays: FloatArray) {
         var errMsg = "Rectangle primitive can only have 2 buffers (vertex and attrib)."
         if (dataArrays.size != RECTANGLE_BUFFER_PARAMS_COUNT)
             throw IllegalArgumentException(errMsg)
 
-        errMsg = "Rectangular vertex data should be supplied as the first argument for rectangle primitive. \n" + "You can use Rectangle.init() instead"
+        errMsg = "Rectangular vertex data should be supplied as the first argument for rectangle primitive. \n" +
+                "You can use Rectangle.init() instead"
+
         if (!Arrays.equals(RECTANGLE_BUFFER, dataArrays[0]))
             throw IllegalArgumentException(errMsg)
 
@@ -55,9 +58,7 @@ class Rectangle(gl: GL4, textureId: Int) :
             throw IllegalArgumentException(ERR_NOT_VALID_ATTRIB_BUFFER_MSG)
     }
 
-    override fun isBufferValid(dataArray: FloatArray): Boolean {
-        return dataArray.size % RECTANGLE_VERTICES_COUNT == 0
-    }
+    override fun isBufferValid(dataArray: FloatArray) = dataArray.size % RECTANGLE_VERTICES_COUNT == 0
 
     companion object {
         var RECTANGLE_BUFFER = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)

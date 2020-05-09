@@ -1,7 +1,11 @@
 package engine.feature.animation
 
-class BasicAnimation(val name: String, private val animationId: Int, private val usedLayerId: Int,
-                     private val framesCountX: Int, private val framesCountY: Int, private val timeLimit: Float) {
+class BasicAnimation(val name: String,
+                     private val animationId: Int,
+                     private val usedLayerId: Int,
+                     private val framesCountX: Int,
+                     private val framesCountY: Int,
+                     private val timeLimit: Float) {
 
     internal var currentFrameX: Int = 1
     internal var currentFrameY: Int = 1
@@ -48,32 +52,32 @@ class BasicAnimation(val name: String, private val animationId: Int, private val
         }
     }
 
-    private inline fun isLastFrameX() : Boolean = currentFrameX + 1 > lastPosX
+    private fun isLastFrameX() = currentFrameX + 1 > lastPosX
 
-    private inline fun isLastFrameY() : Boolean = currentFrameY + 1 > lastPosY
+    private fun isLastFrameY() = currentFrameY + 1 > lastPosY
 
-    private inline fun isMultiFramedByX() : Boolean = framesCountX != 1
+    private fun isMultiFramedByX() = framesCountX != 1
 
-    private inline fun isMultiFramedByY() : Boolean = framesCountY != 1
+    private fun isMultiFramedByY() = framesCountY != 1
 
-    fun setFirstPosX(firstPosX: Int) {
-        this.firstPosX = firstPosX
+    fun setFirstPosX(posX: Int) {
+        firstPosX = posX
     }
 
-    fun setLastPosX(lastPosX: Int) {
-        this.lastPosX = lastPosX
+    fun setLastPosX(posX: Int) {
+        lastPosX = posX
     }
 
-    fun setCurrentFrameX(currentFrameX: Int) {
-        this.currentFrameX = currentFrameX
+    fun setCurrentFrameX(frame: Int) {
+        currentFrameX = frame
     }
 
-    fun setCurrentFrameY(currentFrameY: Int) {
-        this.currentFrameY = currentFrameY
+    fun setCurrentFrameY(frame: Int) {
+        currentFrameY = frame
     }
 
     fun setPlayFunction(func: ((Float, Int, Int, Int, Int) -> Unit)?) {
-        this.playFunction = func
+        playFunction = func
     }
 
     companion object {

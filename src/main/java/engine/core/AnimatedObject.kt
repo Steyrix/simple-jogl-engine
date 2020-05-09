@@ -15,8 +15,8 @@ class AnimatedObject(private var frameSizeX: Float,
     var currentAnim: BasicAnimation
 
     init {
-        Collections.addAll(this.animations, *animationSet)
-        this.currentAnim = this.animations[0]
+        Collections.addAll(animations, *animationSet)
+        currentAnim = animations[0]
     }
 
     fun defineAnimationVariables(graphicalObject: OpenGlObject2D, shader: Shader) {
@@ -33,11 +33,12 @@ class AnimatedObject(private var frameSizeX: Float,
     }
 
     fun setAnimation(a: BasicAnimation) {
-        if (animations.contains(a)) currentAnim = a
+        if (animations.contains(a)) {
+            currentAnim = a
+        }
     }
 
-    override fun toString(): String {
-        return super.toString() + "\n Animated"
-    }
+    override fun toString()= super.toString() + "\n Animated"
+
 
 }

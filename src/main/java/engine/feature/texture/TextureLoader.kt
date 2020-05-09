@@ -12,7 +12,8 @@ import java.util.*
 
 object TextureLoader {
 
-    private const val ILLEGAL_ARRAY_TEXTURE_SOURCE_EXCEPTION = "Illegal array texture source! Must be the same size for all layers."
+    private const val ILLEGAL_ARRAY_TEXTURE_SOURCE_EXCEPTION =
+            "Illegal array texture source! Must be the same size for all layers."
 
     @Throws(GLException::class, IOException::class)
     fun loadTextureData(filePath: String, gl: GL4): TextureData {

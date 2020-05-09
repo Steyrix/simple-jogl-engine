@@ -20,19 +20,22 @@ class DefaultShaderCreator : ShaderCreator {
         return out
     }
 
-    private fun getShaderBuffer(resourceName: String): Array<String> =
-            arrayOf(getShaderSource(resourceName))
+    private fun getShaderBuffer(resourceName: String): Array<String> = arrayOf(getShaderSource(resourceName))
 
     override fun create(vertexSource: String, fragmentSource: String, gl: GL4): Shader {
         val out = Shader(gl)
-        out.compile(getShaderBuffer(vertexSource), getShaderBuffer(fragmentSource), null)
+        out.compile(getShaderBuffer(vertexSource),
+                    getShaderBuffer(fragmentSource),
+                    null)
 
         return out
     }
 
     override fun create(vertexSource: String, fragmentSource: String, geometrySource: String, gl: GL4): Shader {
         val out = Shader(gl)
-        out.compile(getShaderBuffer(vertexSource), getShaderBuffer(fragmentSource), getShaderBuffer(geometrySource))
+        out.compile(getShaderBuffer(vertexSource),
+                    getShaderBuffer(fragmentSource),
+                    getShaderBuffer(geometrySource))
 
         return out
     }

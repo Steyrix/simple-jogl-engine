@@ -21,6 +21,11 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         tileLayers.forEach { it.draw(gl, xSize, ySize, shader) }
     }
 
+    fun drawTile(gl: GL4, shader: Shader, idx: Int) = tileLayers[idx].draw(gl, shader)
+
+    fun drawTile(gl: GL4, xSize: Float, ySize: Float, shader: Shader, idx: Int) =
+            tileLayers[idx].draw(gl, xSize, ySize, shader)
+
     fun getTileIndexInLayerData(posX: Float, posY: Float, layerIndex: Int = 0): Int {
         val layer = tileLayers[layerIndex]
         val widthInTiles = layer.width
@@ -42,7 +47,8 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
 
     fun getLayerProperty(layerNumber: Int = 0, propertyName: String): LayerProperty<out Any> {
         val layer = getLayer(layerNumber)
-        return layer.properties.find { it.getName() == propertyName } ?: throw Exception("Property with name $propertyName does not exist")
+        return layer.properties.find { it.getName() == propertyName }
+                ?: throw Exception("Property with name $propertyName does not exist")
     }
 
     fun arePropertiesActiveForTile(tileNumber: Int, layerNumber: Int = 0): Boolean {
@@ -66,23 +72,30 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
 
     private fun checkLayerExistence(layerIndex: Int) {
         val incorrectLayerIndex = layerIndex >= tileLayers.size || layerIndex < 0
-        if (incorrectLayerIndex) throw Exception("There is no layer with index $layerIndex")
+        if (incorrectLayerIndex) {
+            throw Exception("There is no layer with index $layerIndex")
+        }
     }
 
     private fun checkTileExistence(tileIndex: Int, layer: TileLayer) {
         val incorrectTileIndex = tileIndex >= layer.tileData.size || tileIndex < 0
-        if (incorrectTileIndex) throw Exception("There is no tile with number $tileIndex in the layer")
+        if (incorrectTileIndex) {
+            throw Exception("There is no tile with number $tileIndex in the layer")
+        }
     }
 
     private fun getTiledPosition(tileSize: Float, pos: Float): Int {
         val roundedPos = pos.roundToInt()
-        if (roundedPos == 0) return 0
+        if (roundedPos == 0) {
+            return 0
+        }
 
         return roundedPos / tileSize.roundToInt()
     }
 
     companion object {
-        fun createInstance(xmlFile: File): TileMap = TiledResourceParser.createTileMapFromXml(xmlFile)
+        fun createInstance(xmlFile: File): TileMap =
+                TiledResourceParser.createTileMapFromXml(xmlFile)
 
         const val EMPTY_TILE_ID = -1
     }

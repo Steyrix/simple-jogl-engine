@@ -19,5 +19,6 @@ object ColorUtil {
         return out
     }
 
-    private fun getColorValues(color: Color): FloatArray = floatArrayOf(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat())
+    private fun getColorValues(color: Color) =
+            floatArrayOf(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat())
 }

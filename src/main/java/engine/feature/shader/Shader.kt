@@ -24,7 +24,6 @@ class Shader internal constructor(private val gl: GL4) {
     internal fun compile(vertexShaderSource: Array<String>,
                          fragmentShaderSource: Array<String>,
                          geometryShaderSource: Array<String>?) {
-
         val sVertex: Int = gl.glCreateShader(GL4.GL_VERTEX_SHADER)
         val sFragment: Int = gl.glCreateShader(GL4.GL_FRAGMENT_SHADER)
         var sGeometry = 0
@@ -105,19 +104,21 @@ class Shader internal constructor(private val gl: GL4) {
         val success = IntBuffer.allocate(1)
         val infoLog = ByteBuffer.allocate(1024)
 
+        val lineDelimiter = "\n -- --------------------------------------------------- -- "
+
         if (type !== "PROGRAM") {
             gl.glGetShaderiv(obj, GL4.GL_COMPILE_STATUS, success)
             if (success.get(0) <= 0) {
                 gl.glGetShaderInfoLog(obj, 1024, null, infoLog)
                 println("| ERROR::SHADER: Compile-time error: Type: " + type + "\n"
-                        + infoLog + "\n -- --------------------------------------------------- -- ")
+                        + infoLog + lineDelimiter)
             }
         } else {
             gl.glGetProgramiv(obj, GL4.GL_LINK_STATUS, success)
             if (success.get(0) <= 0) {
                 gl.glGetProgramInfoLog(obj, 1024, null, infoLog)
                 println("| ERROR::SHADER: Link-time error: Type: " + type + "\n"
-                        + infoLog + "\n -- --------------------------------------------------- -- ")
+                        + infoLog + lineDelimiter)
             }
         }
     }

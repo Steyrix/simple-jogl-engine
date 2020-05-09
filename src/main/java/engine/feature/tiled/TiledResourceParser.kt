@@ -92,7 +92,12 @@ internal object TiledResourceParser {
         val nodes = node.childNodes
         for (i in 0 until nodes.length) {
             if (nodes.item(i).nodeName == DATA) {
-                out.addAll(nodes.item(i).textContent.replace("\n", "").split(",").map { it.toInt() - 1 })
+                out.addAll(nodes
+                            .item(i)
+                            .textContent
+                            .replace("\n", "")
+                            .split(",")
+                            .map { it.toInt() - 1 })
             }
         }
 

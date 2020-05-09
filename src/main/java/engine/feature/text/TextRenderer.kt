@@ -32,7 +32,12 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
             cache[c] = glObject
         } else glObject = cache[c]!!
 
-        glObject.draw(pos.x, pos.y, fontSize.getWidth().toFloat(), fontSize.getHeight().toFloat(), 0f, shader)
+        glObject.draw(pos.x,
+                      pos.y,
+                      fontSize.getWidth().toFloat(),
+                      fontSize.getHeight().toFloat(),
+                     0f,
+                      shader)
     }
 
     // TODO: implement modifiable horizontal and vertical gaps
@@ -46,10 +51,17 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
                 continue
             }
 
-            drawCharacter(c, fontSize, gl,
-                    PointF(pos.x + (fontSize.getWidth() * x++).toFloat(),
-                            pos.y + (fontSize.getHeight() * y).toFloat()),
-                    shader)
+            val horizontalShift = (fontSize.getWidth() * x++).toFloat()
+            val verticalShift = (fontSize.getHeight() * y).toFloat()
+
+            val horizontalPos = pos.x + horizontalShift
+            val verticalPos = pos.y + verticalShift
+
+            drawCharacter(c,
+                          fontSize,
+                          gl,
+                          PointF(horizontalPos, verticalPos),
+                          shader)
         }
     }
 
@@ -57,7 +69,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
         //TODO: wtf refactor this
         val curr = characterCoordinates!![c]!!
         val width = (charSize.getWidth() / textureAtlas!!.width).toFloat()
-        val height = (charSize.getHeight() / textureAtlas.height).toFloat()
+        val height = (charSize.getHeight() / textureAtlas!!.height).toFloat()
 
         return floatArrayOf(
                 width * curr.x,
@@ -74,7 +86,8 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
                 height * (curr.y + 1))
     }
 
-    override fun toString(): String = "Text renderer with " + characterCoordinates!!.size + " characters. \n" + characterCoordinates.toString()
+    override fun toString(): String =
+            "Text renderer with " + characterCoordinates!!.size + " characters. \n" + characterCoordinates.toString()
 
     companion object {
         fun getRenderer(charSize: Dimension,

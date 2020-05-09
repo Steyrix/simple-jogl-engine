@@ -14,13 +14,13 @@ class OpenGlContext(private val state: GameState, private val updater: Updater) 
     override fun init(glAutoDrawable: GLAutoDrawable) {
         state.init(glAutoDrawable)
         updater.setUpdateFunc {
-            this.state.update(timer.calcDeltaTime())
-            this.state.display(glAutoDrawable)
+            state.update(timer.calcDeltaTime())
+            state.display(glAutoDrawable)
         }
     }
 
     override fun dispose(glAutoDrawable: GLAutoDrawable) {
-        this.state.dispose(glAutoDrawable)
+        state.dispose(glAutoDrawable)
     }
 
     override fun display(glAutoDrawable: GLAutoDrawable) {
@@ -28,19 +28,19 @@ class OpenGlContext(private val state: GameState, private val updater: Updater) 
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {
-        this.state.reshape(glAutoDrawable, i, i1, i2, i3)
+        state.reshape(glAutoDrawable, i, i1, i2, i3)
     }
 
     override fun keyTyped(e: KeyEvent) {
-        this.state.keyTyped(e)
+        state.keyTyped(e)
     }
 
     override fun keyPressed(e: KeyEvent) {
-        this.state.keyPressed(e)
+        state.keyPressed(e)
     }
 
     override fun keyReleased(e: KeyEvent) {
-        this.state.keyReleased(e)
+        state.keyReleased(e)
     }
 
 

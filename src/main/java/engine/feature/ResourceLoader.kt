@@ -8,11 +8,7 @@ object ResourceLoader {
         return out?.path ?: throw Exception()
     }
 
-    fun getFileFromRelativePath(relativePath: String): File {
-        return File(getAbsolutePath(relativePath))
-    }
+    fun getFileFromRelativePath(relativePath: String) = File(getAbsolutePath(relativePath))
 
-    fun getFileFromAbsolutePath(absolutePath: String): File {
-        return File(getAbsolutePath(absolutePath))
-    }
+    fun getFileFromAbsolutePath(absolutePath: String) = File(getAbsolutePath(absolutePath))
 }

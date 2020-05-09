@@ -22,7 +22,7 @@ open class OpenGlObject2D(bufferParamsCount: Int,
     protected var textureArray: IntBuffer? = null
 
     val isTextured: Boolean
-        get() = this.texture != null || this.textureArray != null
+        get() = texture != null || textureArray != null
 
     private val buffers: IntBuffer
     private val boxBuffer: IntBuffer
@@ -45,15 +45,15 @@ open class OpenGlObject2D(bufferParamsCount: Int,
         }
 
     init {
-        this.buffersFilled = 0
-        this.buffers = IntBuffer.allocate(buffersCount)
-        this.boxBuffer = IntBuffer.allocate(1)
-        this.vertexArray = IntBuffer.allocate(1)
-        this.boxVertexArray = IntBuffer.allocate(1)
-        this.paramsCount = ArrayList()
-        this.uniformName = null
-        this.texture = null
-        this.textureArray = null
+        buffersFilled = 0
+        buffers = IntBuffer.allocate(buffersCount)
+        boxBuffer = IntBuffer.allocate(1)
+        vertexArray = IntBuffer.allocate(1)
+        boxVertexArray = IntBuffer.allocate(1)
+        paramsCount = ArrayList()
+        uniformName = null
+        texture = null
+        textureArray = null
     }
 
     open fun initRenderData(textureFilePaths: Array<String>,
@@ -73,15 +73,15 @@ open class OpenGlObject2D(bufferParamsCount: Int,
         }
     }
 
-    open fun initRenderData(texture: Texture?, vararg dataArrays: FloatArray) {
+    open fun initRenderData(itTexture: Texture?, vararg dataArrays: FloatArray) {
         addBuffers(*dataArrays)
         genVertexArray()
 
         initBoundingBoxBuffer()
         genBoundingBoxVertexArray()
 
-        texture?.let {
-            this.texture = it
+        itTexture?.let {
+            texture = it
             setTexParameters()
         }
     }
@@ -135,7 +135,7 @@ open class OpenGlObject2D(bufferParamsCount: Int,
                 glBufferData(GL4.GL_ARRAY_BUFFER, (4 * it.size).toLong(), floatBuffer, GL4.GL_STATIC_DRAW)
             }
 
-            paramsCount.add(it.size / this.verticesCount)
+            paramsCount.add(it.size / verticesCount)
         }
     }
 
@@ -155,7 +155,11 @@ open class OpenGlObject2D(bufferParamsCount: Int,
     override fun toString(): String {
         return "OpenGlObject: \n Number of vertices: $verticesCount" +
                 "\n Number of buffers: $buffersCount \n" +
-                if (isTextured) " Texture id: $textureId" else " Not textured"
+                if (isTextured) {
+                    " Texture id: $textureId"
+                } else {
+                    " Not textured"
+                }
     }
 
     protected open fun loadTexture(filePath: String) {
@@ -237,12 +241,12 @@ open class OpenGlObject2D(bufferParamsCount: Int,
         }
     }
 
-    // TODO figure out if it is really needed
     private fun setUniformName(newName: String) {
-        this.uniformName = newName
+        uniformName = newName
     }
 
     companion object {
-        private const val BUFFER_ILLEGAL_ARG_MSG = "Number of buffers supplied must be the number of buffers created for the object"
+        private const val BUFFER_ILLEGAL_ARG_MSG =
+                "Number of buffers supplied must be the number of buffers created for the object"
     }
 }

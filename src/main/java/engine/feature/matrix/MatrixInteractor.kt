@@ -26,10 +26,7 @@ object MatrixInteractor {
                     0.0f, 0.0f, 1.0f, 0.0f,
                     0.0f, 0.0f, 0.0f, 1.0f)
 
-    fun applyRotation(xSize: Float,
-                      ySize: Float,
-                      rotation: Mat4,
-                      model: Mat4) {
+    fun applyRotation(xSize: Float, ySize: Float, rotation: Mat4, model: Mat4) {
         var outputModel = model
         outputModel = outputModel.translate(Vec3(0.5f * xSize, 0.5f * ySize, 0.0f))
         outputModel = outputModel.multiply(rotation)

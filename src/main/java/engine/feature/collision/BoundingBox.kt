@@ -7,52 +7,62 @@ import java.util.ArrayList
 open class BoundingBox(var posX: Float, var posY: Float, var width: Float, var height: Float) : Cloneable {
 
     val rightX: Float
-        get() = this.posX + this.width
+        get() = posX + width
 
     val bottomY: Float
-        get() = this.posY + this.height
+        get() = posY + height
 
     fun setPosition(nX: Float, nY: Float) {
-        this.posX = nX
-        this.posY = nY
+        posX = nX
+        posY = nY
     }
 
-    fun intersectsX(anotherBox: BoundingBox): Boolean {
-        return this.posX < anotherBox.rightX || this.rightX > anotherBox.posX
-    }
+    fun intersectsX(anotherBox: BoundingBox) = posX < anotherBox.rightX || rightX > anotherBox.posX
 
-    fun intersectsY(anotherBox: BoundingBox): Boolean {
-        return this.posY < anotherBox.bottomY || this.bottomY > anotherBox.posY
-    }
 
-    fun intersects(anotherBox: BoundingBox): Boolean {
-        return intersectsX(anotherBox) && intersectsY(anotherBox)
-    }
+    fun intersectsY(anotherBox: BoundingBox) = posY < anotherBox.bottomY || bottomY > anotherBox.posY
+
+    fun intersects(anotherBox: BoundingBox) = intersectsX(anotherBox) && intersectsY(anotherBox)
 
     fun containsEveryPointOf(vararg points: PointF): Boolean {
         points.forEach {
-            if (!(it.x < this.rightX && it.x > this.posX && it.y < this.bottomY && it.y > this.posY))
+            val doesNotContain = it.x > rightX
+                                 || it.x < posX
+                                 || it.y > bottomY
+                                 || it.y < posY
+            if (doesNotContain) {
                 return false
+            }
+
         }
         return true
     }
 
     fun containsNumberOfPoints(numberOfPoints: Int, strict: Boolean, vararg points: PointF): Boolean {
-        if (numberOfPoints <= 0)
+        if (numberOfPoints <= 0) {
             return true
+        }
 
         var cnt = 0
         points.forEach {
-            if (strict) {
-                if (it.x < this.rightX && it.x > this.posX &&
-                        it.y < this.bottomY && it.y > this.posY)
-                    cnt++
-            } else {
-                if (it.x <= this.rightX && it.x >= this.posX &&
-                        it.y <= this.bottomY && it.y >= this.posY)
-                    cnt++
-            }
+            val strictCondition = it.x < rightX
+                                  && it.x > posX
+                                  && it.y < bottomY
+                                  && it.y > posY
 
+            val nonStrictCondition = it.x in posX..rightX
+                                     && it.y <= bottomY
+                                     && it.y >= posY
+
+            if (strict) {
+                if (strictCondition) {
+                    cnt++
+                }
+            } else {
+                if (nonStrictCondition) {
+                    cnt++
+                }
+            }
         }
 
         return cnt >= numberOfPoints
@@ -60,14 +70,23 @@ open class BoundingBox(var posX: Float, var posY: Float, var width: Float, var h
 
     fun containsAnyPointOf(strict: Boolean, vararg points: PointF): Boolean {
         points.forEach {
+            val strictCondition = it.x < rightX
+                                  && it.x > posX
+                                  && it.y < bottomY
+                                  && it.y > posY
+
+            val nonStrictCondition = it.x in posX..rightX
+                                     && it.y <= bottomY
+                                     && it.y >= posY
+
             if (strict) {
-                if (it.x < this.rightX && it.x > this.posX &&
-                        it.y < this.bottomY && it.y > this.posY)
+                if (strictCondition) {
                     return true
+                }
             } else {
-                if (it.x <= this.rightX && it.x >= this.posX &&
-                        it.y <= this.bottomY && it.y >= this.posY)
+                if (nonStrictCondition) {
                     return true
+                }
             }
         }
 
@@ -76,24 +95,31 @@ open class BoundingBox(var posX: Float, var posY: Float, var width: Float, var h
 
     fun containsPoint(strict: Boolean, pointFS: ArrayList<PointF>): Boolean {
         pointFS.forEach {
-            if (containsAnyPointOf(strict, it))
+            if (containsAnyPointOf(strict, it)) {
                 return true
+            }
         }
 
         return false
     }
 
     fun getIntersectionWidth(anotherBox: BoundingBox): Float {
-        return if (anotherBox.posX >= this.posX) -(this.rightX - anotherBox.posX) else anotherBox.rightX - this.posX
+        return if (anotherBox.posX >= posX) {
+            -(rightX - anotherBox.posX)
+        } else {
+            anotherBox.rightX - posX
+        }
     }
 
     fun getIntersectionHeight(anotherBox: BoundingBox): Float {
-        return if (anotherBox.posY >= this.posY) -(this.bottomY - anotherBox.posY) else anotherBox.bottomY - this.posY
+        return if (anotherBox.posY >= posY) {
+            -(bottomY - anotherBox.posY)
+        } else {
+            anotherBox.bottomY - posY
+        }
     }
 
-    override fun toString(): String {
-        return "posX:$posX; posY:$posY; rightX:$rightX; bottomY:$bottomY"
-    }
+    override fun toString() = "posX:$posX; posY:$posY; rightX:$rightX; bottomY:$bottomY"
 
     public override fun clone() = BoundingBox(posX, posY, width, height)
 }
