@@ -32,6 +32,8 @@ class BasicAnimation(val name: String,
         }
 
         // Default animation sequence
+        // At first, iterate through texture atlas horizontally. When row's end is reached, increment row index
+        // And iterate through the next row.
         accumulatedTime += deltaTime
         if (accumulatedTime >= timeLimit) {
             accumulatedTime = 0f
