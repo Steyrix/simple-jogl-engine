@@ -59,7 +59,7 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     }
 
     init {
-        setControl(controllableObject)
+        setCtrlComponent(controllableObject)
         initCollisionPoints(collisionPoints)
 
         val box = BoundingBox(posX, posY, width, height)
@@ -160,7 +160,7 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
     override fun react(entity: Entity) {
         if (entity is OpenGlObject2D) {
             val box = entity.box
-            box?.let { controllableComponent?.reactToCollision(it) }
+            box?.let { controlComponent?.reactToCollision(it) }
         }
     }
 

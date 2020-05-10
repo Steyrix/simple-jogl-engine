@@ -5,22 +5,22 @@ import engine.feature.shader.Shader
 import java.awt.event.KeyEvent
 
 abstract class CompositeObject(protected var animationComponent: AnimatedObject? = null,
-                               protected var controllableComponent: ControllableObject? = null,
+                               protected var controlComponent: ControllableObject? = null,
                                protected var graphicalComponent: OpenGlObject2D) : Entity {
 
     protected var velocityX: Float = 0.toFloat()
     protected var velocityY: Float = 0.toFloat()
     protected var jumpState: Boolean = false
 
-    fun setAnimation(component: AnimatedObject) {
+    fun setAnimComponent(component: AnimatedObject) {
         animationComponent = component
     }
 
-    fun setControl(component: ControllableObject) {
-        controllableComponent = component
+    fun setCtrlComponent(component: ControllableObject) {
+        controlComponent = component
     }
 
-    fun setGraphics(component: OpenGlObject2D) {
+    fun setGraphicsComponent(component: OpenGlObject2D) {
         graphicalComponent = component
     }
 
@@ -45,11 +45,11 @@ abstract class CompositeObject(protected var animationComponent: AnimatedObject?
 
     fun dispose() = graphicalComponent.dispose()
 
-    fun keyTyped(e: KeyEvent) = controllableComponent?.keyTyped(e)
+    fun keyTyped(e: KeyEvent) = controlComponent?.keyTyped(e)
 
-    fun keyPressed(e: KeyEvent) = controllableComponent?.keyPressed(e)
+    fun keyPressed(e: KeyEvent) = controlComponent?.keyPressed(e)
 
-    fun keyReleased(e: KeyEvent)= controllableComponent?.keyReleased(e)
+    fun keyReleased(e: KeyEvent)= controlComponent?.keyReleased(e)
 
     abstract fun update(deltaTime: Float)
 
