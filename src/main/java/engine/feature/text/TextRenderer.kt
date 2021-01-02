@@ -66,6 +66,10 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
         }
     }
 
+    fun drawText(text: String, font: Font, fontSize: Dimension, pos: PointF, gl: GL4) {
+
+    }
+
     private fun getCharUV(c: Char): FloatArray {
         //TODO: wtf refactor this
         val curr = characterCoordinates!![c]!!
