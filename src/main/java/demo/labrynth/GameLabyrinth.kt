@@ -10,7 +10,6 @@ import com.jogamp.opengl.util.texture.Texture
 
 import engine.core.AnimatedObject
 import engine.feature.ResourceLoader
-import engine.feature.animation.BasicAnimation
 import engine.core.OpenGlObject2D
 import engine.core.buffered.Buffered
 import engine.feature.primitive.Rectangle
@@ -59,7 +58,8 @@ class GameLabyrinth(
     override fun init(glAutoDrawable: GLAutoDrawable) {
         val gl = glAutoDrawable.gl.gL4
 
-        loadShaders(gl)
+        shaderCreator.attachGl(gl)
+        loadShaders()
         initShaders()
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
@@ -165,24 +165,36 @@ class GameLabyrinth(
         labyrinthCharacter?.keyReleased(e)
     }
 
-    private fun loadShaders(gl: GL4) {
-        val textureShaderObject = shaderCreator.create("shaders/texturedVertexShader.glsl",
-                "shaders/texturedFragmentShader.glsl", gl)
+    private fun loadShaders() {
+        val textureShaderObject = shaderCreator.create(
+                "shaders/texturedVertexShader.glsl",
+                "shaders/texturedFragmentShader.glsl"
+        )
 
-        val textShaderObject = shaderCreator.create("shaders/textRenderVertexShader.glsl",
-                "shaders/textRenderFragmentShader.glsl", gl)
+        val textShaderObject = shaderCreator.create(
+                "shaders/textRenderVertexShader.glsl",
+                "shaders/textRenderFragmentShader.glsl"
+        )
 
-        val boundShaderObject = shaderCreator.create("shaders/boundVertexShader.glsl",
-                "shaders/boundFragmentShader.glsl", gl)
+        val boundShaderObject = shaderCreator.create(
+                "shaders/boundVertexShader.glsl",
+                "shaders/boundFragmentShader.glsl"
+        )
 
-        val animationShaderObject = shaderCreator.create("shaders/animVertexShader.glsl",
-                "shaders/animFragmentShader.glsl", gl)
+        val animationShaderObject = shaderCreator.create(
+                "shaders/animVertexShader.glsl",
+                "shaders/animFragmentShader.glsl"
+        )
 
-        val colorShaderObject = shaderCreator.create("shaders/coloredVertexShader.glsl",
-                "shaders/coloredFragmentShader.glsl", gl)
+        val colorShaderObject = shaderCreator.create(
+                "shaders/coloredVertexShader.glsl",
+                "shaders/coloredFragmentShader.glsl"
+        )
 
-        val boxShaderObject = shaderCreator.create("shaders/boxVertexShader.glsl",
-                "shaders/boxFragmentShader.glsl", gl)
+        val boxShaderObject = shaderCreator.create(
+                "shaders/boxVertexShader.glsl",
+                "shaders/boxFragmentShader.glsl"
+        )
 
         shaderInteractor.apply {
             addShader(textureShaderId, textureShaderObject)

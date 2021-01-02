@@ -16,8 +16,10 @@ import engine.feature.texture.TextureLoader
 import java.awt.Dimension
 import java.awt.event.KeyEvent
 
-class TextureArrayDemo(private val dim: Dimension,
-                       private val shaderCreator: ShaderCreator) : GameState {
+class TextureArrayDemo(
+        private val dim: Dimension,
+        private val shaderCreator: ShaderCreator
+) : GameState {
 
     private lateinit var textureArrayShader: Shader
     private lateinit var textureShader: Shader
@@ -26,17 +28,20 @@ class TextureArrayDemo(private val dim: Dimension,
     private lateinit var texturedObject: OpenGlObject2D
 
     override fun init(glAutoDrawable: GLAutoDrawable) {
-
         val gl = glAutoDrawable.gl.gL4
+
+        shaderCreator.attachGl(gl)
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(1f, 1f, 1f, 1.0f)
 
-        textureArrayShader = shaderCreator.create("shaders/texArrayVertexShader.glsl",
-                "shaders/texArrayFragmentShader.glsl", gl)
+        textureArrayShader = shaderCreator.create(
+                "shaders/texArrayVertexShader.glsl",
+                "shaders/texArrayFragmentShader.glsl")
 
-        textureShader = shaderCreator.create("shaders/texturedVertexShader.glsl",
-                "shaders/texturedFragmentShader.glsl", gl)
+        textureShader = shaderCreator.create(
+                "shaders/texturedVertexShader.glsl",
+                "shaders/texturedFragmentShader.glsl")
 
         renderProjection = Matrices.ortho(0.0f, dim.width.toFloat(), dim.height.toFloat(),
                 0.0f, 0.0f, 1.0f)

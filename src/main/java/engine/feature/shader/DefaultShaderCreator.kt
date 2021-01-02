@@ -7,6 +7,8 @@ import java.io.IOException
 
 class DefaultShaderCreator : ShaderCreator {
 
+    private var gl: GL4? = null
+
     private fun getShaderSource(resourceName: String): String {
         val fileURL = javaClass.classLoader.getResource(resourceName)
         var out = ""
@@ -22,7 +24,11 @@ class DefaultShaderCreator : ShaderCreator {
 
     private fun getShaderBuffer(resourceName: String): Array<String> = arrayOf(getShaderSource(resourceName))
 
-    override fun create(vertexSource: String, fragmentSource: String, gl: GL4): Shader {
+    override fun attachGl(gl: GL4) {
+        this.gl = gl
+    }
+
+    override fun create(vertexSource: String, fragmentSource: String): Shader {
         val out = Shader(gl)
         out.compile(getShaderBuffer(vertexSource),
                     getShaderBuffer(fragmentSource),
@@ -31,7 +37,7 @@ class DefaultShaderCreator : ShaderCreator {
         return out
     }
 
-    override fun create(vertexSource: String, fragmentSource: String, geometrySource: String, gl: GL4): Shader {
+    override fun create(vertexSource: String, fragmentSource: String, geometrySource: String): Shader {
         val out = Shader(gl)
         out.compile(getShaderBuffer(vertexSource),
                     getShaderBuffer(fragmentSource),
