@@ -3,15 +3,15 @@ package engine.core
 import com.jogamp.opengl.GL
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
+import engine.core.buffered.Buffered
+import engine.core.buffered.OpenGlBuffered
 import engine.feature.collision.BoundingBox
 import engine.feature.matrix.MatrixInteractor
 import engine.feature.shader.Shader
 import engine.feature.shader.ShaderVariableKey
 import engine.feature.texture.TextureLoader
-
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
-import java.util.ArrayList
 
 open class OpenGlObject2D(bufferParamsCount: Int,
                           private val verticesCount: Int,
@@ -24,14 +24,14 @@ open class OpenGlObject2D(bufferParamsCount: Int,
     val isTextured: Boolean
         get() = texture != null || textureArray != null
 
-    private val buffers: IntBuffer
-    private val boxBuffer: IntBuffer
-    private val paramsCount: ArrayList<Int>
-    private var buffersFilled: Int = 0
     private val buffersCount: Int = bufferParamsCount
+    private val buffers = IntBuffer.allocate(buffersCount)
+    private val boxBuffer: IntBuffer = IntBuffer.allocate(1)
+    private val paramsCount = mutableListOf<Int>()
+    private var buffersFilled: Int = 0
 
-    private val vertexArray: IntBuffer
-    private val boxVertexArray: IntBuffer
+    private val vertexArray = IntBuffer.allocate(1)
+    private val boxVertexArray = IntBuffer.allocate(1)
 
     private val boxVerticesCount = 8
 
@@ -43,18 +43,6 @@ open class OpenGlObject2D(bufferParamsCount: Int,
         set(value) {
             boundingBox = value
         }
-
-    init {
-        buffersFilled = 0
-        buffers = IntBuffer.allocate(buffersCount)
-        boxBuffer = IntBuffer.allocate(1)
-        vertexArray = IntBuffer.allocate(1)
-        boxVertexArray = IntBuffer.allocate(1)
-        paramsCount = ArrayList()
-        uniformName = null
-        texture = null
-        textureArray = null
-    }
 
     open fun initRenderData(textureFilePaths: Array<String>,
                             texArray: Boolean,
@@ -104,8 +92,8 @@ open class OpenGlObject2D(bufferParamsCount: Int,
     fun drawBox(shader: Shader) {
         boundingBox?.let {
             shader.setMatrix4f(ShaderVariableKey.Mat.model,
-                               MatrixInteractor.getFinalMatrix(it.posX, it.posY, it.width, it.height, 0f),
-                     true)
+                    MatrixInteractor.getFinalMatrix(it.posX, it.posY, it.width, it.height, 0f),
+                    true)
 
             with(gl) {
                 glBindVertexArray(boxVertexArray.get(0))
@@ -129,10 +117,11 @@ open class OpenGlObject2D(bufferParamsCount: Int,
 
         dataArrays.forEach {
             val floatBuffer = FloatBuffer.wrap(it)
+            val bufferSize = (4 * it.size).toLong()
 
             with(gl) {
                 glBindBuffer(GL4.GL_ARRAY_BUFFER, buffers.get(buffersFilled++))
-                glBufferData(GL4.GL_ARRAY_BUFFER, (4 * it.size).toLong(), floatBuffer, GL4.GL_STATIC_DRAW)
+                glBufferData(GL4.GL_ARRAY_BUFFER, bufferSize, floatBuffer, GL4.GL_STATIC_DRAW)
             }
 
             paramsCount.add(it.size / verticesCount)
@@ -173,14 +162,14 @@ open class OpenGlObject2D(bufferParamsCount: Int,
     }
 
     private fun setTexParameters() =
-        with(texture) {
-            this?.let {
-                setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
-                setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
-                setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE)
-                setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE)
+            with(texture) {
+                this?.let {
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE)
+                }
             }
-        }
 
 
     private fun loadTextureArray(vararg filePaths: String) {
@@ -222,11 +211,13 @@ open class OpenGlObject2D(bufferParamsCount: Int,
         with(gl) {
             glGenBuffers(1, boxBuffer)
 
-            val bbVerticesArray = floatArrayOf(0f, 0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 0f, 1f, 0f, 1f, 0f, 0f)
+            val bbVerticesArray = Buffered.RECTANGLE_VERTICES
             val bbVerticesBuffer = FloatBuffer.wrap(bbVerticesArray)
 
+            val bufferSize = 4 * (bbVerticesArray.size).toLong()
+
             glBindBuffer(GL4.GL_ARRAY_BUFFER, boxBuffer.get(0))
-            glBufferData(GL4.GL_ARRAY_BUFFER, 4 * (bbVerticesArray.size).toLong(), bbVerticesBuffer, GL4.GL_STATIC_DRAW)
+            glBufferData(GL4.GL_ARRAY_BUFFER, bufferSize, bbVerticesBuffer, GL4.GL_STATIC_DRAW)
         }
     }
 
