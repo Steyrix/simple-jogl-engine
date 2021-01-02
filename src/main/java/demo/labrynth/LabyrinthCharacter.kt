@@ -6,11 +6,14 @@ import engine.util.geometry.PointF
 import java.awt.event.KeyEvent
 import java.util.*
 
-class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
-                                              width: Float, height: Float,
-                                              animatedObject: AnimatedObject,
-                                              graphicalObject: OpenGlObject2D)
-    : CompositeObject(animatedObject, null, graphicalObject) {
+class LabyrinthCharacter internal constructor(
+        posX: Float,
+        posY: Float,
+        width: Float,
+        height: Float,
+        animatedObject: AnimatedObject,
+        graphicalObject: OpenGlObject2D
+) : CompositeObject(animatedObject, null, graphicalObject) {
 
     private val keyboardItems: BooleanArray = BooleanArray(1000000)
     private val collisionPoints: ArrayList<PointF> = arrayListOf()
@@ -123,16 +126,16 @@ class LabyrinthCharacter internal constructor(posX: Float, posY: Float,
 
     private fun isBottomContact(anotherBox: BoundingBox): Boolean {
         return anotherBox.containsNumberOfPoints(2, false,
-                        collisionPoints[1],
-                        collisionPoints[2],
-                        collisionPoints[5])
+                collisionPoints[1],
+                collisionPoints[2],
+                collisionPoints[5])
     }
 
     private fun detectHorizontalContact(anotherBox: BoundingBox): Boolean {
         return anotherBox.containsNumberOfPoints(2, true,
-                        collisionPoints[0],
-                        collisionPoints[1],
-                        collisionPoints[6]) ||
+                collisionPoints[0],
+                collisionPoints[1],
+                collisionPoints[6]) ||
                 anotherBox.containsNumberOfPoints(2, true,
                         collisionPoints[2],
                         collisionPoints[3],

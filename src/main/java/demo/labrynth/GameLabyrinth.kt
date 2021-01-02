@@ -28,10 +28,14 @@ import java.awt.event.*
 import java.util.ArrayList
 
 //TODO: load every texture with its own unique id
-class GameLabyrinth(dim: Dimension,
-                    private val shaderCreator: ShaderCreator,
-                    private val shaderInteractor: ShaderInteractor) : GameState {
+class GameLabyrinth(
+        dim: Dimension,
+        private val shaderCreator: ShaderCreator,
+        private val shaderInteractor: ShaderInteractor
+) : GameState {
 
+    private val presets = LabyrinthPresets()
+    private val characterAnimations = presets.characterPresets.animation.animations
     private val boundObjects: ArrayList<OpenGlObject2D> = ArrayList()
 
     private val textureShaderId = "TEXTURED"
@@ -61,20 +65,18 @@ class GameLabyrinth(dim: Dimension,
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
-        animationComponent = AnimatedObject(0.1f, 0.333f,
-                BasicAnimation("WALK", 1, 0, 6, 1, 100f),
-                BasicAnimation("JUMP", 2, 0, 3, 1, 200f),
-                BasicAnimation("IDLE", 3, 0, 1, 1, 100f))
+        animationComponent = AnimatedObject(0.1f, 0.333f, characterAnimations)
 
-        graphicalComponent = OpenGlObject2D(2, 6, gl, 0).apply {
-            box = BoundingBox(25f, 25f, 50f, 70f)
-            val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
-            initRenderData(
-                    arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
-                    false,
-                    Buffered.RECTANGLE_INDICES,
-                    uvCoords)
-        }
+        graphicalComponent = OpenGlObject2D(2, 6, gl, 0)
+                .apply {
+                    box = BoundingBox(25f, 25f, 50f, 70f)
+                    val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
+                    initRenderData(
+                            arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
+                            false,
+                            Buffered.RECTANGLE_INDICES,
+                            uvCoords)
+                }
 
         labyrinthCharacter = LabyrinthCharacter(25f, 25f, 50f, 70f, animationComponent!!, graphicalComponent!!)
 
@@ -215,7 +217,7 @@ class GameLabyrinth(dim: Dimension,
 
         this.boundObjects.addAll(perimeter)
 
-        background = object : OpenGlObject2D(2,6, gl,0) {
+        background = object : OpenGlObject2D(2, 6, gl, 0) {
             public override fun loadTexture(filePath: String) {
                 try {
                     this.texture = TextureLoader.loadTexture(filePath)

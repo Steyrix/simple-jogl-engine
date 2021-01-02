@@ -4,20 +4,13 @@ import engine.feature.animation.BasicAnimation
 import engine.feature.shader.Shader
 import engine.feature.shader.ShaderVariableKey
 
-import java.util.ArrayList
-import java.util.Collections
+// TODO: what if animations list is empty?
+class AnimatedObject(
+        var frameSizeX: Float,
+        var frameSizeY: Float,
+        val animations: MutableList<BasicAnimation>) : Entity {
 
-class AnimatedObject(private var frameSizeX: Float,
-                     private var frameSizeY: Float,
-                     vararg animationSet: BasicAnimation) : Entity {
-
-    var animations: ArrayList<BasicAnimation> = ArrayList()
-    var currentAnim: BasicAnimation
-
-    init {
-        Collections.addAll(animations, *animationSet)
-        currentAnim = animations[0]
-    }
+    var currentAnim: BasicAnimation = animations[0]
 
     fun defineAnimationVariables(graphicalObject: OpenGlObject2D, shader: Shader) {
         if (graphicalObject.isTextured) {
