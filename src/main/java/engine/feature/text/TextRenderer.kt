@@ -3,6 +3,7 @@ package engine.feature.text
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
 import engine.core.OpenGlObject2D
+import engine.core.buffered.Buffered
 import engine.feature.shader.Shader
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
@@ -27,7 +28,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
         if (!cache.containsKey(c)) {
             glObject = OpenGlObject2D(2, 6, gl, 100)
             val uvCoordinates = getCharUV(c)
-            val bufferData = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
+            val bufferData = Buffered.RECTANGLE_INDICES
             glObject.initRenderData(this.textureAtlas, bufferData, uvCoordinates)
             cache[c] = glObject
         } else glObject = cache[c]!!

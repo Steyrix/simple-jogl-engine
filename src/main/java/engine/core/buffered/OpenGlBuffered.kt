@@ -1,4 +1,4 @@
-package engine.core
+package engine.core.buffered
 
 interface OpenGlBuffered {
     fun genVertexArray()

@@ -12,6 +12,7 @@ import engine.core.AnimatedObject
 import engine.feature.ResourceLoader
 import engine.feature.animation.BasicAnimation
 import engine.core.OpenGlObject2D
+import engine.core.buffered.Buffered
 import engine.feature.primitive.Rectangle
 import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.text.TextRenderer
@@ -68,8 +69,11 @@ class GameLabyrinth(dim: Dimension,
         graphicalComponent = OpenGlObject2D(2, 6, gl, 0).apply {
             box = BoundingBox(25f, 25f, 50f, 70f)
             val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
-            initRenderData(arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
-                    false, Rectangle.RECTANGLE_BUFFER, uvCoords)
+            initRenderData(
+                    arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
+                    false,
+                    Buffered.RECTANGLE_INDICES,
+                    uvCoords)
         }
 
         labyrinthCharacter = LabyrinthCharacter(25f, 25f, 50f, 70f, animationComponent!!, graphicalComponent!!)
@@ -132,9 +136,9 @@ class GameLabyrinth(dim: Dimension,
         shaderInteractor.activateShader(textShaderId)
         myRenderer!!.drawText("Sample \n Text", Dimension(50, 50), gl, PointF(600f, 200f), curr)
 
-        curr = shaderInteractor.getShader(colorShaderId)
-        shaderInteractor.activateShader(colorShaderId)
-        rect!!.draw(600f, 100f, 50f, 100f, 0f, curr)
+        // curr = shaderInteractor.getShader(colorShaderId)
+        // shaderInteractor.activateShader(colorShaderId)
+        // rect!!.draw(600f, 100f, 50f, 100f, 0f, curr)
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {
@@ -222,7 +226,7 @@ class GameLabyrinth(dim: Dimension,
 
             }
         }.apply {
-            val bgVertices = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
+            val bgVertices = Buffered.RECTANGLE_INDICES
             val bgUVdata = floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f)
             val texturePath = "textures/labyrinth/abbey_base.jpg"
             initRenderData(arrayOf(ResourceLoader.getAbsolutePath(texturePath)), false, bgVertices, bgUVdata)

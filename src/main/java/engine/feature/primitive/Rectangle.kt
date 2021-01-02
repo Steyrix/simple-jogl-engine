@@ -3,6 +3,7 @@ package engine.feature.primitive
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
 import engine.core.OpenGlObject2D
+import engine.core.buffered.Buffered
 import engine.util.color.ColorUtil
 
 import java.awt.*
@@ -61,8 +62,8 @@ class Rectangle(gl: GL4, textureId: Int) :
     override fun isBufferValid(dataArray: FloatArray) = dataArray.size % RECTANGLE_VERTICES_COUNT == 0
 
     companion object {
-        var RECTANGLE_BUFFER = floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
-        var RECTANGLE_REVERSED_BUFFER = floatArrayOf(0f, 0f, 1f, 1f, 0f, 1f, 0f, 0f, 1f, 0f, 1f, 1f)
+        var RECTANGLE_BUFFER = Buffered.RECTANGLE_INDICES
+        var RECTANGLE_REVERSED_BUFFER = RECTANGLE_BUFFER.reversedArray()
 
         private const val RECTANGLE_BUFFER_PARAMS_COUNT = 2
         private const val RECTANGLE_VERTICES_COUNT = 6
