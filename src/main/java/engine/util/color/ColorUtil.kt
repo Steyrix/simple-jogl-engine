@@ -13,7 +13,6 @@ object ColorUtil {
             out[i] = colorLine[0]
             out[i + 1] = colorLine[1]
             out[i + 2] = colorLine[2]
-            println(out[i].toString() + ", " + out[i + 1] + ", " + out[i + 2])
             i += colorLineLength
         }
         return out
