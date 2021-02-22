@@ -69,7 +69,6 @@ class GameLabyrinth(
 
         graphicalComponent = OpenGlObject2D(2, 6, gl, 0)
                 .apply {
-                    box = BoundingBox(25f, 25f, 50f, 70f)
                     val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
                     initRenderData(
                             arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),

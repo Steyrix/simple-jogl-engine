@@ -4,7 +4,13 @@ import engine.util.geometry.PointF
 
 import java.util.ArrayList
 
-open class BoundingBox(var posX: Float, var posY: Float, var width: Float, var height: Float) : Cloneable {
+open class BoundingBox(
+        var posX: Float,
+        var posY: Float,
+        var width: Float,
+        var height: Float,
+        override var shouldCollide: Boolean
+) : Cloneable, ColliderEntity {
 
     val rightX: Float
         get() = posX + width
@@ -121,5 +127,5 @@ open class BoundingBox(var posX: Float, var posY: Float, var width: Float, var h
 
     override fun toString() = "posX:$posX; posY:$posY; rightX:$rightX; bottomY:$bottomY"
 
-    public override fun clone() = BoundingBox(posX, posY, width, height)
+    public override fun clone() = BoundingBox(posX, posY, width, height, shouldCollide)
 }

@@ -15,6 +15,7 @@ import engine.feature.tiled.TileMap
 import java.awt.Dimension
 import java.awt.event.KeyEvent
 
+// TODO: move out properties to config
 class MapDemo(
         private val dim: Dimension,
         private val shaderCreator: ShaderCreator,
@@ -26,6 +27,8 @@ class MapDemo(
     private var map: TileMap? = null
 
     private var controllable: ControllableObject? = null
+    private val colliderTilesIds: MutableList<Int> = mutableListOf()
+    private val colliderLayersIds: MutableList<Int> = mutableListOf()
 
     override fun init(glAutoDrawable: GLAutoDrawable) {
         val gl = glAutoDrawable.gl.gL4
@@ -36,6 +39,14 @@ class MapDemo(
         gl.glClearColor(1f, 1f, 1f, 1.0f)
 
         map = TileMap.createInstance(ResourceLoader.getFileFromAbsolutePath("maps/cave/cave_level.xml"))
+
+        map?.layers?.forEachIndexed { index, it ->
+            val collision = it.getProperty("collision")
+            if (collision != null && collision.value == true) {
+                colliderLayersIds.add(index)
+                colliderTilesIds.addAll(it.tiles)
+            }
+        }
 
         texShader = shaderCreator.create(
                 "shaders/texturedVertexShader.glsl",

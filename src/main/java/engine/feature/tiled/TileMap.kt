@@ -7,7 +7,11 @@ import java.io.File
 import kotlin.math.roundToInt
 
 
-class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>) {
+class TileMap internal constructor(
+        private val tileLayers: MutableList<TileLayer>
+) {
+    val layers: List<TileLayer>
+        get() = tileLayers.toList()
 
     // width and height are measured in tiles multiplied by their size
     private var currentWidth = 0f
@@ -38,50 +42,8 @@ class TileMap internal constructor(private val tileLayers: ArrayList<TileLayer>)
         return yTileNumber * widthInTiles + xTileNumber
     }
 
-    fun getPropertyValueForTile(tileNumber: Int, layerNumber: Int = 0, propertyName: String): Any? {
-        if (!arePropertiesActiveForTile(tileNumber, layerNumber)) return null
-
-        val property = getLayerProperty(layerNumber, propertyName)
-        return property.value
-    }
-
-    fun getLayerProperty(layerNumber: Int = 0, propertyName: String): LayerProperty<out Any> {
-        val layer = getLayer(layerNumber)
-        return layer.properties.find { it.getName() == propertyName }
-                ?: throw Exception("Property with name $propertyName does not exist")
-    }
-
-    fun arePropertiesActiveForTile(tileNumber: Int, layerNumber: Int = 0): Boolean {
-        val layer = getLayer(layerNumber)
-        return getTile(tileNumber, layer) != EMPTY_TILE_ID
-    }
-
     override fun toString(): String {
         return "TileMap. Layers count: " + tileLayers.size
-    }
-
-    private fun getLayer(layerIndex: Int): TileLayer {
-        checkLayerExistence(layerIndex)
-        return tileLayers[layerIndex]
-    }
-
-    private fun getTile(tileNumber: Int, layer: TileLayer): Int {
-        checkTileExistence(tileNumber, layer)
-        return layer.tileData[tileNumber]
-    }
-
-    private fun checkLayerExistence(layerIndex: Int) {
-        val incorrectLayerIndex = layerIndex >= tileLayers.size || layerIndex < 0
-        if (incorrectLayerIndex) {
-            throw Exception("There is no layer with index $layerIndex")
-        }
-    }
-
-    private fun checkTileExistence(tileIndex: Int, layer: TileLayer) {
-        val incorrectTileIndex = tileIndex >= layer.tileData.size || tileIndex < 0
-        if (incorrectTileIndex) {
-            throw Exception("There is no tile with number $tileIndex in the layer")
-        }
     }
 
     private fun getTiledPosition(tileSize: Float, pos: Float): Int {

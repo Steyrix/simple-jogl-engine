@@ -6,11 +6,15 @@ import engine.feature.shader.Shader
 import engine.feature.tiled.property.LayerProperty
 import engine.util.geometry.PointF
 
-internal class TileLayer(internal val width: Int,
-                         internal val height: Int,
-                         internal val tileData: ArrayList<Int>,
-                         internal val properties: ArrayList<LayerProperty<out Any>>,
-                         private val tileSet: TileSet) {
+class TileLayer(
+        internal val width: Int,
+        internal val height: Int,
+        private val tileData: MutableList<Int>,
+        private val properties: MutableList<LayerProperty<out Any>>,
+        private val tileSet: TileSet
+) {
+    val tiles: List<Int>
+        get() = tileData.toList()
 
     private var openGLObject: OpenGlObject2D? = null
 
@@ -55,7 +59,7 @@ internal class TileLayer(internal val width: Int,
         glWidth = (width * tileSet.tileWidth).toFloat()
         glHeight = (height * tileSet.tileHeight).toFloat()
 
-        val out = OpenGlObject2D(2, allVertices.size / 2, gl,0)
+        val out = OpenGlObject2D(2, allVertices.size / 2, gl, 0)
 
         out.initRenderData(tileSet.texture, allVertices.toFloatArray(), allUV.toFloatArray())
 
@@ -77,4 +81,6 @@ internal class TileLayer(internal val width: Int,
         checkObject(gl)
         openGLObject!!.draw(0f, 0f, xSize, ySize, 0f, shader)
     }
+
+    fun getProperty(propertyName: String): LayerProperty<out Any>? = properties.find { it.getName() == propertyName }
 }

@@ -23,7 +23,6 @@ object Main {
         glCanvas.isFocusable = true
         glCanvas.requestFocus()
 
-        //Put your state here
         val listener = OpenGlContext(
                 GameLabyrinth(glCanvas.size, DefaultShaderCreator(), DefaultShaderInteractor(DefaultShaderRepo())),
                 ElapsedTimeUpdater(60))

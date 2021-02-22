@@ -1,7 +1,7 @@
 package engine.feature.collision.collider
 
-import engine.feature.collision.BoundingBox
+import engine.feature.collision.ColliderEntity
 
-interface SimpleCollider {
-    fun reactToCollision(anotherBox: BoundingBox)
+interface SimpleCollider : ColliderEntity {
+    fun reactToCollision(entity: ColliderEntity)
 }

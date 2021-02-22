@@ -55,7 +55,13 @@ internal class LabyrinthLevelCreator {
 
     private fun replaceBrackets(l: String) = l.replace("[\\[,\\];]".toRegex(), " ")
 
-    private fun createNewRectObject(startX: Int, startY: Int, horSize: Int, vertSize: Int, gl: GL4) : OpenGlObject2D {
+    private fun createNewRectObject(
+            startX: Int,
+            startY: Int,
+            horSize: Int,
+            vertSize: Int,
+            gl: GL4
+    ) : OpenGlObject2D {
         // If texture is horizontal rectangle spawn height only once, if vertical - spawn width only once
         val floatArrUV = if (horSize >= vertSize) {
             val ratio = (horSize / vertSize).toFloat()
@@ -66,8 +72,15 @@ internal class LabyrinthLevelCreator {
         }
 
         return getLevelObject(gl, 6).apply {
-                box = BoundingBox(startX.toFloat(), startY.toFloat(), horSize.toFloat(), vertSize.toFloat())
-                initRenderData(arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
+                box = BoundingBox(
+                        startX.toFloat(),
+                        startY.toFloat(),
+                        horSize.toFloat(),
+                        vertSize.toFloat(),
+                        shouldCollide = true
+                )
+                initRenderData(
+                        arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
                         false,
                         floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f),
                         floatArrUV)

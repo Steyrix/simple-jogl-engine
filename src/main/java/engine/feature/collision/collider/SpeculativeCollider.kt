@@ -1,8 +1,8 @@
 package engine.feature.collision.collider
 
-import engine.feature.collision.BoundingBox
+import engine.feature.collision.ColliderEntity
 
 interface SpeculativeCollider : SimpleCollider {
-    val nextBox: BoundingBox
+    val potentialEntity: ColliderEntity
     fun preventCollision()
 }

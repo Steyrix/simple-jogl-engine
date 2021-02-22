@@ -26,6 +26,7 @@ abstract class CompositeObject(protected var animationComponent: AnimatedObject?
 
     fun setBoundingBox(box: BoundingBox) {
         graphicalComponent.box = box
+
     }
 
     fun draw(x: Float, y: Float, xSize: Float, ySize: Float, rotationAngle: Float, shader: Shader) =

@@ -2,6 +2,7 @@ package demo.labrynth
 
 import engine.core.*
 import engine.feature.collision.BoundingBox
+import engine.feature.collision.ColliderEntity
 import engine.util.geometry.PointF
 import java.awt.event.KeyEvent
 import java.util.*
@@ -31,17 +32,21 @@ class LabyrinthCharacter internal constructor(
 
     private val controllableObject: ControllableObject = object : ControllableObject() {
 
-        override fun reactToCollision(anotherBox: BoundingBox) {
-            if (isBottomContact(anotherBox)) {
+        override var shouldCollide: Boolean = true
+
+        override fun reactToCollision(entity: ColliderEntity) {
+            if (entity !is BoundingBox || !shouldCollide) return
+
+            if (isBottomContact(entity)) {
                 jumpState = false
-                currentBottomPlatform = anotherBox
+                currentBottomPlatform = entity
             }
             if (currentBottomPlatform != null && !isBottomContact(currentBottomPlatform!!)) {
                 currentBottomPlatform = null
                 jumpState = true
             }
-            if (anotherBox.containsPoint(true, collisionPoints)) {
-                processCollision(anotherBox)
+            if (entity.containsPoint(true, collisionPoints)) {
+                processCollision(entity)
             }
         }
 
@@ -63,10 +68,10 @@ class LabyrinthCharacter internal constructor(
 
     init {
         setCtrlComponent(controllableObject)
-        initCollisionPoints(collisionPoints)
 
-        val box = BoundingBox(posX, posY, width, height)
+        val box = BoundingBox(posX, posY, width, height, shouldCollide = true)
         setBoundingBox(box)
+        initCollisionPoints(collisionPoints)
 
         currentBottomPlatform = null
         isWalking = false
