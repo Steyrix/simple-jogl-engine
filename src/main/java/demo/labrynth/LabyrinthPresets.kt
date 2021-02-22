@@ -2,6 +2,7 @@ package demo.labrynth
 
 import engine.feature.animation.BasicAnimation
 
+// TODO: implement
 data class LabyrinthPresets(
         val characterPresets: CharacterPresets = CharacterPresets()
 )

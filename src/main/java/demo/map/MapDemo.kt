@@ -15,7 +15,10 @@ import engine.feature.tiled.TileMap
 import java.awt.Dimension
 import java.awt.event.KeyEvent
 
-// TODO: move out properties to config
+// TODO: test out moving controllable object on tile map
+// TODO: implement colliding with specific tiles
+// TODO: implement tile properties
+// TODO: extend tile demo and make it playable
 class MapDemo(
         private val dim: Dimension,
         private val shaderCreator: ShaderCreator,
@@ -53,8 +56,13 @@ class MapDemo(
                 "shaders/texturedFragmentShader.glsl"
         )
 
-        renderProjection = Matrices.ortho(0.0f, dim.width.toFloat(), dim.height.toFloat(),
-                0.0f, 0.0f, 1.0f)
+        renderProjection = Matrices.ortho(
+                0.0f,
+                dim.width.toFloat(),
+                dim.height.toFloat(),
+                0.0f,
+                0.0f,
+                1.0f)
     }
 
     override fun dispose(glAutoDrawable: GLAutoDrawable) {

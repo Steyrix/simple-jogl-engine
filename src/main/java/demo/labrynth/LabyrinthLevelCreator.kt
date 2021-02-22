@@ -2,6 +2,7 @@ package demo.labrynth
 
 import com.jogamp.opengl.GL4
 import engine.core.OpenGlObject2D
+import engine.core.buffered.Buffered
 import engine.feature.collision.BoundingBox
 import engine.feature.texture.TextureLoader
 
@@ -82,7 +83,7 @@ internal class LabyrinthLevelCreator {
                 initRenderData(
                         arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
                         false,
-                        floatArrayOf(0f, 1f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f),
+                        Buffered.RECTANGLE_INDICES,
                         floatArrUV)
                }
     }

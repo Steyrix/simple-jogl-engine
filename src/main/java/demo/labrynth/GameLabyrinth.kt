@@ -21,6 +21,7 @@ import engine.core.state.GameState
 import engine.feature.collision.BoundingBox
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderInteractor
+import engine.feature.text.data.TextDataUtils
 
 import java.awt.*
 import java.awt.event.*
@@ -77,27 +78,34 @@ class GameLabyrinth(
                             uvCoords)
                 }
 
-        labyrinthCharacter = LabyrinthCharacter(25f, 25f, 50f, 70f, animationComponent!!, graphicalComponent!!)
+        labyrinthCharacter = LabyrinthCharacter(
+                posX = 25f,
+                posY = 25f,
+                width = 50f,
+                height = 70f,
+                animatedObject = animationComponent!!,
+                graphicalObject = graphicalComponent!!)
 
         initLevelGeography(gl)
-        this.renderProjection = Matrices.ortho(0.0f, screenWidth.toFloat(), screenHeight.toFloat(),
-                0.0f, 0.0f, 1.0f)
+
+        this.renderProjection = Matrices.ortho(
+                0.0f,
+                screenWidth.toFloat(),
+                screenHeight.toFloat(),
+                0.0f,
+                0.0f,
+                1.0f)
 
         rect = Rectangle(gl, 0).apply {
             init(Color.WHITE)
         }
 
-        val charArr = arrayOf('p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '±', '`',
-                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'P', 'Q', 'R', 'S', 'T',
-                'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-                'I', 'J', 'K', 'L', 'M', 'N', 'O', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<',
-                '=', '>', '?', ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/')
+        val fontAtlasPath = this.javaClass.classLoader.getResource("textures/simpleFontAtlas.png")!!.path
 
-        val chars = ArrayList<Char>()
-        chars.addAll(charArr.asList())
-
-        myRenderer = TextRenderer.getRenderer(Dimension(64, 64),
-                this.javaClass.classLoader.getResource("textures/simpleFontAtlas.png")!!.path, chars)
+        myRenderer = TextRenderer.getRenderer(
+                Dimension(64, 64),
+                fontAtlasPath,
+                TextDataUtils.symbolSetSimple())
     }
 
     override fun dispose(glAutoDrawable: GLAutoDrawable) {
@@ -143,12 +151,20 @@ class GameLabyrinth(
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {
-        this.renderProjection = Matrices.ortho(0.0f, screenWidth.toFloat(), screenHeight.toFloat(), 0.0f, 0.0f, 1.0f)
+        this.renderProjection = Matrices.ortho(
+                0.0f,
+                screenWidth.toFloat(),
+                screenHeight.toFloat(),
+                0.0f,
+                0.0f,
+                1.0f)
     }
 
     override fun update(deltaTime: Float) {
-        for (o in boundObjects)
-            labyrinthCharacter?.react(o)
+        boundObjects.forEach {
+            labyrinthCharacter?.react(it)
+        }
+
         labyrinthCharacter?.update(deltaTime)
     }
 
@@ -224,7 +240,8 @@ class GameLabyrinth(
     private fun initLevelGeography(gl: GL4) {
         val levelCreator = LabyrinthLevelCreator()
         val levelPath = "config/labyrinthlevels/defaultlevel/defaultlevel.ini"
-        val perimeter = levelCreator.createLevelFromFile(gl, ResourceLoader.getAbsolutePath(levelPath))
+        val levelAbsolutePath = ResourceLoader.getAbsolutePath(levelPath)
+        val perimeter = levelCreator.createLevelFromFile(gl, levelAbsolutePath)
 
         this.boundObjects.addAll(perimeter)
 
@@ -242,7 +259,11 @@ class GameLabyrinth(
             val bgVertices = Buffered.RECTANGLE_INDICES
             val bgUVdata = floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f)
             val texturePath = "textures/labyrinth/abbey_base.jpg"
-            initRenderData(arrayOf(ResourceLoader.getAbsolutePath(texturePath)), false, bgVertices, bgUVdata)
+            initRenderData(
+                    arrayOf(ResourceLoader.getAbsolutePath(texturePath)),
+                    false,
+                    bgVertices,
+                    bgUVdata)
         }
     }
 

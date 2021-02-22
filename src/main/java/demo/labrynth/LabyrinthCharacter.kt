@@ -7,6 +7,8 @@ import engine.util.geometry.PointF
 import java.awt.event.KeyEvent
 import java.util.*
 
+
+// TODO: fucking heavy, refactor - better split/optimize
 class LabyrinthCharacter internal constructor(
         posX: Float,
         posY: Float,

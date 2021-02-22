@@ -52,7 +52,7 @@ class Rectangle(gl: GL4, textureId: Int) :
         errMsg = "Rectangular vertex data should be supplied as the first argument for rectangle primitive. \n" +
                 "You can use Rectangle.init() instead"
 
-        if (!Arrays.equals(RECTANGLE_BUFFER, dataArrays[0]))
+        if (!RECTANGLE_BUFFER.contentEquals(dataArrays[0]))
             throw IllegalArgumentException(errMsg)
 
         if (!isBufferValid(dataArrays[1]))
