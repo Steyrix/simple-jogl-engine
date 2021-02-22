@@ -18,7 +18,6 @@ import engine.feature.text.TextRenderer
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
 import engine.core.state.GameState
-import engine.feature.collision.BoundingBox
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderInteractor
 import engine.feature.text.data.TextDataUtils
@@ -66,16 +65,19 @@ class GameLabyrinth(
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
-        animationComponent = AnimatedObject(0.1f, 0.333f, characterAnimations)
+        val frameSizeX = 0.1f
+        val frameSizeY = 0.333f
+
+        animationComponent = AnimatedObject(frameSizeX, frameSizeY, characterAnimations)
 
         graphicalComponent = OpenGlObject2D(2, 6, gl, 0)
                 .apply {
-                    val uvCoords = floatArrayOf(0f, 0f, 0.1f, 0.333f, 0f, 0.333f, 0f, 0f, 0.1f, 0f, 0.1f, 0.333f)
+                    val UV = Buffered.getRectangleSectorVertices(frameSizeX, frameSizeY)
                     initRenderData(
-                            arrayOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
+                            listOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
                             false,
                             Buffered.RECTANGLE_INDICES,
-                            uvCoords)
+                            UV)
                 }
 
         labyrinthCharacter = LabyrinthCharacter(
@@ -100,7 +102,7 @@ class GameLabyrinth(
             init(Color.WHITE)
         }
 
-        val fontAtlasPath = this.javaClass.classLoader.getResource("textures/simpleFontAtlas.png")!!.path
+        val fontAtlasPath = ResourceLoader.getAbsolutePath("textures/simpleFontAtlas.png")
 
         myRenderer = TextRenderer.getRenderer(
                 Dimension(64, 64),
@@ -256,13 +258,13 @@ class GameLabyrinth(
 
             }
         }.apply {
-            val bgVertices = Buffered.RECTANGLE_INDICES
-            val bgUVdata = floatArrayOf(10f, 0f, 0f, 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f, 10f)
+            val bgIndices = Buffered.RECTANGLE_INDICES
+            val bgUVdata = Buffered.getIndicesScaled(10f, 10f)
             val texturePath = "textures/labyrinth/abbey_base.jpg"
             initRenderData(
-                    arrayOf(ResourceLoader.getAbsolutePath(texturePath)),
+                    listOf(ResourceLoader.getAbsolutePath(texturePath)),
                     false,
-                    bgVertices,
+                    bgIndices,
                     bgUVdata)
         }
     }

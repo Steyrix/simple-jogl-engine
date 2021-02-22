@@ -3,6 +3,7 @@ package demo.labrynth
 import com.jogamp.opengl.GL4
 import engine.core.OpenGlObject2D
 import engine.core.buffered.Buffered
+import engine.feature.ResourceLoader
 import engine.feature.collision.BoundingBox
 import engine.feature.texture.TextureLoader
 
@@ -80,8 +81,11 @@ internal class LabyrinthLevelCreator {
                         vertSize.toFloat(),
                         shouldCollide = true
                 )
+
+                val texturePath = ResourceLoader.getAbsolutePath("textures/labyrinth/abbey_base.jpg")
+
                 initRenderData(
-                        arrayOf(this.javaClass.classLoader.getResource("textures/labyrinth/abbey_base.jpg")!!.path),
+                        listOf(texturePath),
                         false,
                         Buffered.RECTANGLE_INDICES,
                         floatArrUV)

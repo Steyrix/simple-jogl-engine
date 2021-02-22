@@ -51,7 +51,7 @@ class TextureArrayDemo(
                 OpenGlObject2D(2,6, gl,1)
 
         textureArrayObject.initRenderData(
-                arrayOf(ResourceLoader.getAbsolutePath("textures/idle2.png")),
+                listOf(ResourceLoader.getAbsolutePath("textures/idle2.png")),
                 true,
                 Rectangle.RECTANGLE_BUFFER, Rectangle.RECTANGLE_REVERSED_BUFFER)
 

@@ -44,7 +44,7 @@ open class OpenGlObject2D(bufferParamsCount: Int,
             boundingBox = value
         }
 
-    open fun initRenderData(textureFilePaths: Array<String>,
+    open fun initRenderData(textureFilePaths: List<String>,
                             texArray: Boolean,
                             vararg dataArrays: FloatArray) {
         addBuffers(*dataArrays)
@@ -57,7 +57,7 @@ open class OpenGlObject2D(bufferParamsCount: Int,
             loadTexture(textureFilePaths[0])
         }
         if (textureFilePaths.size > 1 || texArray) {
-            loadTextureArray(*textureFilePaths)
+            loadTextureArray(textureFilePaths)
         }
     }
 
@@ -172,8 +172,8 @@ open class OpenGlObject2D(bufferParamsCount: Int,
             }
 
 
-    private fun loadTextureArray(vararg filePaths: String) {
-        textureArray = TextureLoader.loadTextureArray(gl, textureId, *filePaths)
+    private fun loadTextureArray(filePaths: List<String>) {
+        textureArray = TextureLoader.loadTextureArray(gl, textureId, filePaths)
     }
 
     private fun defineTextureState(shader: Shader) {

@@ -32,13 +32,13 @@ object TextureLoader {
     }
 
     @Throws(IllegalFormatException::class)
-    fun loadTextureArray(gl: GL4, textureId: Int, vararg filePaths: String): IntBuffer {
-        val images = ArrayList<TextureData>()
+    fun loadTextureArray(gl: GL4, textureId: Int, filePaths: List<String>): IntBuffer {
+        val images = mutableListOf<TextureData>()
         var width = 0
         var height = 0
 
-        for (path in filePaths) {
-            val textureData = loadTextureData(path, gl)
+        filePaths.forEach {
+            val textureData = loadTextureData(it, gl)
 
             if (images.isEmpty()) {
                 width = textureData.width
@@ -54,7 +54,7 @@ object TextureLoader {
         return defineArrayTexture(images, gl, width, height, textureId)
     }
 
-    private fun defineArrayTexture(textures: ArrayList<TextureData>,
+    private fun defineArrayTexture(textures: List<TextureData>,
                                    gl: GL4,
                                    texLayerWidth: Int,
                                    texLayerHeight: Int,

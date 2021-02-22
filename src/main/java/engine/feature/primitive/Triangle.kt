@@ -19,7 +19,7 @@ class Triangle(gl: GL4, boxDim: Dimension, textureId: Int) :
         }
     }
 
-    fun init(textureFilePaths: Array<String>, texArray: Boolean, vertices: FloatArray, attribDataArray: FloatArray) {
+    fun init(textureFilePaths: List<String>, texArray: Boolean, vertices: FloatArray, attribDataArray: FloatArray) {
         if (isBufferValid(vertices) && isValidVerticesForTriangle(vertices)
                 && isBufferValid(attribDataArray)) {
             super.initRenderData(textureFilePaths, texArray, vertices, attribDataArray)
@@ -38,7 +38,7 @@ class Triangle(gl: GL4, boxDim: Dimension, textureId: Int) :
 
     }
 
-    override fun initRenderData(textureFilePaths: Array<String>, texArray: Boolean, vararg dataArrays: FloatArray) {
+    override fun initRenderData(textureFilePaths: List<String>, texArray: Boolean, vararg dataArrays: FloatArray) {
         validateData(*dataArrays)
         super.initRenderData(textureFilePaths, texArray, *dataArrays)
     }

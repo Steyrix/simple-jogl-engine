@@ -13,7 +13,7 @@ import java.util.Arrays
 class Rectangle(gl: GL4, textureId: Int) :
         OpenGlObject2D(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, textureId), Primitive {
 
-    fun init(textureFilePaths: Array<String>, texArray: Boolean, attribDataArray: FloatArray) {
+    fun init(textureFilePaths: List<String>, texArray: Boolean, attribDataArray: FloatArray) {
         if (isBufferValid(attribDataArray)) {
             super.initRenderData(textureFilePaths, texArray, RECTANGLE_BUFFER, attribDataArray)
         } else {
@@ -34,7 +34,7 @@ class Rectangle(gl: GL4, textureId: Int) :
                                                          ColorUtil.getBufferForColor(RECTANGLE_VERTICES_COUNT, color))
 
 
-    override fun initRenderData(textureFilePaths: Array<String>, texArray: Boolean, vararg dataArrays: FloatArray) {
+    override fun initRenderData(textureFilePaths: List<String>, texArray: Boolean, vararg dataArrays: FloatArray) {
         validateData(*dataArrays)
         super.initRenderData(textureFilePaths, texArray, *dataArrays)
     }
