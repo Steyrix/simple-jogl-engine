@@ -1,4 +1,4 @@
-package engine.feature.text
+package engine.feature.text.data
 
 import engine.core.OpenGlObject2D
 

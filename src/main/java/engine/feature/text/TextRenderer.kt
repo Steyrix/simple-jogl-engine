@@ -5,6 +5,7 @@ import com.jogamp.opengl.util.texture.Texture
 import engine.core.OpenGlObject2D
 import engine.core.buffered.Buffered
 import engine.feature.shader.Shader
+import engine.feature.text.data.Font
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
 
@@ -97,7 +98,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
     companion object {
         fun getRenderer(charSize: Dimension,
                         textureFilePath: String,
-                        characters: ArrayList<Char>): TextRenderer {
+                        characters: MutableList<Char>): TextRenderer {
             var textureAtlas: Texture? = null
             var characterCoordinates: HashMap<Char, PointF>? = null
 
@@ -119,7 +120,7 @@ class TextRenderer private constructor(private val textureAtlas: Texture?,
 
         private fun generateMap(charSize: Dimension,
                                 textureAtlas: Texture,
-                                characters: ArrayList<Char>): HashMap<Char, PointF> {
+                                characters: MutableList<Char>): HashMap<Char, PointF> {
             val out = HashMap<Char, PointF>()
             val xStep: Int
             val yStep: Int
