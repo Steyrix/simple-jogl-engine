@@ -4,9 +4,11 @@ import engine.feature.collision.BoundingBox
 import engine.feature.shader.Shader
 import java.awt.event.KeyEvent
 
-abstract class CompositeObject(protected var animationComponent: AnimatedObject? = null,
-                               protected var controlComponent: ControllableObject? = null,
-                               protected var graphicalComponent: OpenGlObject2D) : Entity {
+abstract class CompositeObject(
+        protected var animationComponent: AnimatedObject? = null,
+        protected var controlComponent: ControllableObject? = null,
+        protected var graphicalComponent: OpenGlObject2D
+) : Entity {
 
     protected var velocityX: Float = 0.toFloat()
     protected var velocityY: Float = 0.toFloat()

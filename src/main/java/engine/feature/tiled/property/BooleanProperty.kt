@@ -1,7 +1,9 @@
 package engine.feature.tiled.property
 
-class BooleanProperty(private val propertyName: String,
-                      private var propertyValue: Boolean) : LayerProperty<Boolean> {
+class BooleanProperty(
+        private val propertyName: String,
+        private var propertyValue: Boolean
+) : LayerProperty<Boolean> {
 
     override fun getName() = propertyName
 

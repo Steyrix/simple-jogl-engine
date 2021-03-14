@@ -8,7 +8,8 @@ import engine.feature.shader.ShaderVariableKey
 class AnimatedObject(
         var frameSizeX: Float,
         var frameSizeY: Float,
-        val animations: MutableList<BasicAnimation>) : Entity {
+        val animations: MutableList<BasicAnimation>
+) : Entity {
 
     var currentAnim: BasicAnimation = animations[0]
 

@@ -8,7 +8,10 @@ import engine.core.state.GameState
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
-class OpenGlContext(private val state: GameState, private val updater: Updater) : GLEventListener, KeyListener {
+class OpenGlContext(
+        private val state: GameState,
+        private val updater: Updater
+) : GLEventListener, KeyListener {
     private val timer: DeltaTimeCalculator = DeltaTimeCalculator()
 
     override fun init(glAutoDrawable: GLAutoDrawable) {

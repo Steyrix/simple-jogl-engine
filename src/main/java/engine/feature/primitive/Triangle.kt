@@ -8,8 +8,11 @@ import engine.util.geometry.PointF
 
 import java.awt.*
 
-class Triangle(gl: GL4, boxDim: Dimension, textureId: Int) :
-        OpenGlObject2D(TRIANGLE_BUFFER_PARAMS_COUNT, TRIANGLE_VERTICES_COUNT, gl, textureId), Primitive {
+class Triangle(
+        gl: GL4,
+        boxDim: Dimension,
+        textureId: Int
+) : OpenGlObject2D(TRIANGLE_BUFFER_PARAMS_COUNT, TRIANGLE_VERTICES_COUNT, gl, textureId), Primitive {
 
     fun init(color: Color, vertices: FloatArray) {
         if (isBufferValid(vertices) && isValidVerticesForTriangle(vertices)) {

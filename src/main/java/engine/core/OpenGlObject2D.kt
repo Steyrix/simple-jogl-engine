@@ -13,10 +13,12 @@ import engine.feature.texture.TextureLoader
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-open class OpenGlObject2D(bufferParamsCount: Int,
-                          private val verticesCount: Int,
-                          protected val gl: GL4,
-                          private val textureId: Int) : OpenGlBuffered, Entity {
+open class OpenGlObject2D(
+        bufferParamsCount: Int,
+        private val verticesCount: Int,
+        protected val gl: GL4,
+        private val textureId: Int
+) : OpenGlBuffered, Entity {
 
     protected var texture: Texture? = null
     protected var textureArray: IntBuffer? = null
@@ -91,7 +93,8 @@ open class OpenGlObject2D(bufferParamsCount: Int,
 
     fun drawBox(shader: Shader) {
         boundingBox?.let {
-            shader.setMatrix4f(ShaderVariableKey.Mat.model,
+            shader.setMatrix4f(
+                    ShaderVariableKey.Mat.model,
                     MatrixInteractor.getFinalMatrix(it.posX, it.posY, it.width, it.height, 0f),
                     true)
 

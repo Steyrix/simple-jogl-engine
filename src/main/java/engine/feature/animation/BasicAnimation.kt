@@ -1,11 +1,13 @@
 package engine.feature.animation
 
-class BasicAnimation(val name: String,
-                     private val animationId: Int,
-                     private val usedLayerId: Int,
-                     private val framesCountX: Int,
-                     private val framesCountY: Int,
-                     private val timeLimit: Float) {
+class BasicAnimation(
+        val name: String,
+        private val animationId: Int,
+        private val usedLayerId: Int,
+        private val framesCountX: Int,
+        private val framesCountY: Int,
+        private val timeLimit: Float
+) {
 
     internal var currentFrameX: Int = 1
     internal var currentFrameY: Int = 1

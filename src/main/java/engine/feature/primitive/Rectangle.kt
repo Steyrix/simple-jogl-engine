@@ -10,8 +10,10 @@ import java.awt.*
 import java.util.Arrays
 
 
-class Rectangle(gl: GL4, textureId: Int) :
-        OpenGlObject2D(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, textureId), Primitive {
+class Rectangle(
+        gl: GL4,
+        textureId: Int
+) : OpenGlObject2D(RECTANGLE_BUFFER_PARAMS_COUNT, RECTANGLE_VERTICES_COUNT, gl, textureId), Primitive {
 
     fun init(textureFilePaths: List<String>, texArray: Boolean, attribDataArray: FloatArray) {
         if (isBufferValid(attribDataArray)) {

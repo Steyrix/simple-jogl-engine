@@ -43,8 +43,13 @@ class TextureArrayDemo(
                 "shaders/texturedVertexShader.glsl",
                 "shaders/texturedFragmentShader.glsl")
 
-        renderProjection = Matrices.ortho(0.0f, dim.width.toFloat(), dim.height.toFloat(),
-                0.0f, 0.0f, 1.0f)
+        renderProjection = Matrices.ortho(
+                0.0f,
+                dim.width.toFloat(),
+                dim.height.toFloat(),
+                0.0f,
+                0.0f,
+                1.0f)
 
         // Define an object that uses array texture as render data
         textureArrayObject =
@@ -61,7 +66,8 @@ class TextureArrayDemo(
 
         texturedObject.initRenderData(
                 TextureLoader.loadTexture(ResourceLoader.getAbsolutePath("textures/idle2.png")),
-                Rectangle.RECTANGLE_BUFFER, Rectangle.RECTANGLE_REVERSED_BUFFER)
+                Rectangle.RECTANGLE_BUFFER,
+                Rectangle.RECTANGLE_REVERSED_BUFFER)
     }
 
     override fun dispose(glAutoDrawable: GLAutoDrawable) = Unit

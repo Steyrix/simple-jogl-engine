@@ -14,9 +14,11 @@ import java.io.IOException
 import java.util.ArrayList
 import java.util.HashMap
 
-class TextRenderer private constructor(private val textureAtlas: Texture?,
-                                       private val characterCoordinates: HashMap<Char, PointF>?,
-                                       private val charSize: Dimension) {
+class TextRenderer private constructor(
+        private val textureAtlas: Texture?,
+        private val characterCoordinates: HashMap<Char, PointF>?,
+        private val charSize: Dimension
+) {
 
     private val cache: HashMap<Char, OpenGlObject2D> = HashMap()
 

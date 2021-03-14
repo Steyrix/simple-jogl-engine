@@ -28,13 +28,13 @@ internal object TiledResourceParser {
 
     private const val LAYER = "layer"
 
-    internal const val SOURCE = "source"
-    internal const val TILE_SET = "tileset"
-    internal const val TILE_WIDTH = "tilewidth"
-    internal const val TILE_HEIGHT = "tileheight"
-    internal const val TILE_COUNT = "tilecount"
-    internal const val COLUMN_COUNT = "columns"
-    internal const val IMAGE = "image"
+    private const val SOURCE = "source"
+    private const val TILE_SET = "tileset"
+    private const val TILE_WIDTH = "tilewidth"
+    private const val TILE_HEIGHT = "tileheight"
+    private const val TILE_COUNT = "tilecount"
+    private const val COLUMN_COUNT = "columns"
+    private const val IMAGE = "image"
 
     internal fun createTileMapFromXml(xmlFile: File): TileMap {
         val document = XmlParser.getDocument(xmlFile)

@@ -1,7 +1,9 @@
 package engine.feature.tiled.property
 
-class FloatProperty(private val propertyName: String,
-                    private var propertyValue: Float) : LayerProperty<Float> {
+class FloatProperty(
+        private val propertyName: String,
+        private var propertyValue: Float
+) : LayerProperty<Float> {
 
     override fun getName() = propertyName
 
