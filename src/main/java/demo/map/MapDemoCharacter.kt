@@ -3,6 +3,7 @@ package demo.map
 import engine.core.*
 import engine.core.controllable.ControllableObject
 import engine.core.controllable.keyboard.KeyboardUtils
+import engine.core.entity.Entity
 import engine.feature.collision.ColliderEntity
 import java.awt.event.KeyEvent
 

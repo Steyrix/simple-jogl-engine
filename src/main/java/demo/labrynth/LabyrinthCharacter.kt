@@ -2,6 +2,7 @@ package demo.labrynth
 
 import engine.core.*
 import engine.core.controllable.ControllableObject
+import engine.core.entity.Entity
 import engine.feature.collision.BoundingBox
 import engine.feature.collision.ColliderEntity
 import engine.util.geometry.PointF
