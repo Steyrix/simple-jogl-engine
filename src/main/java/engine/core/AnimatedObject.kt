@@ -1,5 +1,6 @@
 package engine.core
 
+import engine.core.entity.Entity
 import engine.feature.animation.BasicAnimation
 import engine.feature.shader.Shader
 import engine.feature.shader.ShaderVariableKey

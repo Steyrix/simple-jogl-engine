@@ -5,6 +5,7 @@ import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
 import engine.core.buffered.Buffered
 import engine.core.buffered.OpenGlBuffered
+import engine.core.entity.Entity
 import engine.feature.collision.BoundingBox
 import engine.feature.matrix.MatrixInteractor
 import engine.feature.shader.Shader
