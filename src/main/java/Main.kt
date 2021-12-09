@@ -24,7 +24,7 @@ object Main {
         glCanvas.requestFocus()
 
         val listener = OpenGlContext(
-                GameLabyrinth(glCanvas.size, DefaultShaderCreator(), DefaultShaderInteractor(DefaultShaderRepo())),
+                MapDemo(glCanvas.size, DefaultShaderCreator(), DefaultShaderInteractor(DefaultShaderRepo())),
                 ElapsedTimeUpdater(60))
 
         glCanvas.addGLEventListener(listener)

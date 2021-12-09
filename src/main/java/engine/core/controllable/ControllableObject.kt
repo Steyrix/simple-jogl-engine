@@ -1,5 +1,6 @@
-package engine.core
+package engine.core.controllable
 
+import engine.core.Entity
 import engine.feature.collision.ColliderEntity
 import engine.feature.collision.collider.SimpleCollider
 

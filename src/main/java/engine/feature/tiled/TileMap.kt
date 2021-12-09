@@ -2,7 +2,6 @@ package engine.feature.tiled
 
 import com.jogamp.opengl.GL4
 import engine.feature.shader.Shader
-import engine.feature.tiled.property.LayerProperty
 import java.io.File
 import kotlin.math.roundToInt
 
@@ -37,8 +36,8 @@ class TileMap internal constructor(
         val currentTileWidth = currentWidth / layer.width
         val currentTileHeight = currentHeight / layer.height
 
-        val xTileNumber = getTiledPosition(currentTileWidth, posX)
-        val yTileNumber = getTiledPosition(currentTileHeight, posY)
+        val xTileNumber = getTilePosition(currentTileWidth, posX)
+        val yTileNumber = getTilePosition(currentTileHeight, posY)
         return yTileNumber * widthInTiles + xTileNumber
     }
 
@@ -46,7 +45,7 @@ class TileMap internal constructor(
         return "TileMap. Layers count: " + tileLayers.size
     }
 
-    private fun getTiledPosition(tileSize: Float, pos: Float): Int {
+    private fun getTilePosition(tileSize: Float, pos: Float): Int {
         val roundedPos = pos.roundToInt()
         if (roundedPos == 0) {
             return 0

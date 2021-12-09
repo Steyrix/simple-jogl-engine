@@ -1,5 +1,6 @@
 package engine.core
 
+import engine.core.controllable.ControllableObject
 import engine.feature.collision.BoundingBox
 import engine.feature.shader.Shader
 import java.awt.event.KeyEvent

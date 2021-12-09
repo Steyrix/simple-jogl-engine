@@ -1,6 +1,7 @@
 package demo.labrynth
 
 import engine.core.*
+import engine.core.controllable.ControllableObject
 import engine.feature.collision.BoundingBox
 import engine.feature.collision.ColliderEntity
 import engine.util.geometry.PointF
@@ -52,7 +53,9 @@ class LabyrinthCharacter internal constructor(
             }
         }
 
-        override fun keyTyped(e: KeyEvent) {}
+        override fun isControlledByKey(e: KeyEvent) = false
+
+        override fun keyTyped(e: KeyEvent) = Unit
 
         override fun keyPressed(e: KeyEvent) {
             if (!keyboardItems[e.keyCode]) keyboardItems[e.keyCode] = true
@@ -266,7 +269,7 @@ class LabyrinthCharacter internal constructor(
     }
 
     private fun jump() {
-        velocityY -= 20f
+        velocityY -= 25f
         setAirFloating()
     }
 

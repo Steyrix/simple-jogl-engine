@@ -5,7 +5,9 @@ import com.hackoeur.jglm.Matrices
 import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
-import engine.core.ControllableObject
+import engine.core.AnimatedObject
+import engine.core.OpenGlObject2D
+import engine.core.controllable.ControllableObject
 import engine.core.state.GameState
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
@@ -29,7 +31,9 @@ class MapDemo(
     private var renderProjection: Mat4? = null
     private var map: TileMap? = null
 
-    private var controllable: ControllableObject? = null
+    private var character: MapDemoCharacter? = null
+    private val animationComponent: AnimatedObject? = null
+    private var graphicalComponent: OpenGlObject2D? = null
     private val colliderTilesIds: MutableList<Int> = mutableListOf()
     private val colliderLayersIds: MutableList<Int> = mutableListOf()
 

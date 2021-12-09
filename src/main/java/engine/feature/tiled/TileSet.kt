@@ -28,26 +28,26 @@ class TileSet(
                 (columnNumber + 1) * relativeTileWidth, (rowNumber + 1) * relativeTileHeight)
     }
 
-    internal fun getTileById(id: Int): MapTile {
+    internal fun getTileById(id: Int): Tile {
         return tiles[id]
     }
 
     companion object {
-        internal fun generateTiles(tileSet: TileSet): MutableList<MapTile> {
-            val out: ArrayList<MapTile> = ArrayList()
+        internal fun generateTiles(tileSet: TileSet): MutableList<Tile> {
+            val out: ArrayList<Tile> = ArrayList()
 
             for (i in 0 until tileSet.tileCount) {
                 val uv = tileSet.generateTileUV(i)
-                out.add(MapTile(uv))
+                out.add(Tile(uv))
             }
 
             return rotateTiles(out, tileSet)
         }
 
-        private fun rotateTiles(tiles: ArrayList<MapTile>, tileSet: TileSet): ArrayList<MapTile> {
-            val result = ArrayList<MapTile>(tiles.size)
+        private fun rotateTiles(tiles: ArrayList<Tile>, tileSet: TileSet): ArrayList<Tile> {
+            val result = ArrayList<Tile>(tiles.size)
             for (i in 0 until tiles.size step tileSet.columnCount) {
-                val temporary = ArrayList<MapTile>(tileSet.columnCount)
+                val temporary = ArrayList<Tile>(tileSet.columnCount)
                 temporary.addAll(tiles.subList(i, i + tileSet.columnCount))
                 temporary.reverse()
 
