@@ -17,7 +17,7 @@ import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.text.TextRenderer
 import engine.feature.texture.TextureLoader
 import engine.util.geometry.PointF
-import engine.core.state.GameState
+import engine.core.state.Scene
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderInteractor
 import engine.feature.text.data.TextDataUtils
@@ -31,7 +31,7 @@ class GameLabyrinth(
         dim: Dimension,
         private val shaderCreator: ShaderCreator,
         private val shaderInteractor: ShaderInteractor
-) : GameState {
+) : Scene {
 
     private val presets = LabyrinthPresets()
     private val characterAnimations = presets.characterPresets.animation.animations

@@ -3,13 +3,13 @@ package engine.core
 import com.jogamp.opengl.*
 import engine.util.DeltaTimeCalculator
 import engine.util.updater.Updater
-import engine.core.state.GameState
+import engine.core.state.Scene
 
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
 class OpenGlContext(
-        private val state: GameState,
+        private val state: Scene,
         private val updater: Updater
 ) : GLEventListener, KeyListener {
     private val timer: DeltaTimeCalculator = DeltaTimeCalculator()

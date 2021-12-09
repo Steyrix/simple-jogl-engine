@@ -6,7 +6,7 @@ import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import engine.core.OpenGlObject2D
-import engine.core.state.GameState
+import engine.core.state.Scene
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderCreator
@@ -19,7 +19,7 @@ import java.awt.event.KeyEvent
 class TextureArrayDemo(
         private val dim: Dimension,
         private val shaderCreator: ShaderCreator
-) : GameState {
+) : Scene {
 
     private lateinit var textureArrayShader: Shader
     private lateinit var textureShader: Shader

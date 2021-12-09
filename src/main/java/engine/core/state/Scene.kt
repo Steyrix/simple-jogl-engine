@@ -4,7 +4,7 @@ import com.jogamp.opengl.GLAutoDrawable
 
 import java.awt.event.KeyEvent
 
-interface GameState {
+interface Scene {
     fun init(glAutoDrawable: GLAutoDrawable)
     fun dispose(glAutoDrawable: GLAutoDrawable)
     fun display(glAutoDrawable: GLAutoDrawable)

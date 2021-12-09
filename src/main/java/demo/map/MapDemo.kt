@@ -7,8 +7,7 @@ import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import engine.core.AnimatedObject
 import engine.core.OpenGlObject2D
-import engine.core.controllable.ControllableObject
-import engine.core.state.GameState
+import engine.core.state.Scene
 import engine.feature.ResourceLoader
 import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderCreator
@@ -25,7 +24,7 @@ class MapDemo(
         private val dim: Dimension,
         private val shaderCreator: ShaderCreator,
         private val shaderInteractor: ShaderInteractor
-) : GameState {
+) : Scene {
 
     private var texShader: Shader? = null
     private var renderProjection: Mat4? = null
