@@ -3,6 +3,7 @@ package demo.map
 import engine.core.*
 import engine.core.controllable.ControllableObject
 import engine.core.controllable.keyboard.KeyboardUtils
+import engine.core.data.DataSet
 import engine.core.entity.Entity
 import engine.feature.collision.ColliderEntity
 import java.awt.event.KeyEvent
@@ -23,9 +24,13 @@ class MapDemoCharacter internal constructor(
     private val yVelocityModifier = 2.5f
     private val deltaModifier = 20
 
-    private val controllableObject: ControllableObject = object: ControllableObject() {
+    private val controllableObject: ControllableObject = object : ControllableObject() {
 
         override var shouldCollide: Boolean = true
+
+        override var dataSet: DataSet
+            get() = TODO("Not yet implemented")
+            set(value) {}
 
         override fun reactToCollision(entity: ColliderEntity) {
 
@@ -57,6 +62,10 @@ class MapDemoCharacter internal constructor(
     override fun react(entity: Entity) {
         TODO("Not yet implemented")
     }
+
+    override var dataSet: DataSet
+        get() = TODO("Not yet implemented")
+        set(value) {}
 
     private fun applyVelocityX() {
         if (keys[KeyEvent.VK_D] == true) {

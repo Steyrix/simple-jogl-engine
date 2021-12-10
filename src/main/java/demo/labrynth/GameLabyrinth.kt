@@ -35,6 +35,7 @@ class GameLabyrinth(
 
     private val presets = LabyrinthPresets()
     private val characterAnimations = presets.characterPresets.animation.animations
+
     private val boundObjects: ArrayList<OpenGlObject2D> = ArrayList()
 
     private val textureShaderId = "TEXTURED"

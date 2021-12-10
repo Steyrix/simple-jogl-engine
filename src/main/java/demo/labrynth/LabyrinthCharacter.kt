@@ -2,6 +2,7 @@ package demo.labrynth
 
 import engine.core.*
 import engine.core.controllable.ControllableObject
+import engine.core.data.DataSet
 import engine.core.entity.Entity
 import engine.feature.collision.BoundingBox
 import engine.feature.collision.ColliderEntity
@@ -37,6 +38,10 @@ class LabyrinthCharacter internal constructor(
     private val controllableObject: ControllableObject = object : ControllableObject() {
 
         override var shouldCollide: Boolean = true
+
+        override var dataSet: DataSet
+            get() = TODO("Not yet implemented")
+            set(value) {}
 
         override fun reactToCollision(entity: ColliderEntity) {
             if (entity !is BoundingBox || !shouldCollide) return
@@ -177,6 +182,10 @@ class LabyrinthCharacter internal constructor(
             box?.let { controlComponent?.reactToCollision(it) }
         }
     }
+
+    override var dataSet: DataSet
+        get() = TODO("Not yet implemented")
+        set(value) {}
 
     private fun applyVelocityX() {
         when {

@@ -11,7 +11,6 @@ interface Scene {
     fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int)
     fun update(deltaTime: Float)
 
-    //void actionPerformed(ActionEvent e, int deltaTime);
     fun keyTyped(e: KeyEvent)
 
     fun keyPressed(e: KeyEvent)

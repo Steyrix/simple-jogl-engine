@@ -1,5 +1,6 @@
 package engine.core
 
+import engine.core.data.DataSet
 import engine.core.entity.Entity
 import engine.feature.animation.BasicAnimation
 import engine.feature.shader.Shader
@@ -32,6 +33,10 @@ class AnimatedObject(
             currentAnim = a
         }
     }
+
+    override var dataSet: DataSet
+        get() = TODO("Not yet implemented")
+        set(value) {}
 
     override fun toString()= super.toString() + "\n Animated"
 

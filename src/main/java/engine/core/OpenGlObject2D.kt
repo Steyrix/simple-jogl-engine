@@ -5,6 +5,7 @@ import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
 import engine.core.buffered.Buffered
 import engine.core.buffered.OpenGlBuffered
+import engine.core.data.DataSet
 import engine.core.entity.Entity
 import engine.feature.collision.BoundingBox
 import engine.feature.matrix.MatrixInteractor
@@ -144,6 +145,10 @@ open class OpenGlObject2D(
             }
         }
     }
+
+    override var dataSet: DataSet
+        get() = TODO("Not yet implemented")
+        set(value) {}
 
     override fun toString(): String {
         return "OpenGlObject: \n Number of vertices: $verticesCount" +
