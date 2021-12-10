@@ -1,13 +1,13 @@
-package demo.labrynth
+package demo.labrynth.level
 
 import com.jogamp.opengl.GL4
+import demo.labrynth.GameLabyrinth
 import engine.core.OpenGlObject2D
 import engine.core.buffered.Buffered
 import engine.feature.ResourceLoader
 import engine.feature.collision.BoundingBox
 import engine.feature.texture.TextureLoader
 
-import java.awt.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.ArrayList

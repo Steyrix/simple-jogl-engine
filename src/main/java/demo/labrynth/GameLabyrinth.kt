@@ -7,6 +7,8 @@ import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import com.jogamp.opengl.util.texture.Texture
+import demo.labrynth.character.LabyrinthCharacter
+import demo.labrynth.level.LabyrinthLevelCreator
 
 import engine.core.AnimatedObject
 import engine.feature.ResourceLoader

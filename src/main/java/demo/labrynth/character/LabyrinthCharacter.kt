@@ -1,8 +1,7 @@
-package demo.labrynth
+package demo.labrynth.character
 
 import engine.core.*
 import engine.core.controllable.ControllableObject
-import engine.core.data.DataSet
 import engine.core.entity.Entity
 import engine.feature.collision.BoundingBox
 import engine.feature.collision.ColliderEntity
@@ -76,7 +75,7 @@ class LabyrinthCharacter internal constructor(
     init {
         setCtrlComponent(controllableObject)
 
-        val box = BoundingBox(posX, posY, width, height, shouldCollide = true)
+        val box = CharacterBoundingBox(posX, posY, width, height, shouldCollide = true)
         setBoundingBox(box)
         initCollisionPoints(collisionPoints)
 
@@ -87,25 +86,9 @@ class LabyrinthCharacter internal constructor(
     }
 
     private fun initCollisionPoints(target: ArrayList<PointF>) {
-        with(graphicalComponent.box) {
-            this?.let {
-                target.add(PointF(it.posX, it.posY)) // 0
-                target.add(PointF(it.posX, it.bottomY)) // 1
-                target.add(PointF(it.rightX, it.bottomY)) // 2
-                target.add(PointF(it.rightX, it.posY)) // 3
-                target.add(PointF(it.posX + it.width / 2, it.posY)) // 4
-                target.add(PointF(it.posX + it.width / 2, it.bottomY)) // 5
-                target.add(PointF(it.posX, it.posY + it.height / 2)) // 6
-                target.add(PointF(it.rightX, it.posY + it.height / 2)) // 7
-                target.add(PointF(it.posX, it.posY + it.height / 4)) // 8
-                target.add(PointF(it.posX, it.bottomY - it.height / 4)) // 9
-                target.add(PointF(it.rightX, it.posY + it.height / 4)) // 10
-                target.add(PointF(it.rightX, it.bottomY - it.height / 5)) // 11
-                target.add(PointF(it.posX, it.posY + it.height / 3)) // 12
-                target.add(PointF(it.rightX, it.posY + it.height / 3)) // 13
-                target.add(PointF(it.posX, it.bottomY - it.height / 3)) // 14
-                target.add(PointF(it.rightX, it.bottomY - it.height / 3)) // 15
-            }
+        graphicalComponent.box?.let {
+            val points = (it as CharacterBoundingBox).getCollisionPoints()
+            target.addAll(points)
         }
     }
 
@@ -249,24 +232,11 @@ class LabyrinthCharacter internal constructor(
         }
     }
 
-    private fun updateCollisionPoints() = with(graphicalComponent.box) {
-        this?.let {
-            collisionPoints[0] = PointF(it.posX, it.posY)
-            collisionPoints[1] = PointF(it.posX, it.bottomY)
-            collisionPoints[2] = PointF(it.rightX, it.bottomY)
-            collisionPoints[3] = PointF(it.rightX, it.posY)
-            collisionPoints[4] = PointF(it.posX + it.width / 2, it.posY)
-            collisionPoints[5] = PointF(it.posX + it.width / 2, it.bottomY)
-            collisionPoints[6] = PointF(it.posX, it.posY + it.height / 2)
-            collisionPoints[7] = PointF(it.rightX, it.posY + it.height / 2)
-            collisionPoints[8] = PointF(it.posX, it.posY + it.height / 4)
-            collisionPoints[9] = PointF(it.posX, it.bottomY - it.height / 4)
-            collisionPoints[10] = PointF(it.rightX, it.posY + it.height / 4)
-            collisionPoints[11] = PointF(it.rightX, it.bottomY - it.height / 5)
-            collisionPoints[12] = PointF(it.posX, it.posY + it.height / 3)
-            collisionPoints[13] = PointF(it.rightX, it.posY + it.height / 3)
-            collisionPoints[14] = PointF(it.rightX, it.bottomY - it.height / 3)
-            collisionPoints[15] = PointF(it.rightX, it.bottomY - it.height / 3)
+    private fun updateCollisionPoints() {
+        graphicalComponent.box?.let {
+            val points = (it as CharacterBoundingBox).getCollisionPoints()
+            collisionPoints.clear()
+            collisionPoints.addAll(points)
         }
     }
 
