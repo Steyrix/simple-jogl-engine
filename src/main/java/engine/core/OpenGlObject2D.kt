@@ -146,10 +146,6 @@ open class OpenGlObject2D(
         }
     }
 
-    override var dataSet: DataSet
-        get() = TODO("Not yet implemented")
-        set(value) {}
-
     override fun toString(): String {
         return "OpenGlObject: \n Number of vertices: $verticesCount" +
                 "\n Number of buffers: $buffersCount \n" +

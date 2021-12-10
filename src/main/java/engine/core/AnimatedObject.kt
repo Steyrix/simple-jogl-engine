@@ -34,10 +34,6 @@ class AnimatedObject(
         }
     }
 
-    override var dataSet: DataSet
-        get() = TODO("Not yet implemented")
-        set(value) {}
-
     override fun toString()= super.toString() + "\n Animated"
 
 

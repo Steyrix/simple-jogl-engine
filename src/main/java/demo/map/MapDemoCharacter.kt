@@ -28,10 +28,6 @@ class MapDemoCharacter internal constructor(
 
         override var shouldCollide: Boolean = true
 
-        override var dataSet: DataSet
-            get() = TODO("Not yet implemented")
-            set(value) {}
-
         override fun reactToCollision(entity: ColliderEntity) {
 
         }
@@ -62,10 +58,6 @@ class MapDemoCharacter internal constructor(
     override fun react(entity: Entity) {
         TODO("Not yet implemented")
     }
-
-    override var dataSet: DataSet
-        get() = TODO("Not yet implemented")
-        set(value) {}
 
     private fun applyVelocityX() {
         if (keys[KeyEvent.VK_D] == true) {

@@ -39,10 +39,6 @@ class LabyrinthCharacter internal constructor(
 
         override var shouldCollide: Boolean = true
 
-        override var dataSet: DataSet
-            get() = TODO("Not yet implemented")
-            set(value) {}
-
         override fun reactToCollision(entity: ColliderEntity) {
             if (entity !is BoundingBox || !shouldCollide) return
 
@@ -182,10 +178,6 @@ class LabyrinthCharacter internal constructor(
             box?.let { controlComponent?.reactToCollision(it) }
         }
     }
-
-    override var dataSet: DataSet
-        get() = TODO("Not yet implemented")
-        set(value) {}
 
     private fun applyVelocityX() {
         when {

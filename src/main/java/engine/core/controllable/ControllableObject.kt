@@ -6,7 +6,7 @@ import engine.feature.collision.collider.SimpleCollider
 
 import java.awt.event.KeyEvent
 
-abstract class ControllableObject : Controllable, SimpleCollider, Entity {
+abstract class ControllableObject : Controllable, SimpleCollider {
 
     abstract override fun reactToCollision(entity: ColliderEntity)
 
