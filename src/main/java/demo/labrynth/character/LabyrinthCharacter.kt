@@ -243,6 +243,8 @@ class LabyrinthCharacter internal constructor(
         canJump = false
     }
 
+    // TODO: скорее всего, нужно установить соответствие фреймов и индекса анимации внутри AnimatedObject
+
     // TODO: a lot of magic numbers - refactor
     private fun setIdleAnim() = animationComponent?.let {
         it.setAnimation(it.animations[2])

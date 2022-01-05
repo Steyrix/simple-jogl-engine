@@ -189,6 +189,7 @@ class GameLabyrinth(
         labyrinthCharacter?.keyReleased(e)
     }
 
+    // todo: refactor hardcode
     private fun loadShaders() {
         val textureShaderObject = shaderCreator.create(
                 "shaders/texturedVertexShader.glsl",
