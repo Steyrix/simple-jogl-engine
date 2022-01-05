@@ -119,6 +119,7 @@ class LabyrinthCharacter internal constructor(
         graphicalComponent.box!!.posY += moveY
     }
 
+    // TODO: a lot of magic numbers - refactor
     private fun isBottomContact(anotherBox: BoundingBox): Boolean {
         return anotherBox.containsNumberOfPoints(2, false,
                 collisionPoints[1],
@@ -126,6 +127,7 @@ class LabyrinthCharacter internal constructor(
                 collisionPoints[5])
     }
 
+    // TODO: a lot of magic numbers - refactor
     private fun detectHorizontalContact(anotherBox: BoundingBox): Boolean {
         return anotherBox.containsNumberOfPoints(2, true,
                 collisionPoints[0],
@@ -250,6 +252,7 @@ class LabyrinthCharacter internal constructor(
         canJump = false
     }
 
+    // TODO: a lot of magic numbers - refactor
     private fun setIdleAnim() = animationComponent?.let {
         it.setAnimation(it.animations[2])
         it.currentAnim.setCurrentFrameX(0)
@@ -257,6 +260,7 @@ class LabyrinthCharacter internal constructor(
         isWalking = false
     }
 
+    // TODO: a lot of magic numbers - refactor
     private fun setJumpAnim() = animationComponent?.let {
         it.currentAnim = it.animations[1]
         it.currentAnim.currentFrameY = 1
@@ -265,6 +269,7 @@ class LabyrinthCharacter internal constructor(
         it.currentAnim.setLastPosX(9)
     }
 
+    // TODO: a lot of magic numbers - refactor
     private fun setWalkAnim() = animationComponent?.let {
         it.currentAnim = it.animations[0]
         it.currentAnim.currentFrameY = 2
