@@ -207,11 +207,9 @@ class LabyrinthCharacter internal constructor(
             val isWalkAnim = velocityX != 0f && !jumpState && it.currentAnim != it.animations[0]
             val isJumpAnim = velocityX != 0f && jumpState
             val isInsignificantJump = velocityY > 0f && velocityY <= 0.2f
-            val isDiagonalMove = velocityX != 0f && velocityY != 0f
 
             when {
                 isIdleAnim -> setIdleAnim()
-                isDiagonalMove -> Unit
                 isWalkAnim -> setWalkAnim()
                 isJumpAnim -> setJumpAnim()
                 isInsignificantJump -> setWalkAnim()
