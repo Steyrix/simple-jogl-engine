@@ -77,7 +77,7 @@ class GameLabyrinth(
                 .apply {
                     val UV = Buffered.getRectangleSectorVertices(frameSizeX, frameSizeY)
                     initRenderData(
-                            listOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
+                            listOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_character.png")),
                             false,
                             Buffered.RECTANGLE_INDICES,
                             UV)
@@ -262,8 +262,8 @@ class GameLabyrinth(
             }
         }.apply {
             val bgIndices = Buffered.RECTANGLE_INDICES
-            val bgUVdata = Buffered.getIndicesScaled(10f, 10f)
-            val texturePath = "textures/labyrinth/abbey_base.jpg"
+            val bgUVdata = Buffered.getIndicesScaled(25f, 14f)
+            val texturePath = "textures/labyrinth/mossy_bg.png"
             initRenderData(
                     listOf(ResourceLoader.getAbsolutePath(texturePath)),
                     false,

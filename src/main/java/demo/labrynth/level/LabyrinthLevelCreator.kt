@@ -82,7 +82,7 @@ internal class LabyrinthLevelCreator {
                         shouldCollide = true
                 )
 
-                val texturePath = ResourceLoader.getAbsolutePath("textures/labyrinth/abbey_base.jpg")
+                val texturePath = ResourceLoader.getAbsolutePath("textures/labyrinth/mossy_platform.png")
 
                 initRenderData(
                         listOf(texturePath),
