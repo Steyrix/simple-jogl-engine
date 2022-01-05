@@ -29,6 +29,7 @@ import java.awt.event.*
 import java.util.ArrayList
 
 //TODO: load every texture with its own unique id
+// TODO: refactor
 class GameLabyrinth(
         dim: Dimension,
         private val shaderCreator: ShaderCreator,
@@ -131,9 +132,9 @@ class GameLabyrinth(
         curr = shaderInteractor.getShader(boundShaderId)
         shaderInteractor.activateShader(boundShaderId)
 
-        for (o in boundObjects) {
-            o.box?.let {
-                o.draw(it.posX, it.posY, it.width, it.height, 0f, curr)
+        for (bound in boundObjects) {
+            bound.box?.let {
+                bound.draw(it.posX, it.posY, it.width, it.height, 0f, curr)
             }
         }
 
@@ -145,6 +146,9 @@ class GameLabyrinth(
         curr = shaderInteractor.getShader(boxShaderId)
         shaderInteractor.activateShader(boxShaderId)
         labyrinthCharacter!!.drawBoundingBox(curr)
+        for (bound in boundObjects) {
+            bound.box?.let { bound.drawBox(curr) }
+        }
 
         curr = shaderInteractor.getShader(textShaderId)
         shaderInteractor.activateShader(textShaderId)

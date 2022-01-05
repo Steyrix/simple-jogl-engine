@@ -17,7 +17,8 @@ class LabyrinthCharacter internal constructor(
         width: Float,
         height: Float,
         animatedObject: AnimatedObject,
-        graphicalObject: OpenGlObject2D
+        graphicalObject: OpenGlObject2D,
+        initialBox: CharacterBoundingBox? = null
 ) : CompositeObject(animatedObject, null, graphicalObject) {
 
     private val keyboardItems: BooleanArray = BooleanArray(1000000)
@@ -33,6 +34,7 @@ class LabyrinthCharacter internal constructor(
     private val jumpTimeLimit = 600f
     private val deltaGravityModifier = 10
     private val deltaModifier = 20
+    private val jumpVelocityMofidier = 25f
 
     private val controllableObject: ControllableObject = object : ControllableObject() {
 
@@ -75,7 +77,7 @@ class LabyrinthCharacter internal constructor(
     init {
         setCtrlComponent(controllableObject)
 
-        val box = CharacterBoundingBox(posX, posY, width, height, shouldCollide = true)
+        val box = initialBox ?: CharacterBoundingBox(posX, posY, width, height, shouldCollide = true)
         setBoundingBox(box)
         initCollisionPoints(collisionPoints)
 
@@ -119,31 +121,22 @@ class LabyrinthCharacter internal constructor(
         graphicalComponent.box!!.posY += moveY
     }
 
-    // TODO: a lot of magic numbers - refactor
     private fun isBottomContact(anotherBox: BoundingBox): Boolean {
-        return anotherBox.containsNumberOfPoints(2, false,
-                collisionPoints[1],
-                collisionPoints[2],
-                collisionPoints[5])
+        (graphicalComponent.box as? CharacterBoundingBox)?.let {
+            return anotherBox.containsNumberOfPoints(2, false, it.getBottomLinePointSet())
+        }
+
+        return false
     }
 
-    // TODO: a lot of magic numbers - refactor
     private fun detectHorizontalContact(anotherBox: BoundingBox): Boolean {
-        return anotherBox.containsNumberOfPoints(2, true,
-                collisionPoints[0],
-                collisionPoints[1],
-                collisionPoints[6]) ||
-                anotherBox.containsNumberOfPoints(2, true,
-                        collisionPoints[2],
-                        collisionPoints[3],
-                        collisionPoints[7]) ||
-                anotherBox.containsAnyPointOf(true,
-                        collisionPoints[8],
-                        collisionPoints[9],
-                        collisionPoints[10],
-                        collisionPoints[11],
-                        collisionPoints[12],
-                        collisionPoints[13])
+        (graphicalComponent.box as? CharacterBoundingBox)?.let {
+            return anotherBox.containsNumberOfPoints(2, true, it.getLeftBorderPointSet())
+                    || anotherBox.containsNumberOfPoints(2, true, it.getRightBorderPointSet())
+                    || anotherBox.containsAnyPointOf(true, it.getHorizontalContactPointSet())
+        }
+
+        return false
     }
 
     override fun update(deltaTime: Float) {
@@ -203,7 +196,7 @@ class LabyrinthCharacter internal constructor(
 
     private fun processGravityEffect(deltaTime: Float) {
         val gravity = 1f
-        if (jumpState && currentBottomPlatform == null) { //System.out.println("Applying gravity");
+        if (jumpState && currentBottomPlatform == null) {
             velocityY += gravity * deltaTime / deltaGravityModifier
         }
     }
@@ -243,7 +236,7 @@ class LabyrinthCharacter internal constructor(
     }
 
     private fun jump() {
-        velocityY -= 25f
+        velocityY -= jumpVelocityMofidier
         setAirFloating()
     }
 
