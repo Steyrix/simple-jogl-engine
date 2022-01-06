@@ -5,7 +5,6 @@ import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.Texture
 import engine.core.buffered.Buffered
 import engine.core.buffered.OpenGlBuffered
-import engine.core.data.DataSet
 import engine.core.entity.Entity
 import engine.feature.collision.BoundingBox
 import engine.feature.matrix.MatrixInteractor
@@ -48,9 +47,11 @@ open class OpenGlObject2D(
             boundingBox = value
         }
 
-    open fun initRenderData(textureFilePaths: List<String>,
-                            texArray: Boolean,
-                            vararg dataArrays: FloatArray) {
+    open fun initRenderData(
+            textureFilePaths: List<String>,
+            texArray: Boolean,
+            vararg dataArrays: FloatArray
+    ) {
         addBuffers(*dataArrays)
         genVertexArray()
 

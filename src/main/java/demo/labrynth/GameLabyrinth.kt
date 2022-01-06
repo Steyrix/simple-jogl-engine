@@ -7,6 +7,8 @@ import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GL4
 import com.jogamp.opengl.GLAutoDrawable
 import com.jogamp.opengl.util.texture.Texture
+import demo.labrynth.character.LabyrinthCharacter
+import demo.labrynth.level.LabyrinthLevelCreator
 
 import engine.core.AnimatedObject
 import engine.feature.ResourceLoader
@@ -26,12 +28,22 @@ import java.awt.*
 import java.awt.event.*
 import java.util.ArrayList
 
-//TODO: load every texture with its own unique id
 class GameLabyrinth(
         dim: Dimension,
         private val shaderCreator: ShaderCreator,
         private val shaderInteractor: ShaderInteractor
 ) : Scene {
+
+    companion object {
+        internal fun initRepeatableTexParameters(texture: Texture, gl: GL4) =
+                texture.apply {
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT)
+                }
+
+    }
 
     private val presets = LabyrinthPresets()
     private val characterAnimations = presets.characterPresets.animation.animations
@@ -75,7 +87,7 @@ class GameLabyrinth(
                 .apply {
                     val UV = Buffered.getRectangleSectorVertices(frameSizeX, frameSizeY)
                     initRenderData(
-                            listOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_dark.png")),
+                            listOf(ResourceLoader.getAbsolutePath("textures/labyrinth/base_character.png")),
                             false,
                             Buffered.RECTANGLE_INDICES,
                             UV)
@@ -129,9 +141,9 @@ class GameLabyrinth(
         curr = shaderInteractor.getShader(boundShaderId)
         shaderInteractor.activateShader(boundShaderId)
 
-        for (o in boundObjects) {
-            o.box?.let {
-                o.draw(it.posX, it.posY, it.width, it.height, 0f, curr)
+        for (bound in boundObjects) {
+            bound.box?.let {
+                bound.draw(it.posX, it.posY, it.width, it.height, 0f, curr)
             }
         }
 
@@ -143,6 +155,9 @@ class GameLabyrinth(
         curr = shaderInteractor.getShader(boxShaderId)
         shaderInteractor.activateShader(boxShaderId)
         labyrinthCharacter!!.drawBoundingBox(curr)
+        for (bound in boundObjects) {
+            bound.box?.let { bound.drawBox(curr) }
+        }
 
         curr = shaderInteractor.getShader(textShaderId)
         shaderInteractor.activateShader(textShaderId)
@@ -183,6 +198,7 @@ class GameLabyrinth(
         labyrinthCharacter?.keyReleased(e)
     }
 
+    // todo: refactor hardcode
     private fun loadShaders() {
         val textureShaderObject = shaderCreator.create(
                 "shaders/texturedVertexShader.glsl",
@@ -260,24 +276,13 @@ class GameLabyrinth(
             }
         }.apply {
             val bgIndices = Buffered.RECTANGLE_INDICES
-            val bgUVdata = Buffered.getIndicesScaled(10f, 10f)
-            val texturePath = "textures/labyrinth/abbey_base.jpg"
+            val bgUVdata = Buffered.getIndicesScaled(25f, 14f)
+            val texturePath = "textures/labyrinth/mossy_bg.png"
             initRenderData(
                     listOf(ResourceLoader.getAbsolutePath(texturePath)),
                     false,
                     bgIndices,
                     bgUVdata)
         }
-    }
-
-    companion object {
-        internal fun initRepeatableTexParameters(texture: Texture, gl: GL4) =
-                texture.apply {
-                    setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
-                    setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
-                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT)
-                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT)
-                }
-
     }
 }

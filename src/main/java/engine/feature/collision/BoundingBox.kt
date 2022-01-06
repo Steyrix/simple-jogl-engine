@@ -44,7 +44,7 @@ open class BoundingBox(
         return true
     }
 
-    fun containsNumberOfPoints(numberOfPoints: Int, strict: Boolean, vararg points: PointF): Boolean {
+    fun containsNumberOfPoints(numberOfPoints: Int, strict: Boolean, points: List<PointF>): Boolean {
         if (numberOfPoints <= 0) {
             return true
         }
@@ -74,7 +74,7 @@ open class BoundingBox(
         return cnt >= numberOfPoints
     }
 
-    fun containsAnyPointOf(strict: Boolean, vararg points: PointF): Boolean {
+    fun containsAnyPointOf(strict: Boolean, points: List<PointF>): Boolean {
         points.forEach {
             val strictCondition = it.x < rightX
                                   && it.x > posX
@@ -100,13 +100,7 @@ open class BoundingBox(
     }
 
     fun containsPoint(strict: Boolean, pointFS: ArrayList<PointF>): Boolean {
-        pointFS.forEach {
-            if (containsAnyPointOf(strict, it)) {
-                return true
-            }
-        }
-
-        return false
+        return containsAnyPointOf(strict, pointFS)
     }
 
     fun getIntersectionWidth(anotherBox: BoundingBox): Float {

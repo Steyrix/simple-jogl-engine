@@ -1,6 +1,5 @@
-# Simple-JOGL-engine
-# Currently work on:
+### Simple-JOGL-engine
 
-* Tile maps' attribute system
-* Texture arrays' system improvement
-* 2D lightweight animation architecture
+This piece of code is my playground for testing out gamedev approaches that I run into during my life.
+
+Rendering is based on JOGL

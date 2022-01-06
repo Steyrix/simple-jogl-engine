@@ -12,10 +12,6 @@ abstract class CompositeObject(
         protected var graphicalComponent: OpenGlObject2D
 ) : Entity {
 
-    protected var velocityX: Float = 0.toFloat()
-    protected var velocityY: Float = 0.toFloat()
-    protected var jumpState: Boolean = false
-
     fun setAnimComponent(component: AnimatedObject) {
         animationComponent = component
     }
