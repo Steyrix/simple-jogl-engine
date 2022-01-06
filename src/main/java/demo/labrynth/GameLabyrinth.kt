@@ -28,13 +28,22 @@ import java.awt.*
 import java.awt.event.*
 import java.util.ArrayList
 
-//TODO: load every texture with its own unique id
-// TODO: refactor
 class GameLabyrinth(
         dim: Dimension,
         private val shaderCreator: ShaderCreator,
         private val shaderInteractor: ShaderInteractor
 ) : Scene {
+
+    companion object {
+        internal fun initRepeatableTexParameters(texture: Texture, gl: GL4) =
+                texture.apply {
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT)
+                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT)
+                }
+
+    }
 
     private val presets = LabyrinthPresets()
     private val characterAnimations = presets.characterPresets.animation.animations
@@ -275,16 +284,5 @@ class GameLabyrinth(
                     bgIndices,
                     bgUVdata)
         }
-    }
-
-    companion object {
-        internal fun initRepeatableTexParameters(texture: Texture, gl: GL4) =
-                texture.apply {
-                    setTexParameteri(gl, GL4.GL_TEXTURE_MIN_FILTER, GL4.GL_LINEAR)
-                    setTexParameteri(gl, GL4.GL_TEXTURE_MAG_FILTER, GL4.GL_LINEAR)
-                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_S, GL4.GL_REPEAT)
-                    setTexParameteri(gl, GL4.GL_TEXTURE_WRAP_T, GL4.GL_REPEAT)
-                }
-
     }
 }
