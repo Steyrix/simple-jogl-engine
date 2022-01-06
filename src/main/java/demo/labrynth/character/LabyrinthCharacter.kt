@@ -8,6 +8,7 @@ import engine.feature.collision.ColliderEntity
 import engine.util.geometry.PointF
 import java.awt.event.KeyEvent
 import java.util.*
+import kotlin.collections.HashSet
 
 
 // TODO: fucking heavy, refactor - better split/optimize
@@ -21,7 +22,7 @@ class LabyrinthCharacter internal constructor(
         initialBox: CharacterBoundingBox? = null
 ) : CompositeObject(animatedObject, null, graphicalObject) {
 
-    private val keyboardItems: BooleanArray = BooleanArray(1000000)
+    private val keyboardItems = hashMapOf<Int, Boolean>()
     private val collisionPoints: ArrayList<PointF> = arrayListOf()
 
     private var currentBottomPlatform: BoundingBox? = null
@@ -61,16 +62,22 @@ class LabyrinthCharacter internal constructor(
         override fun keyTyped(e: KeyEvent) = Unit
 
         override fun keyPressed(e: KeyEvent) {
-            if (!keyboardItems[e.keyCode]) keyboardItems[e.keyCode] = true
+
+            keyboardItems[e.keyCode] = true
+
             if (e.keyCode == KeyEvent.VK_D || e.keyCode == KeyEvent.VK_A) {
                 if (!isWalking && !jumpState) {
                     setWalkAnim()
                 }
-            } else if (e.keyCode == KeyEvent.VK_W) if (!jumpState) setJumpAnim()
+            } else {
+                if (e.keyCode == KeyEvent.VK_W) {
+                    if (!jumpState) setJumpAnim()
+                }
+            }
         }
 
         override fun keyReleased(e: KeyEvent) {
-            if (keyboardItems[e.keyCode]) keyboardItems[e.keyCode] = false
+            keyboardItems[e.keyCode] = false
         }
     }
 
@@ -159,11 +166,11 @@ class LabyrinthCharacter internal constructor(
 
     private fun applyVelocityX() {
         when {
-            keyboardItems[KeyEvent.VK_D] -> {
+            keyboardItems[KeyEvent.VK_D] == true -> {
                 isWalking = true
                 velocityX = xVelocityModifier
             }
-            keyboardItems[KeyEvent.VK_A] -> {
+            keyboardItems[KeyEvent.VK_A] == true -> {
                 isWalking = true
                 velocityX = -xVelocityModifier
             }
@@ -172,11 +179,11 @@ class LabyrinthCharacter internal constructor(
     }
 
     private fun applyVelocityY() {
-        if (keyboardItems[KeyEvent.VK_S]) {
+        if (keyboardItems[KeyEvent.VK_S] == true) {
             velocityY = yVelocityModifier
             jumpState = true
             canJump = false
-        } else if (keyboardItems[KeyEvent.VK_W] && canJump) {
+        } else if (keyboardItems[KeyEvent.VK_W] == true && canJump) {
             jump()
         } else if (!jumpState) {
             velocityY = 0.0f
