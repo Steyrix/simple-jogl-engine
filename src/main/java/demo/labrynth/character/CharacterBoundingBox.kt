@@ -3,9 +3,6 @@ package demo.labrynth.character
 import engine.feature.collision.BoundingBox
 import engine.util.geometry.PointF
 
-/* TODO: think of a way of updating collision points by updating box's position.
-    probably calculating of each point should be a function
- */
 class CharacterBoundingBox(
         posX: Float,
         posY: Float,
