@@ -8,10 +8,10 @@ import engine.feature.collision.ColliderEntity
 import engine.util.geometry.PointF
 import java.awt.event.KeyEvent
 import java.util.*
-import kotlin.collections.HashSet
 
-
-// TODO: fucking heavy, refactor - better split/optimize
+/*
+    This entity is actually a proxy between components describing collisions and control logic.
+ */
 class LabyrinthCharacter internal constructor(
         posX: Float,
         posY: Float,
@@ -36,6 +36,10 @@ class LabyrinthCharacter internal constructor(
     private val deltaGravityModifier = 10
     private val deltaModifier = 20
     private val jumpVelocityMofidier = 25f
+
+    private var velocityX: Float = 0.toFloat()
+    private var velocityY: Float = 0.toFloat()
+    private var jumpState: Boolean = false
 
     private val controllableObject: ControllableObject = object : ControllableObject() {
 
@@ -62,7 +66,6 @@ class LabyrinthCharacter internal constructor(
         override fun keyTyped(e: KeyEvent) = Unit
 
         override fun keyPressed(e: KeyEvent) {
-
             keyboardItems[e.keyCode] = true
 
             if (e.keyCode == KeyEvent.VK_D || e.keyCode == KeyEvent.VK_A) {
