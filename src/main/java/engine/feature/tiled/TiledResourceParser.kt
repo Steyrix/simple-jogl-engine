@@ -36,7 +36,7 @@ internal object TiledResourceParser {
     private const val COLUMN_COUNT = "columns"
     private const val IMAGE = "image"
 
-    internal fun createTileMapFromXml(xmlFile: File): TileMap {
+    fun createTileMapFromXml(xmlFile: File): TileMap {
         val document = XmlParser.getDocument(xmlFile)
         val mapNode = document!!.getElementsByTagName(MAP)
         val mapNodeAttribs = mapNode.item(0).attributes
@@ -45,7 +45,7 @@ internal object TiledResourceParser {
 
         val tileSet = retrieveTileSet(document)
 
-        return TileMap(retrieveLayers(mapWidth, mapHeight, document, tileSet))
+        return TileMap(tileSet, retrieveLayers(mapWidth, mapHeight, document, tileSet))
     }
 
     private fun retrieveTileSet(doc: Document): TileSet {
@@ -71,16 +71,31 @@ internal object TiledResourceParser {
         return TileSet(tileWidth.toInt(), tileHeight.toInt(), texture, tileCount.toInt(), columnCount.toInt())
     }
 
-    private fun retrieveLayers(width: Int, height: Int, doc: Document, tileSet: TileSet): ArrayList<TileLayer> {
+    private fun retrieveLayers(
+            widthInTiles: Int,
+            heightInTiles: Int,
+            doc: Document,
+            tileSet: TileSet
+    ): ArrayList<TileLayer> {
         val out = ArrayList<TileLayer>()
         val layers = doc.getElementsByTagName(LAYER)
 
-        for (i in 0 until layers.length) {
-            val item = layers.item(i)
-            val data = retrieveData(item)
-            val properties = retrieveProperties(item)
+        for (layerIndex in 0 until layers.length) {
+            val currentLayer = layers.item(layerIndex)
+            val data = retrieveData(currentLayer)
+            val properties = retrieveProperties(currentLayer)
             val primitiveProperties = convertToPrimitiveProperties(properties)
-            out.add(TileLayer(width, height, data, primitiveProperties, tileSet))
+            val name = currentLayer.attributes.getNamedItem(PROPERTY_NAME).nodeValue
+
+            out.add(
+                    TileLayer(
+                            name,
+                            widthInTiles,
+                            heightInTiles,
+                            data,
+                            primitiveProperties,
+                            tileSet)
+            )
         }
 
         return out
@@ -108,13 +123,14 @@ internal object TiledResourceParser {
         val out = ArrayList<Node>()
 
         val nodes = node.childNodes
-        for (i in 0 until nodes.length) {
-            if (nodes.item(i).nodeName == PROPERTIES) {
-                val properties = nodes.item(i).childNodes
 
-                for(j in 0 until properties.length) {
-                    if (properties.item(j).nodeName == PROPERTY)
-                        out.add(properties.item(j))
+        for (propertyParentNodeIndex in 0 until nodes.length) {
+            if (nodes.item(propertyParentNodeIndex).nodeName == PROPERTIES) {
+                val properties = nodes.item(propertyParentNodeIndex).childNodes
+
+                for(propertyChildNodeIndex in 0 until properties.length) {
+                    if (properties.item(propertyChildNodeIndex).nodeName == PROPERTY)
+                        out.add(properties.item(propertyChildNodeIndex))
                 }
 
                 break
@@ -128,9 +144,9 @@ internal object TiledResourceParser {
         val out = ArrayList<LayerProperty<out Any>>()
 
         list.forEach {
-            val propertyName = it.attributes.getNamedItem(PROPERTY_NAME).nodeValue!!
-            val propertyType = it.attributes.getNamedItem(PROPERTY_TYPE).nodeValue!!
-            val propertyValue = it.attributes.getNamedItem(PROPERTY_VALUE).nodeValue!!
+            val propertyName = it.attributes.getNamedItem(PROPERTY_NAME).nodeValue
+            val propertyType = it.attributes.getNamedItem(PROPERTY_TYPE).nodeValue
+            val propertyValue = it.attributes.getNamedItem(PROPERTY_VALUE).nodeValue
 
             val propertyField = when (propertyType) {
                 BOOL -> BooleanProperty(propertyName, propertyValue.toBoolean())

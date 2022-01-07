@@ -23,6 +23,8 @@ class MapDemoCharacter internal constructor(
     private val xVelocityModifier = 2.5f
     private val yVelocityModifier = 2.5f
     private val deltaModifier = 20
+    private var velocityX: Float = 0.toFloat()
+    private var velocityY: Float = 0.toFloat()
 
     private val controllableObject: ControllableObject = object : ControllableObject() {
 

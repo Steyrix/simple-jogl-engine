@@ -13,6 +13,7 @@ import engine.feature.shader.Shader
 import engine.feature.shader.`interface`.ShaderCreator
 import engine.feature.shader.`interface`.ShaderInteractor
 import engine.feature.tiled.TileMap
+import engine.feature.tiled.TiledResourceParser
 import java.awt.Dimension
 import java.awt.event.KeyEvent
 
@@ -44,7 +45,9 @@ class MapDemo(
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY)
         gl.glClearColor(1f, 1f, 1f, 1.0f)
 
-        map = TileMap.createInstance(ResourceLoader.getFileFromAbsolutePath("maps/cave/cave_level.xml"))
+        val mapSource = ResourceLoader.getFileFromAbsolutePath("maps/cave/cave_level.xml")
+
+        map = TiledResourceParser.createTileMapFromXml(mapSource)
 
         map?.layers?.forEachIndexed { index, it ->
             val collision = it.getProperty("collision")
@@ -77,7 +80,7 @@ class MapDemo(
 
         texShader?.setMatrix4f("projection", renderProjection!!, false)
 
-        map?.draw(gl, 300f, 300f, texShader!!)
+        map?.draw(gl, 500f, 500f, texShader!!)
     }
 
     override fun reshape(glAutoDrawable: GLAutoDrawable, i: Int, i1: Int, i2: Int, i3: Int) {
