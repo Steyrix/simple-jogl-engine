@@ -2,47 +2,51 @@ package engine.feature.tiled
 
 import com.jogamp.opengl.GL4
 import engine.feature.shader.Shader
-import java.io.File
 import kotlin.math.roundToInt
 
-
-class TileMap internal constructor(
-        private val tileLayers: MutableList<TileLayer>
+class TileMap(
+        private val tileSet: TileSet,
+        layers: List<TileLayer>
 ) {
-    val layers: List<TileLayer>
-        get() = tileLayers.toList()
 
-    // width and height are measured in tiles multiplied by their size
-    private var currentWidth = 0f
-    private var currentHeight = 0f
-
-    fun draw(gl: GL4, shader: Shader) = tileLayers.forEach { it.draw(gl, shader) }
-
-    fun draw(gl: GL4, xSize: Float, ySize: Float, shader: Shader) {
-        currentWidth = xSize
-        currentHeight = ySize
-        tileLayers.forEach { it.draw(gl, xSize, ySize, shader) }
+    companion object {
+        private const val NOT_FOUND = -1
     }
 
-    fun drawTile(gl: GL4, shader: Shader, idx: Int) = tileLayers[idx].draw(gl, shader)
+    private val layersMap = layers.associateBy({ it.name }, { it })
 
-    fun drawTile(gl: GL4, xSize: Float, ySize: Float, shader: Shader, idx: Int) =
-            tileLayers[idx].draw(gl, xSize, ySize, shader)
+    val layers: List<TileLayer>
+        get() = layersMap.values.toList()
 
-    fun getTileIndexInLayerData(posX: Float, posY: Float, layerIndex: Int = 0): Int {
-        val layer = tileLayers[layerIndex]
-        val widthInTiles = layer.width
+    private var absoluteWidth: Float = 0f
+    private var absoluteHeight: Float = 0f
 
-        val currentTileWidth = currentWidth / layer.width
-        val currentTileHeight = currentHeight / layer.height
+    fun draw(gl: GL4, shader: Shader) {
+        layersMap.values.forEach { it.draw(gl, shader) }
+    }
+
+    fun draw(gl: GL4, xSize: Float, ySize: Float, shader: Shader) {
+        absoluteWidth = xSize
+        absoluteHeight = ySize
+        layersMap.values.forEach { it.draw(gl, xSize, ySize, shader) }
+    }
+
+    fun getTileWidth() = tileSet.relativeTileWidth
+
+    fun getTileHeight() = tileSet.relativeTileHeight
+
+    fun getLayerByName(name: String): TileLayer? = layersMap[name]
+
+    fun getTileIndexInLayer(posX: Float, posY: Float, layerName: String): Int {
+        val layer = layersMap[layerName] ?: return NOT_FOUND
+        val widthInTiles = layer.widhtInTiles
+
+        val currentTileWidth = absoluteWidth / layer.widhtInTiles
+        val currentTileHeight = absoluteHeight / layer.heightInTiles
 
         val xTileNumber = getTilePosition(currentTileWidth, posX)
         val yTileNumber = getTilePosition(currentTileHeight, posY)
         return yTileNumber * widthInTiles + xTileNumber
-    }
-
-    override fun toString(): String {
-        return "TileMap. Layers count: " + tileLayers.size
     }
 
     private fun getTilePosition(tileSize: Float, pos: Float): Int {
@@ -52,12 +56,5 @@ class TileMap internal constructor(
         }
 
         return roundedPos / tileSize.roundToInt()
-    }
-
-    companion object {
-        fun createInstance(xmlFile: File): TileMap =
-                TiledResourceParser.createTileMapFromXml(xmlFile)
-
-        const val EMPTY_TILE_ID = -1
     }
 }
